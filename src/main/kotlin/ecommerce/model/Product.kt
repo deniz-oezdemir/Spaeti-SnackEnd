@@ -1,8 +1,10 @@
 package ecommerce.model
 
 class Product(
-    var id: Long? = null, var name: String? = null, var price: Double? = null,
-    var imageUrl: String? = null
+    var id: Long? = null,
+    var name: String? = null,
+    var price: Double? = null,
+    var imageUrl: String? = null,
 ) {
     fun update(newProduct: Product) {
         newProduct.name?.let { this.name = it }
@@ -13,11 +15,10 @@ class Product(
     companion object {
         fun toEntity(
             id: Long,
-            product: Product
+            product: Product,
         ): Product {
             return Product(id, product.name, product.price, product.imageUrl)
         }
-
     }
 
     init {
