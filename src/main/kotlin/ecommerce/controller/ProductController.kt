@@ -17,7 +17,7 @@ import java.net.URI
 import java.util.concurrent.atomic.AtomicLong
 
 @Controller
-@RequestMapping("/api")
+@RequestMapping("/api/products")
 class ProductController {
     private val index = AtomicLong(3)
     private val products: MutableMap<Long, Product> = hashMapOf()
@@ -26,13 +26,13 @@ class ProductController {
         preloadProducts()
     }
 
-    @GetMapping("/products")
+    @GetMapping("")
     @ResponseBody
     fun getProducts(): List<Product> {
         return products.values.toList()
     }
 
-    @PostMapping("/products")
+    @PostMapping("")
     fun createProduct(
         @RequestBody product: Product,
     ): ResponseEntity<Product> {
@@ -43,7 +43,7 @@ class ProductController {
         return ResponseEntity.created(location).body(newProduct)
     }
 
-    @PutMapping("/products/{id}")
+    @PutMapping("/{id}")
     fun updateProduct(
         @RequestBody newProduct: Product,
         @PathVariable id: Long,
@@ -53,7 +53,7 @@ class ProductController {
         return ResponseEntity.ok().body(product)
     }
 
-    @PatchMapping("/products/{id}")
+    @PatchMapping("/{id}")
     fun patchProduct(
         @RequestBody newProduct: Product,
         @PathVariable id: Long,
@@ -63,7 +63,7 @@ class ProductController {
         return ResponseEntity.ok().body(product)
     }
 
-    @DeleteMapping("/products/{id}")
+    @DeleteMapping("/{id}")
     fun deleteProduct(
         @PathVariable id: Long,
     ): ResponseEntity<Void> {
