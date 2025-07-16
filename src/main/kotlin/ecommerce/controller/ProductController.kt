@@ -3,7 +3,7 @@ package ecommerce.controller
 import ecommerce.exception.NotFoundException
 import ecommerce.model.Product
 import org.springframework.http.ResponseEntity
-import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -17,11 +17,14 @@ import java.net.URI
 import java.util.concurrent.atomic.AtomicLong
 
 @RestController()
+@ControllerAdvice
 @RequestMapping("/api")
 class ProductController {
-    private val index = AtomicLong(1)
-    private val products: MutableMap<Long, Product> =
-        hashMapOf<Long, Product>(100L to Product(100, "Car", 1.0, "www.some"))
+    private val index = AtomicLong(3)
+    private val products: MutableMap<Long, Product> = hashMapOf()
+    init {
+        preloadProducts()
+    }
 
     @GetMapping("/products")
     fun getProducts(): List<Product> {
@@ -60,9 +63,14 @@ class ProductController {
         else throw NotFoundException("Product with Id: $id. Not found.")
     }
 
-//TODO: PutMapping -> DeleteMapping -> PatchMapping (check)
-//    fun getProduct(): List<Product> {
-//        products[id]
-//    }
-
+    private fun preloadProducts() {
+        listOf(
+            Product(1L, "Car", 1.0, "www.some"),
+            Product(2L, "Bike", 0.5, "www.example.com/bike"),
+            Product(3L, "Truck", 2.0, "www.example.com/truck")
+        ).forEach { product ->
+            products[product.id!!] = product
+        }
+        index.set(products.keys.maxOrNull()?.plus(1) ?: 1)
+    }
 }
