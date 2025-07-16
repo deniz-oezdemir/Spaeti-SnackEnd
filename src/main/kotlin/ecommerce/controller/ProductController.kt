@@ -1,9 +1,8 @@
 package ecommerce.controller
 
-import ecommerce.exception.NotFoundException
 import ecommerce.model.Product
+import ecommerce.service.ProductService
 import org.springframework.http.ResponseEntity
-import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -12,77 +11,51 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.bind.annotation.RestController
 import java.net.URI
-import java.util.concurrent.atomic.AtomicLong
 
-@Controller
-@RequestMapping("/api/products")
-class ProductController {
-    private val index = AtomicLong(3)
-    private val products: MutableMap<Long, Product> = hashMapOf()
+@RestController
+@RequestMapping
+class ProductController(private val productService: ProductService) {
 
-    init {
-        preloadProducts()
-    }
+    @GetMapping(PRODUCT_PATH)
+    fun getProducts(): List<Product> = productService.findAll()
 
-    @GetMapping("")
-    @ResponseBody
-    fun getProducts(): List<Product> {
-        return products.values.toList()
-    }
+    @GetMapping(PRODUCT_PATH_ID)
+    fun getProductById(
+        @PathVariable id: Long,
+    ): ResponseEntity<Product> = ResponseEntity.ok(productService.findById(id))
 
-    @PostMapping("")
+    @PostMapping(PRODUCT_PATH)
     fun createProduct(
         @RequestBody product: Product,
     ): ResponseEntity<Product> {
-        val id = index.getAndIncrement()
-        val newProduct: Product = Product.toEntity(id, product)
-        products[id] = newProduct
-        val location = URI.create("/api/products/${newProduct.id}")
-        return ResponseEntity.created(location).body(newProduct)
+        val saved = productService.save(product)
+        return ResponseEntity.created(URI.create("$PRODUCT_PATH/${saved.id}")).body(saved)
     }
 
-    @PutMapping("/{id}")
-    fun updateProduct(
-        @RequestBody newProduct: Product,
+    @PutMapping(PRODUCT_PATH_ID)
+    fun updateProductById(
+        @RequestBody product: Product,
         @PathVariable id: Long,
-    ): ResponseEntity<Product> {
-        val product = products[id] ?: throw NotFoundException("Product with Id: $id. Not found.")
-        product.update(newProduct)
-        return ResponseEntity.ok().body(product)
-    }
+    ): ResponseEntity<Product> = ResponseEntity.ok(productService.update(id, product))
 
-    @PatchMapping("/{id}")
-    fun patchProduct(
-        @RequestBody newProduct: Product,
+    @PatchMapping(PRODUCT_PATH_ID)
+    fun patchProductById(
+        @RequestBody product: Product,
         @PathVariable id: Long,
-    ): ResponseEntity<Product> {
-        val product = products[id] ?: throw NotFoundException("Product with Id: $id. Not found.")
-        product.update(newProduct)
-        return ResponseEntity.ok().body(product)
-    }
+    ): ResponseEntity<Product> = ResponseEntity.ok(productService.patch(id, product))
 
-    @DeleteMapping("/{id}")
-    fun deleteProduct(
+    @DeleteMapping(PRODUCT_PATH_ID)
+    fun deleteProductById(
         @PathVariable id: Long,
-    ): ResponseEntity<Void> {
-        val removed = products.remove(id)
-        return if (removed == null) {
-            throw NotFoundException("Product with Id: $id. Not found.")
-        } else {
-            ResponseEntity.ok().build()
-        }
+    ): ResponseEntity<Unit> {
+        productService.delete(id)
+        return ResponseEntity.noContent().build()
     }
 
-    private fun preloadProducts() {
-        listOf(
-            Product(1L, "Car", 1.0, "www.some"),
-            Product(2L, "Bike", 0.5, "www.example.com/bike"),
-            Product(3L, "Truck", 2.0, "www.example.com/truck"),
-        ).forEach { product ->
-            products[product.id!!] = product
-        }
-        index.set(products.keys.maxOrNull()?.plus(1) ?: 1)
+    companion object {
+        const val PRODUCT_PATH = "/api/products"
+        const val PRODUCT_PATH_ID = "$PRODUCT_PATH/{id}"
     }
 }
