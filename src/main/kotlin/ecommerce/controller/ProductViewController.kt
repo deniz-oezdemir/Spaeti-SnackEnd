@@ -12,6 +12,6 @@ class ProductViewController(private val productService: ProductService) {
     @GetMapping
     fun showProducts(model: Model): String {
         model.addAttribute("products", productService.findAll())
-        return ""
+        return "product-list"
     }
 }
