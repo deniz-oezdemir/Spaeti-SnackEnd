@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 
 @ControllerAdvice
 class GlobalControllerAdvice {
-
     @ExceptionHandler
     fun handleNotFoundException(e: NotFoundException): ResponseEntity<String> {
         println("NotFoundException occurred: ${e.message}")
