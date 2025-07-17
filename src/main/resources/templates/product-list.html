@@ -23,7 +23,7 @@
         <tr>
             <th>Name</th>
             <th>Price</th>
-            <th>Image Url</th>
+            <th>Image</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -31,7 +31,7 @@
         <tr th:each="product : ${products}" th:id="${product.id}">
                 <td th:text="${product.name}"></td>
                 <td th:text="${product.price}"></td>
-                <td th:text="${product.imageUrl}"></td>
+                <td><img th:src="${product.imageUrl}" alt="Product Image" style="width: 100px; height: 100px; object-fit: cover;"></td>
                 <td>
                     <button type="button" class="btn btn-danger" th:onclick="'deleteProductById(' + ${product.id} + ')'">Delete</button>
                     <button type="button" class="btn btn-primary" th:onclick="'editProduct(' + ${product.id} + ')'">Edit</button>
