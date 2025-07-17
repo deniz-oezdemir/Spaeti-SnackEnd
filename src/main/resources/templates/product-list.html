@@ -28,18 +28,19 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="product : ${products}">
-            <td th:text="${product.name}"></td>
-            <td th:text="${product.price}"></td>
-            <td th:text="${product.imageUrl}"></td>
-            <td>
-                <button type="button" class="btn btn-danger">Delete</button>
-                <button type="button" class="btn btn-success">Add New Employee</button>
-            </td>
+        <tr th:each="product : ${products}" th:id="${product.id}">
+                <td th:text="${product.name}"></td>
+                <td th:text="${product.price}"></td>
+                <td th:text="${product.imageUrl}"></td>
+                <td>
+                    <button type="button" class="btn btn-danger" th:onclick="'deleteProduct(' + ${product.id} + ')'">Delete</button>
+                    <button type="button" class="btn btn-primary" th:onclick="'editProduct(' + ${product.id} + ')'">Edit</button>
+                </td>
         </tr>
         </tbody>
     </table>
 </div>
+<script th:src="@{/js/main.js}"></script>
 </body>
 
 </html>
