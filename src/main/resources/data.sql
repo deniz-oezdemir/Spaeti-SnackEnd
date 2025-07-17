@@ -1,6 +1,6 @@
 INSERT INTO TBL_PRODUCTS (name, price, imageUrl) VALUES
-('Car', 1000.0, 'www.some.com'),
-('Bike', 200.0, 'www.example.com/bike'),
-('Truck', 30000.0, 'www.example.com/truck'),
-('Laptop', 1500.0, 'www.example.com/laptop'),
-('Phone', 800.0, 'www.example.com/phone');
+('Car', 1000.0, 'https://images.unsplash.com/photo-1494905998402-395d579af36f?w=400&h=400&fit=crop'),
+('Bike', 200.0, 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400&h=400&fit=crop'),
+('Truck', 30000.0, 'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=400&h=400&fit=crop'),
+('Laptop', 1500.0, 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=400&fit=crop'),
+('Phone', 800.0, 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop');
