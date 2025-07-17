@@ -6,7 +6,13 @@
 </head>
 <body>
 
-<h1 th:text="Products">Page Title</h1>
+<h1 th:text="Products">Products</h1>
+<ul>
+    <li th:each="product : ${products}">
+        <strong th:text="${product.name}">Name</strong>
+        <span th:text="${product.price}">Price</span>
+    </li>
+</ul>
 
 </body>
 </html>
