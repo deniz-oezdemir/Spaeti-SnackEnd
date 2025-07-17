@@ -10,19 +10,15 @@ async function deleteProductById(id) {
             const element = document.getElementById(`${id}`)
             if (element) {
                 element.remove()
-                //console.log()-> showNotification()
                 showNotification("ok, deleted", 'success')
             } else {
                 showNotification("Not Found", 'error')
-                //console.log("Not found", id)
             }
         } else {
             showNotification("Product cannot be deleted", 'error')
-            //console.error("Product cannot be deleted")
         }
     } catch (error) {
         showNotification("Error occurred:", 'error')
-        //console.error("Error occurred:", error)
     }
 }
 
@@ -73,7 +69,7 @@ async function addNewProduct() {
         });
         if (response.ok) {
             showNotification('Product added successfully', 'success');
-            location.reload(); // Refresh page to show new product
+            location.reload();
         } else {
             showNotification('Failed to add product', 'error');
         }
