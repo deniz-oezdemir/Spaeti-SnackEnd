@@ -24,6 +24,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("com.h2database:h2:2.2.224") //add
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     runtimeOnly("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
