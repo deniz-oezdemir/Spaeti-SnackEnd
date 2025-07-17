@@ -53,6 +53,12 @@ class ProductController(private val productService: ProductService) {
         return ResponseEntity.noContent().build()
     }
 
+    @DeleteMapping(PRODUCT_PATH)
+    fun deleteAllProducts(): ResponseEntity<String> {
+        productService.deleteAll()
+        return ResponseEntity.noContent().build()
+    }
+
     companion object {
         const val PRODUCT_PATH = "/api/products"
         const val PRODUCT_PATH_ID = "$PRODUCT_PATH/{id}"

@@ -49,6 +49,10 @@ class ProductService {
         if (products.remove(id) == null) throw NotFoundException("Product with Id: $id. Not found.")
     }
 
+    fun deleteAll(){
+        products.clear()
+    }
+
     private fun preloadProducts() {
         listOf(
             Product(index.getAndIncrement(), "Car", 1000.0, "www.some.com"),
