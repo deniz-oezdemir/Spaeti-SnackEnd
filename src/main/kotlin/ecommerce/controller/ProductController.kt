@@ -2,7 +2,6 @@ package ecommerce.controller
 
 import ecommerce.model.Product
 import ecommerce.repository.ProductRepository
-import ecommerce.service.ProductService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -34,13 +33,11 @@ class ProductController(private val productRepository: ProductRepository) {
         return ResponseEntity.created(URI.create("$PRODUCT_PATH/${saved.id}")).body(saved)
     }
 
-
     @PutMapping(PRODUCT_PATH_ID)
     fun updateProductById(
         @RequestBody product: Product,
         @PathVariable id: Long,
     ): ResponseEntity<Product> = ResponseEntity.ok(productRepository.update(id, product))
-
 
     @PatchMapping(PRODUCT_PATH_ID)
     fun patchProductById(

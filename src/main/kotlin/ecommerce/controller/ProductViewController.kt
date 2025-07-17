@@ -1,7 +1,6 @@
 package ecommerce.controller
 
 import ecommerce.repository.ProductRepository
-import ecommerce.service.ProductService
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping

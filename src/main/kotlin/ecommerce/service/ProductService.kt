@@ -39,7 +39,7 @@ class ProductService {
         id: Long,
         product: Product,
     ): Product {
-        val existing = findById(id)
+        val existing = findById(id) ?: throw NotFoundException("Product with Id: $id. Not found.")
         val updated = existing.partialUpdate(product)
         products[id] = updated
         return updated
@@ -49,7 +49,7 @@ class ProductService {
         if (products.remove(id) == null) throw NotFoundException("Product with Id: $id. Not found.")
     }
 
-    fun deleteAll(){
+    fun deleteAll() {
         products.clear()
     }
 

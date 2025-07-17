@@ -23,7 +23,7 @@ class ProductControllerTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
         val names = response.body().jsonPath().getList<String>("name")
         assertThat(names).isNotEmpty()
-        assertThat(names.size).isEqualTo(3)
+        assertThat(names.size).isEqualTo(5)
     }
 
     @Test

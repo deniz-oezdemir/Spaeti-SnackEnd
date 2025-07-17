@@ -26,14 +26,16 @@ class ProductRepository(private val jdbc: JdbcTemplate) {
         return jdbc.query(sql, productRowMapper)
     }
 
-    // TODO: throw an error that return a server error status
     fun findById(id: Long): Product? {
         val sql = "SELECT * from TBL_PRODUCTS where ID = $id"
-        return jdbc.queryForObject(sql, productRowMapper) ?: throw IllegalArgumentException("")
+        return try {
+            jdbc.queryForObject(sql, productRowMapper)
+        } catch (_: org.springframework.dao.EmptyResultDataAccessException) {
+            throw NotFoundException("Product with Id: $id. Not found.")
+        }
     }
 
     fun save(product: Product): Product {
-        // Insert the product
         val sql = "insert into TBL_PRODUCTS (name, price, imageUrl) values (?, ?, ?)"
 
         val keyHolder: KeyHolder = GeneratedKeyHolder()

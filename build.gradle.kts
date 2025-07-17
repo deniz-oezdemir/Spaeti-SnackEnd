@@ -19,17 +19,18 @@ repositories {
     mavenCentral()
 }
 
+val assureVersion = "5.3.1"
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("com.h2database:h2:2.2.224") //add
+    implementation("com.h2database:h2:2.2.224") // add
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     runtimeOnly("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-    testImplementation("io.rest-assured:rest-assured:5.3.1")
+    testImplementation("io.rest-assured:rest-assured:$assureVersion")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 }
