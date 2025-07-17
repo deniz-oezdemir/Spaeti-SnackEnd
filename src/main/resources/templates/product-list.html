@@ -15,8 +15,8 @@
         <div class="d-flex justify-content-between">
             <h1>Manage Products</h1>
             <div>
-                <button type="button" class="btn btn-danger">Delete</button>
-                <button type="button" class="btn btn-success">Add New Employee</button>
+                <button type="button" class="btn btn-danger" th:onclick="'deleteAllProducts()'">Delete</button>
+                <button type="button" class="btn btn-success" th:onclick="'addNewProduct()'">Add New Product</button>
             </div>
         </div>
         <thead>
@@ -33,7 +33,7 @@
                 <td th:text="${product.price}"></td>
                 <td th:text="${product.imageUrl}"></td>
                 <td>
-                    <button type="button" class="btn btn-danger" th:onclick="'deleteProduct(' + ${product.id} + ')'">Delete</button>
+                    <button type="button" class="btn btn-danger" th:onclick="'deleteProductById(' + ${product.id} + ')'">Delete</button>
                     <button type="button" class="btn btn-primary" th:onclick="'editProduct(' + ${product.id} + ')'">Edit</button>
                 </td>
         </tr>

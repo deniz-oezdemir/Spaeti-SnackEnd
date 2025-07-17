@@ -11,7 +11,7 @@
   - [x] Create CRUD operations
 - [x] Create a GlobalControllerAdvise to handle Exceptions
 ### Step 1.2
-- [ ] Implement a controller that return html
+- [x] Implement a controller that return html
 - [ ] Detach the "Database" to be accessible by the two controllers
 - [ ] Create a ProductService to simulate the connection with a real DataBase
 - [ ] Inject the ProductService dependency to the controllers
