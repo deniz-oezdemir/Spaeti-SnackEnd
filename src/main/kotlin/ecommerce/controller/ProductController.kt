@@ -17,7 +17,6 @@ import java.net.URI
 @RestController
 @RequestMapping
 class ProductController(private val productService: ProductService) {
-
     @GetMapping(PRODUCT_PATH)
     fun getProducts(): List<Product> = productService.findAll()
 

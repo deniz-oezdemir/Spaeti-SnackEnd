@@ -25,14 +25,20 @@ class ProductService {
         return saved
     }
 
-    fun update(id: Long, product: Product): Product {
+    fun update(
+        id: Long,
+        product: Product,
+    ): Product {
         val existing = findById(id)
         val updated = existing.copyFrom(product)
         products[id] = updated
         return updated
     }
 
-    fun patch(id: Long, product: Product): Product {
+    fun patch(
+        id: Long,
+        product: Product,
+    ): Product {
         val existing = findById(id)
         val updated = existing.partialUpdate(product)
         products[id] = updated
