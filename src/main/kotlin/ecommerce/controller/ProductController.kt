@@ -1,6 +1,7 @@
 package ecommerce.controller
 
 import ecommerce.model.Product
+import ecommerce.repository.ProductRepository
 import ecommerce.service.ProductService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -16,46 +17,48 @@ import java.net.URI
 
 @RestController
 @RequestMapping
-class ProductController(private val productService: ProductService) {
+class ProductController(private val productRepository: ProductRepository) {
     @GetMapping(PRODUCT_PATH)
-    fun getProducts(): List<Product> = productService.findAll()
+    fun getProducts(): List<Product> = productRepository.findAll()
 
     @GetMapping(PRODUCT_PATH_ID)
     fun getProductById(
         @PathVariable id: Long,
-    ): ResponseEntity<Product> = ResponseEntity.ok(productService.findById(id))
+    ): ResponseEntity<Product> = ResponseEntity.ok(productRepository.findById(id))
 
     @PostMapping(PRODUCT_PATH)
     fun createProduct(
         @RequestBody product: Product,
     ): ResponseEntity<Product> {
-        val saved = productService.save(product)
+        val saved = productRepository.save(product)
         return ResponseEntity.created(URI.create("$PRODUCT_PATH/${saved.id}")).body(saved)
     }
+
 
     @PutMapping(PRODUCT_PATH_ID)
     fun updateProductById(
         @RequestBody product: Product,
         @PathVariable id: Long,
-    ): ResponseEntity<Product> = ResponseEntity.ok(productService.update(id, product))
+    ): ResponseEntity<Product> = ResponseEntity.ok(productRepository.update(id, product))
+
 
     @PatchMapping(PRODUCT_PATH_ID)
     fun patchProductById(
         @RequestBody product: Product,
         @PathVariable id: Long,
-    ): ResponseEntity<Product> = ResponseEntity.ok(productService.patch(id, product))
+    ): ResponseEntity<Product> = ResponseEntity.ok(productRepository.patch(id, product))
 
     @DeleteMapping(PRODUCT_PATH_ID)
     fun deleteProductById(
         @PathVariable id: Long,
     ): ResponseEntity<Unit> {
-        productService.delete(id)
+        productRepository.delete(id)
         return ResponseEntity.noContent().build()
     }
 
     @DeleteMapping(PRODUCT_PATH)
     fun deleteAllProducts(): ResponseEntity<String> {
-        productService.deleteAll()
+        productRepository.deleteAll()
         return ResponseEntity.noContent().build()
     }
 
