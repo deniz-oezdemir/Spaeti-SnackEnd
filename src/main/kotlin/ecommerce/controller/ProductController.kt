@@ -1,7 +1,7 @@
 package ecommerce.controller
 
 import ecommerce.model.Product
-import ecommerce.repository.ProductRepository
+import ecommerce.repository.ProductRepositoryImpl
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -16,7 +16,7 @@ import java.net.URI
 
 @RestController
 @RequestMapping
-class ProductController(private val productRepository: ProductRepository) {
+class ProductController(private val productRepository: ProductRepositoryImpl) {
     @GetMapping(PRODUCT_PATH)
     fun getProducts(): List<Product> = productRepository.findAll()
 
