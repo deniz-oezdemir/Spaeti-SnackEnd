@@ -9,11 +9,17 @@ interface ProductRepository {
 
     fun save(product: Product): Product
 
-    fun update(id: Long, product: Product, ): Product
+    fun update(
+        id: Long,
+        product: Product,
+    ): Product
 
     fun delete(id: Long)
 
     fun deleteAll()
 
-    fun patch(id: Long, product: Product ): Product
+    fun patch(
+        id: Long,
+        product: Product,
+    ): Product
 }
