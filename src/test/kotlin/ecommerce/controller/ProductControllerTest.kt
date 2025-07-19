@@ -1,6 +1,6 @@
 package ecommerce.controller
 
-import ecommerce.model.Product
+import ecommerce.model.ProductDTO
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import org.assertj.core.api.Assertions.assertThat
@@ -28,11 +28,16 @@ class ProductControllerTest {
 
     @Test
     fun getProduct() {
-        val product = Product(name = "Speaker", price = 99.99)
+        val productDTO =
+            ProductDTO(
+                name = "Speaker",
+                price = 99.99,
+                imageUrl = "iteha",
+            )
         val id =
             RestAssured.given()
                 .contentType(ContentType.JSON)
-                .body(product)
+                .body(productDTO)
                 .post("/api/products")
                 .then().extract().jsonPath().getLong("id")
 
@@ -56,12 +61,12 @@ class ProductControllerTest {
 
     @Test
     fun createProduct() {
-        val newProduct = Product(name = "Monitor", price = 150.0, imageUrl = "https://example.com/monitor.jpg")
+        val newProductDTO = ProductDTO(name = "Monitor", price = 150.0, imageUrl = "https://example.com/monitor.jpg")
 
         val response =
             RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .body(newProduct)
+                .body(newProductDTO)
                 .`when`().post("/api/products")
                 .then().log().all().extract()
 
@@ -72,7 +77,7 @@ class ProductControllerTest {
 
     @Test
     fun updateProduct() {
-        val created = Product(name = "Mouse", price = 25.0)
+        val created = ProductDTO(name = "Mouse", price = 25.0, imageUrl = "https://example.com/mouse.jpg")
         val id =
             RestAssured.given()
                 .contentType(ContentType.JSON)
@@ -80,7 +85,7 @@ class ProductControllerTest {
                 .post("/api/products")
                 .then().extract().jsonPath().getLong("id")
 
-        val updated = Product(name = "Gaming Mouse", price = 45.0)
+        val updated = ProductDTO(name = "Gaming Mouse", price = 45.0, imageUrl = "https://example.com/gaming-mouse.jpg")
 
         val response =
             RestAssured.given().log().all()
@@ -96,7 +101,7 @@ class ProductControllerTest {
 
     @Test
     fun patchProduct() {
-        val created = Product(name = "Tablet", price = 299.0)
+        val created = ProductDTO(name = "Tablet", price = 299.0, imageUrl = "https://example.com/tablet.jpg")
         val id =
             RestAssured.given()
                 .contentType(ContentType.JSON)
@@ -119,7 +124,7 @@ class ProductControllerTest {
 
     @Test
     fun deleteProduct() {
-        val created = Product(name = "Keyboard", price = 59.99)
+        val created = ProductDTO(name = "Keyboard", price = 59.99, imageUrl = "https://example.com/keyboard.jpg")
         val id =
             RestAssured.given()
                 .contentType(ContentType.JSON)
