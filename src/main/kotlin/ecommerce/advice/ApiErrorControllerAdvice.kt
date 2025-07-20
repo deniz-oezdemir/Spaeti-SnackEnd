@@ -9,11 +9,12 @@ import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
-@RestControllerAdvice
-class GlobalControllerAdvice {
-    private val log = logger<GlobalControllerAdvice>()
+@RestControllerAdvice(annotations = [RestController::class])
+class ApiErrorControllerAdvice {
+    private val log = logger<ApiErrorControllerAdvice>()
 
     @ExceptionHandler(NotFoundException::class)
     fun handleNotFoundException(e: NotFoundException): ResponseEntity<String> {
