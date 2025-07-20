@@ -15,6 +15,13 @@ import org.springframework.stereotype.Service
 class ProductServiceJDBC(private val productRepository: ProductRepository) : ProductService {
     override fun findAll(): List<ProductDTO> = productRepository.findAll().map { it.toDTO() }
 
+    override fun findAllPaginated(page: Int, size: Int): Pair<List<ProductDTO>, Int>  {
+        val offset = (page - 1).coerceAtLeast(0) * size
+        val items = productRepository.findAllPaginated(offset, size).map { it.toDTO() }
+        val totalCount = productRepository.countAll()
+        return Pair(items, totalCount)
+    }
+
     override fun findById(id: Long): ProductDTO =
         productRepository.findById(id)?.toDTO() ?: throw NotFoundException("Product with ID $id not found")
 

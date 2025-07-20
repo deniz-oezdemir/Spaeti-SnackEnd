@@ -19,9 +19,19 @@ class ProductRepository(private val jdbc: JdbcTemplate) {
             )
         }
 
+    fun countAll(): Int {
+        val sql = "SELECT COUNT(*) FROM PRODUCT"
+        return jdbc.queryForObject(sql, Int::class.java) ?: 0
+    }
+
     fun findAll(): List<Product> {
         val sql = "SELECT * FROM PRODUCT"
         return jdbc.query(sql, productRowMapper)
+    }
+
+    fun findAllPaginated(offset: Int, size: Int): List<Product> {
+        val sql = "SELECT * FROM PRODUCT ORDER BY ID LIMIT ? OFFSET ?"
+        return jdbc.query(sql, productRowMapper, size, offset)
     }
 
     fun findById(id: Long): Product? {
