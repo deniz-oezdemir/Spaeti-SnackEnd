@@ -2,6 +2,7 @@ package ecommerce.model
 
 data class ProductDTO(
     var id: Long? = null,
+//    @NotBlack
     var name: String,
     var price: Double,
     var imageUrl: String,

@@ -17,18 +17,21 @@ class ProductServiceCollection : ProductService {
 
     override fun findAll(): List<ProductDTO> = products.values.toList()
 
-    override fun findAllPaginated(page: Int, size: Int): Pair<List<ProductDTO>, Int> {
+    override fun findAllPaginated(
+        page: Int,
+        size: Int,
+    ): Pair<List<ProductDTO>, Int> {
         val offset = (page - 1).coerceAtLeast(0) * size
-        val items = products.values
-            .sortedBy { it.id }
-            .drop(offset)
-            .take(size)
+        val items =
+            products.values
+                .sortedBy { it.id }
+                .drop(offset)
+                .take(size)
         val totalCount = products.size
         return Pair(items.toList(), totalCount)
     }
 
-    override fun findById(id: Long): ProductDTO =
-        products[id] ?: throw NotFoundException("Product with ID $id not found")
+    override fun findById(id: Long): ProductDTO = products[id] ?: throw NotFoundException("Product with ID $id not found")
 
     override fun save(productDTO: ProductDTO): ProductDTO {
         val id = index.getAndIncrement()

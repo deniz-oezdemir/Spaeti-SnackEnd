@@ -16,7 +16,7 @@ class ProductViewController(private val productService: ProductService) {
     fun showProducts(
         model: Model,
         @RequestParam(required = false) pageNumber: Int = 1,
-        @RequestParam(required = false) pageSize: Int = 10
+        @RequestParam(required = false) pageSize: Int = 10,
     ): String {
         val (products, totalCount) = productService.findAllPaginated(pageNumber, pageSize)
         val totalPages = (totalCount + pageSize - 1) / pageSize

@@ -58,3 +58,14 @@
   - [x] Add countAll() to the repository, returning the total number of products
   - [x] Add a pagination bar to the product list
   - [x] Add a link to the pagination bar and a simple logic to handle the page number
+### Step 2.1
+- [ ] Add validation to the ProductDTO
+  - [ ] Product Name
+      - [ ] Must be no more than 15 characters, including spaces. 
+      - [ ] Allowed special characters: ( ), [ ], +, -, &, /, _
+      - [ ] All other special characters are not allowed. 
+      - [ ] The name must be unique across all products.
+  - [ ] Product Price 
+    - [ ] Must be greater than 0.
+  - [ ] Product Image URL 
+    - [ ] Must start with http:// or https://.

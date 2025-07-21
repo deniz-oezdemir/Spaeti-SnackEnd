@@ -29,7 +29,10 @@ class ProductRepository(private val jdbc: JdbcTemplate) {
         return jdbc.query(sql, productRowMapper)
     }
 
-    fun findAllPaginated(offset: Int, size: Int): List<Product> {
+    fun findAllPaginated(
+        offset: Int,
+        size: Int,
+    ): List<Product> {
         val sql = "SELECT * FROM PRODUCT ORDER BY ID LIMIT ? OFFSET ?"
         return jdbc.query(sql, productRowMapper, size, offset)
     }
