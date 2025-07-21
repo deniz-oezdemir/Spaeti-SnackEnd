@@ -59,7 +59,7 @@
   - [x] Add a pagination bar to the product list
   - [x] Add a link to the pagination bar and a simple logic to handle the page number
 ### Step 2.1
-- [ ] Add validation to the ProductDTO
+- [x] Add validation to the ProductDTO
   - [x] Product Name
       - [x] Must be no more than 15 characters, including spaces. 
       - [x] Allowed special characters: ( ), [ ], +, -, &, /, _
@@ -69,3 +69,5 @@
     - [x] Must be greater than 0.
   - [x] Product Image URL 
     - [x] Must start with http:// or https://.
+  - [x] Add validation feedback for the thymeleaf form in the POST product on the ProductViewController
+  - [x] Add validation feedback for the form handled by JS.
