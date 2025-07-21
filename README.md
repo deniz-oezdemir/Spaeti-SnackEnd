@@ -1,1 +1,60 @@
-# spring-ecommerce-product
+# spring-ecommerce-productDTO
+
+## Features
+### Step 1.1
+- [x] Create a Product class
+  - [x] contains id: Long, name: String, price: Double, imageUrl: String
+  - [x] use AtomicLong to create the Id
+- [x] Create ProductController
+  - [x] use @RestController to return always JSON
+  - [x] Create the "Database" in the form of HashMap()
+  - [x] Create CRUD operations
+- [x] Create a GlobalControllerAdvise to handle Exceptions
+### Step 1.2
+- [x] Implement a controller that return html
+- [x] Detach the "Database" to be accessible by the two controllers
+- [x] Create a ProductService to simulate the connection with a real DataBase
+- [x] Inject the ProductService dependency to the controllers
+- [x] Create a template html with the list of all products
+- [x] Add JS for CRUD request in the frontend.
+- [x] Display image instead of a string on image URL
+### Step 1.3
+- [x] Configure H2 database
+- [x] Create a product repository for database operation
+- [x] Create data schema and initialize and insert data to it
+- [x] Modify the controller to use the new productDTO repository
+## Step 1.4
+- [x] Create a ProductDTO class
+  - [x] contains id: Long, name: String, price: Double, imageUrl: String
+  - [x] add copyFrom method to copy data from Product to ProductDTO
+- [x] Create a ProductPatchDTO class for nullable fields
+  - [x] contains id: Long, name: String, price: Double, imageUrl: String
+- [x] Add Mappers to convert Product to ProductDTO and vice versa
+- [x] Create ProductService interface
+  - [x] Add ProductServiceCollection for CRUD operations with fake DB
+  - [x] Add ProductServiceJDBC for the logic between the controller and the repository
+  - [x] Add @Primary to the JDBC service to be used by default
+- [x] Add ProductRepository for CRUD operations with the H2 database
+- [x] The Repository should only handle the product entity
+- [x] The service should handle the ProductDTO conversion to Product Entity and vice versa
+- [x] Add extensions functions to convert Product to ProductDTO and vice versa
+- [x] Add more custom exceptions
+- [x] Handle custom and jdbc exceptions in the GlobalControllerAdvise
+- [x] Use the Product Entity exclusively in the repository
+- [x] Update the controller to use the new structure
+- [x] Add logging to the app with SLF4J
+- [x] Use logging instead of print statements
+- [x] Add ViewErrorController to handle errors in the HTML controller
+  - [x] Create a custom error page adaptable to the status and error message
+  - [x] Add the same exceptions from ApiErrorController to the ViewErrorController
+- [x] Add a Thymeleaf form to create a new product
+- [x] Handle createProduct on @Controller and return a redirect to the product list
+- [x] Use formular in the frontend for the Update and handle it with js.
+- [x] Refactor html, divide the document in fragments using Thymeleaf
+- [x] Refactor js
+- [x] Add Pagination to the product List in @Controller
+  - [x] Add a pageNumber and pageSize parameter to the product list
+  - [x] Add findAllPaginated() to the service and repository
+  - [x] Add countAll() to the repository, returning the total number of products
+  - [x] Add a pagination bar to the product list
+  - [x] Add a link to the pagination bar and a simple logic to handle the page number
