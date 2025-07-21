@@ -3,6 +3,7 @@ package ecommerce.controller
 import ecommerce.model.ProductDTO
 import ecommerce.model.ProductPatchDTO
 import ecommerce.services.ProductService
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -26,7 +27,7 @@ class ProductController(private val productService: ProductService) {
 
     @PostMapping(PRODUCT_PATH)
     fun createProduct(
-        @RequestBody productDTO: ProductDTO,
+        @Valid @RequestBody productDTO: ProductDTO,
     ): ResponseEntity<ProductDTO> {
         val saved = productService.save(productDTO)
         return ResponseEntity.created(URI.create("$PRODUCT_PATH/${saved.id}")).body(saved)

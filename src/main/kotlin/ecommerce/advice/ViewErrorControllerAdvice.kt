@@ -9,6 +9,7 @@ import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 
@@ -16,6 +17,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 class ViewErrorControllerAdvice {
     private val log = logger<ApiErrorControllerAdvice>()
 
+    /**
+     * Custom Exceptions
+     */
     @ExceptionHandler(NotFoundException::class)
     fun handleNotFoundException(
         e: NotFoundException,
@@ -37,6 +41,9 @@ class ViewErrorControllerAdvice {
         return "error"
     }
 
+    /**
+     * JDBC Exceptions: DB errors
+     */
     @ExceptionHandler(DataAccessException::class)
     fun handleDataAccess(
         e: DataAccessException,
@@ -67,6 +74,21 @@ class ViewErrorControllerAdvice {
         log.warn("EmptyResultDataAccessException: ${e.message}", e)
         model.addAttribute("message", "No result found for the given query")
         model.addAttribute("status", HttpStatus.NOT_FOUND.value())
+        return "error"
+    }
+
+    /**
+     * @Valid Exceptions, thrown when validation using jakarta fails.
+     */
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleValidationException(
+        e: MethodArgumentNotValidException,
+        model: Model,
+    ): String {
+        log.warn("Validation failed: ${e.message}", e)
+
+        model.addAttribute("message", e.message)
+        model.addAttribute("status", HttpStatus.BAD_REQUEST.value())
         return "error"
     }
 }

@@ -29,6 +29,7 @@ class ProductServiceJDBC(private val productRepository: ProductRepository) : Pro
         productRepository.findById(id)?.toDTO() ?: throw NotFoundException("Product with ID $id not found")
 
     override fun save(productDTO: ProductDTO): ProductDTO {
+        validateProductNameUniqueness(productDTO.name)
         val saved =
             productRepository.save(productDTO.toEntity())
                 ?: throw OperationFailedException("Failed to save product")
@@ -66,4 +67,10 @@ class ProductServiceJDBC(private val productRepository: ProductRepository) : Pro
         } else {
             Unit
         }
+
+    override fun validateProductNameUniqueness(name: String) {
+        if (productRepository.existsByName(name)) {
+            throw OperationFailedException("Product with name '$name' already exists")
+        }
+    }
 }

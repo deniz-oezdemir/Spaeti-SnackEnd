@@ -1,6 +1,7 @@
 package ecommerce.services
 
 import ecommerce.exception.NotFoundException
+import ecommerce.exception.OperationFailedException
 import ecommerce.model.ProductDTO
 import ecommerce.model.ProductPatchDTO
 import org.springframework.stereotype.Service
@@ -34,6 +35,7 @@ class ProductServiceCollection : ProductService {
     override fun findById(id: Long): ProductDTO = products[id] ?: throw NotFoundException("Product with ID $id not found")
 
     override fun save(productDTO: ProductDTO): ProductDTO {
+        validateProductNameUniqueness(productDTO.name)
         val id = index.getAndIncrement()
         val saved = productDTO.copy(id)
         products[id] = saved
@@ -66,6 +68,12 @@ class ProductServiceCollection : ProductService {
 
     override fun deleteAll() {
         products.clear()
+    }
+
+    override fun validateProductNameUniqueness(name: String) {
+        if (products.filter { it.value.name == name }.isNotEmpty()) {
+            throw OperationFailedException("Product with name '$name' already exists")
+        }
     }
 
     private fun preloadProducts() {

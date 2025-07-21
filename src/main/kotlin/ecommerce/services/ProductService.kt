@@ -28,4 +28,6 @@ interface ProductService {
     fun deleteById(id: Long)
 
     fun deleteAll()
+
+    fun validateProductNameUniqueness(name: String)
 }

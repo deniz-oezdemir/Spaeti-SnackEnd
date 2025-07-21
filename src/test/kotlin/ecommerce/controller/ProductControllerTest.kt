@@ -32,7 +32,7 @@ class ProductControllerTest {
             ProductDTO(
                 name = "Speaker",
                 price = 99.99,
-                imageUrl = "iteha",
+                imageUrl = "http://iteha",
             )
         val id =
             RestAssured.given()
@@ -73,6 +73,78 @@ class ProductControllerTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value())
         assertThat(response.body().jsonPath().getString("name")).isEqualTo("Monitor")
         assertThat(response.body().jsonPath().getFloat("price")).isEqualTo(150.0f)
+    }
+
+    @Test
+    fun `Should return error when product name use invalid characters`() {
+        val newProductDTO = ProductDTO(name = "**$$", price = 150.0, imageUrl = "https://example.com/monitor.jpg")
+
+        val response =
+            RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(newProductDTO)
+                .`when`().post("/api/products")
+                .then().log().all().extract()
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
+        assertThat(response.body().jsonPath().getInt("status")).isEqualTo(400)
+        assertThat(
+            response.body().jsonPath().getString("message.name"),
+        ).isEqualTo("Invalid characters in product name.")
+    }
+
+    @Test
+    fun `Should return error when product name is bigger than 15 characters`() {
+        val newProductDTO =
+            ProductDTO(name = "123456789123456789", price = 150.0, imageUrl = "https://example.com/monitor.jpg")
+
+        val response =
+            RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(newProductDTO)
+                .`when`().post("/api/products")
+                .then().log().all().extract()
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
+        assertThat(response.body().jsonPath().getInt("status")).isEqualTo(400)
+        assertThat(
+            response.body().jsonPath().getString("message.name"),
+        ).isEqualTo("The product name must contain between 1 and 15 characters")
+    }
+
+    @Test
+    fun `Should return error when product name already exists`() {
+        val dto = ProductDTO(name = "Mouse", price = 30.0, imageUrl = "https://example.com/mouse.jpg")
+        RestAssured.given().contentType(ContentType.JSON).body(dto).post("/api/products")
+
+        val duplicate =
+            RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(dto)
+                .post("/api/products")
+                .then().extract()
+
+        assertThat(duplicate.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
+        assertThat(duplicate.body().jsonPath().getString("message")).contains("already exists")
+    }
+
+    @Test
+    fun `Should return error when product price is negative value`() {
+        val newProductDTO =
+            ProductDTO(name = "Pizza", price = -150.0, imageUrl = "https://example.com/monitor.jpg")
+
+        val response =
+            RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(newProductDTO)
+                .`when`().post("/api/products")
+                .then().log().all().extract()
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
+        assertThat(response.body().jsonPath().getInt("status")).isEqualTo(400)
+        assertThat(
+            response.body().jsonPath().getString("message.price"),
+        ).isEqualTo("must be greater than 0")
     }
 
     @Test
