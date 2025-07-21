@@ -64,8 +64,8 @@
       - [x] Must be no more than 15 characters, including spaces. 
       - [x] Allowed special characters: ( ), [ ], +, -, &, /, _
       - [x] All other special characters are not allowed. 
-      - [ ] The name must be unique across all products.
-  - [ ] Product Price 
-    - [ ] Must be greater than 0.
-  - [ ] Product Image URL 
-    - [ ] Must start with http:// or https://.
+      - [x] The name must be unique across all products.
+  - [x] Product Price 
+    - [x] Must be greater than 0.
+  - [x] Product Image URL 
+    - [x] Must start with http:// or https://.
