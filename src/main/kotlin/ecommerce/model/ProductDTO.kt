@@ -11,7 +11,7 @@ data class ProductDTO(
     @field:NotBlank
     @field:NotNull
     @field:Size(min = 1, max = 15, message = "The product name must contain between 1 and 15 characters")
-    @field:Pattern(regexp = "^[a-zA-Z0-9()\\[\\]+\\-&/_]*$", message = "Invalid characters in product name.")
+    @field:Pattern(regexp = "^[a-zA-Z0-9 ()\\[\\]+\\-&/_]*$", message = "Invalid characters in product name.")
     var name: String,
     @field:NotNull
     @field:Positive

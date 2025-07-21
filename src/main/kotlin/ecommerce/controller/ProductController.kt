@@ -35,13 +35,13 @@ class ProductController(private val productService: ProductService) {
 
     @PutMapping(PRODUCT_PATH_ID)
     fun updateProductById(
-        @RequestBody productDTO: ProductDTO,
+        @Valid @RequestBody productDTO: ProductDTO,
         @PathVariable id: Long,
     ): ResponseEntity<ProductDTO> = ResponseEntity.ok(productService.updateById(id, productDTO))
 
     @PatchMapping(PRODUCT_PATH_ID)
     fun patchProductById(
-        @RequestBody productPatchDTO: ProductPatchDTO,
+        @Valid @RequestBody productPatchDTO: ProductPatchDTO,
         @PathVariable id: Long,
     ): ResponseEntity<ProductDTO> = ResponseEntity.ok(productService.patchById(id, productPatchDTO))
 

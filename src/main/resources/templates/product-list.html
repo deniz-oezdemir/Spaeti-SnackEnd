@@ -15,7 +15,9 @@
 </div>
 
 <div class="container mt-4">
-    <div th:replace="~{fragments/modalForms :: addProductModal}"></div>
+    <div th:with="productDTO=${productDTO}, fields=${#fields}, hasErrors=${hasErrors}">
+        <div th:replace="~{fragments/modalForms :: addProductModal(productDTO=${productDTO}, fields=${fields}, hasErrors=${hasErrors})}"></div>
+    </div>
     <div th:replace="~{fragments/modalForms :: editProductModal}"></div>
 
     <table class="table table-striped">
@@ -84,6 +86,11 @@
         integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
         crossorigin="anonymous"></script>
 <script th:src="@{/js/index.js}"></script>
+<script th:if="${fields != null and fields.hasErrors('*')}" th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        new bootstrap.Modal(document.getElementById('addProductModal')).show();
+    });
+</script>
 </body>
 
 </html>
