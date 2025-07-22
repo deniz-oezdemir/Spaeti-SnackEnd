@@ -26,7 +26,7 @@ class ProductViewController(private val productService: ProductService) {
         model.addAttribute("products", products)
         model.addAttribute("currentPage", pageNumber)
         model.addAttribute("totalPages", totalPages)
-        model.addAttribute("productDTO", ProductDTO(null,"", 0.0, ""))
+        model.addAttribute("productDTO", ProductDTO(null, "", 0.0, ""))
         model.addAttribute("hasErrors", false)
         return "product-list"
     }

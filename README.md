@@ -11,17 +11,17 @@
   - [x] Create CRUD operations
 - [x] Create a GlobalControllerAdvise to handle Exceptions
 ### Step 1.2
-- [x] Implement a controller that return html
+- [x] Implement a controller that returns HTML
 - [x] Detach the "Database" to be accessible by the two controllers
 - [x] Create a ProductService to simulate the connection with a real DataBase
 - [x] Inject the ProductService dependency to the controllers
-- [x] Create a template html with the list of all products
+- [x] Create a template HTML with the list of all products
 - [x] Add JS for CRUD request in the frontend.
-- [x] Display image instead of a string on image URL
+- [x] Display an image instead of a string on image URL
 ### Step 1.3
 - [x] Configure H2 database
 - [x] Create a product repository for database operation
-- [x] Create data schema and initialize and insert data to it
+- [x] Create a data schema and initialize and insert data to it
 - [x] Modify the controller to use the new productDTO repository
 ## Step 1.4
 - [x] Create a ProductDTO class
