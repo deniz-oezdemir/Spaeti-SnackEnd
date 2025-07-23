@@ -88,5 +88,5 @@
   - [x] The service interacts with the jwt provider and the member service to find users and generate new Tokens
 - [x] Implement the Member Controller
   - [x] should provide register, login and findMe endpoints
-- [ ] Create a new custom exception for Authorization and Forbidden
-- [ ] Handle the new exceptions on the Global Exception handler
+- [x] Create a new custom exception for Authorization and Forbidden
+- [x] Handle the new exceptions on the Global Exception handler

@@ -1,5 +1,7 @@
 package ecommerce.advice
 
+import ecommerce.exception.AuthorizationException
+import ecommerce.exception.ForbiddenException
 import ecommerce.exception.NotFoundException
 import ecommerce.exception.OperationFailedException
 import ecommerce.util.logger
@@ -47,6 +49,33 @@ class ApiErrorControllerAdvice {
                 "timestamp" to Instant.now(),
             )
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body)
+    }
+
+    @ExceptionHandler(AuthorizationException::class)
+    fun handleAuthorizationException(e: AuthorizationException): ResponseEntity<Map<String, Any>> {
+        val errorMessage = e.message ?: "Authorization failed"
+        log.warn("AuthorizationException: $errorMessage", e)
+        val body =
+            mapOf(
+                "status" to HttpStatus.UNAUTHORIZED.value(),
+                "error" to "Authorization failed",
+                "message" to errorMessage,
+                "timestamp" to Instant.now(),
+            )
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body)
+    }
+
+    @ExceptionHandler(ForbiddenException::class)
+    fun handleForbiddenException(e: ForbiddenException): ResponseEntity<Map<String, Any>> {
+        val errorMessage = e.message ?: "Invalid credentials"
+        log.warn("ForbiddenException: $errorMessage", e)
+        val body = mapOf(
+            "status" to HttpStatus.FORBIDDEN.value(),
+            "error" to "Authorization failed. Invalid Credentials",
+            "message" to errorMessage,
+            "timestamp" to Instant.now()
+        )
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body)
     }
 
     /**

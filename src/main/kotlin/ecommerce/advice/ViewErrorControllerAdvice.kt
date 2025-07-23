@@ -1,5 +1,7 @@
 package ecommerce.advice
 
+import ecommerce.exception.AuthorizationException
+import ecommerce.exception.ForbiddenException
 import ecommerce.exception.NotFoundException
 import ecommerce.exception.OperationFailedException
 import ecommerce.util.logger
@@ -7,11 +9,13 @@ import org.springframework.dao.DataAccessException
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
+import java.time.Instant
 
 @ControllerAdvice(annotations = [Controller::class])
 class ViewErrorControllerAdvice {
@@ -35,11 +39,28 @@ class ViewErrorControllerAdvice {
         e: OperationFailedException,
         model: Model,
     ): String {
-        log.error("OperationFailedException: ${e.message}", e)
+        log.warn("OperationFailedException: ${e.message}", e)
         model.addAttribute("message", e.message ?: "Operation failed")
         model.addAttribute("status", HttpStatus.BAD_REQUEST.value())
         return "error"
     }
+
+    @ExceptionHandler(AuthorizationException::class)
+    fun handleAuthorizationException(e: AuthorizationException, model: Model): String {
+        log.warn("AuthorizationException: ${e.message}", e)
+        model.addAttribute("message", e.message ?: "Authorization failed")
+        model.addAttribute("status", HttpStatus.UNAUTHORIZED.value())
+        return "error"
+    }
+
+    @ExceptionHandler(ForbiddenException::class)
+    fun handleForbiddenException(e: ForbiddenException, model: Model): String {
+        log.warn("ForbiddenException: ${e.message}", e)
+        model.addAttribute("message", e.message ?: "Forbidden failed. Bad Credentials")
+        model.addAttribute("status", HttpStatus.FORBIDDEN.value())
+        return "error"
+    }
+
 
     /**
      * JDBC Exceptions: DB errors
