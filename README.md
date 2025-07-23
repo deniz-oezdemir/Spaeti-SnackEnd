@@ -77,7 +77,7 @@
   - [x] The Entity should contain a default Role as a Enum for customer or admin
   - [x] Validate the fields on MemberDTO
   - [x] Add .toDTO and .toEntity inside the mapper
-- [ ] Create Member Table in the H2 database
+- [x] Create Member Table in the H2 database
 - [ ] Implement TokenResponseDTO and TokenRequestDTO for the auth request
 - [ ] Implement the Jwt token infrastructure
   - [ ] Create an AuthorizationExtractor component to extract the Token from the request.
