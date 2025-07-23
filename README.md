@@ -71,3 +71,21 @@
     - [x] Must start with http:// or https://.
   - [x] Add validation feedback for the thymeleaf form in the POST product on the ProductViewController
   - [x] Add validation feedback for the form handled by JS.
+### Step 2.2
+- [ ] Create Member, MemberDTO and MemberMapper
+  - [ ] Should contain id, email and password
+  - [ ] The Entity should contain a default Role as a Enum for customer or admin
+  - [ ] Validate the fields on MemberDTO
+  - [ ] Add .toDTO and .toEntity inside the mapper
+- [ ] Create Member Table in the H2 database
+- [ ] Implement the Jwt token infrastructure
+  - [ ] Create an AuthorizationExtractor component to extract the Token from the request.
+  - [ ] Create a JwtTokenProvider implement methods to interact with the jwt library for create and parse tokens
+- [ ] Implement a member service
+  - [ ] Implement the basic CRUD + validate email uniqueness
+- [ ] Implement an Auth service
+  - [ ] The service interacts with the jwt provider and the member service to find users and generate new Tokens
+- [ ] Implement the Member Controller
+  - [ ] should provide register, login and findMe endpoints
+- [ ] Create a new custom exception for Authorization and Forbidden
+- [ ] Handle the new exceptions on the Global Exception handler
