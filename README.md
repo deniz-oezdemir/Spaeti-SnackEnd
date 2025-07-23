@@ -90,3 +90,9 @@
   - [x] should provide register, login and findMe endpoints
 - [x] Create a new custom exception for Authorization and Forbidden
 - [x] Handle the new exceptions on the Global Exception handler
+### Step 2.3
+- [ ] create a WebMvcConfig and override an add an interceptor
+  - [ ] This interceptor should protect the route from products with post, put, patch and delete methods.
+  - [ ] The interceptor should check for a valid token and the role ADMIN
+- [ ] Create a default admin user on the DB
+- [ ] Modify the test to send the user token
