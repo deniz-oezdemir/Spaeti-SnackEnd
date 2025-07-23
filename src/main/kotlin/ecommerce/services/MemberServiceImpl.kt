@@ -22,6 +22,13 @@ class MemberServiceImpl(private val memberRepository: MemberRepository) : Member
             ?: throw NotFoundException("Member with Email $email not found")
     }
 
+    override fun enrichedWithRole(memberDTO: MemberDTO): MemberDTO {
+        val member =
+            memberRepository.findByEmail(memberDTO.email)
+                ?: throw NotFoundException("Member with Email ${memberDTO.email} not found")
+        return member.toDto().copy(role = member.role)
+    }
+
     override fun save(memberDTO: MemberDTO): MemberDTO {
         validateEmailUniqueness(memberDTO.email)
         val saved =
@@ -30,7 +37,10 @@ class MemberServiceImpl(private val memberRepository: MemberRepository) : Member
         return saved.toDto()
     }
 
-    override fun updateById(id: Long, memberDTO: MemberDTO): MemberDTO? {
+    override fun updateById(
+        id: Long,
+        memberDTO: MemberDTO,
+    ): MemberDTO? {
         TODO("Not yet implemented")
     }
 

@@ -1,7 +1,6 @@
 package ecommerce.repositories
 
 import ecommerce.entities.Member
-import ecommerce.entities.Product
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert
@@ -16,7 +15,7 @@ class MemberRepositoryImpl(private val jdbc: JdbcTemplate) : MemberRepository {
                 rs.getLong("id"),
                 rs.getString("email"),
                 rs.getString("password"),
-                Member.Role.valueOf(rs.getString("role"))
+                Member.Role.valueOf(rs.getString("role")),
             )
         }
 
@@ -25,7 +24,6 @@ class MemberRepositoryImpl(private val jdbc: JdbcTemplate) : MemberRepository {
             .withTableName("member")
             .usingGeneratedKeyColumns("id")
     }
-
 
     override fun findAll(): List<Member> {
         val sql = "SELECT * FROM member"
@@ -43,16 +41,20 @@ class MemberRepositoryImpl(private val jdbc: JdbcTemplate) : MemberRepository {
     }
 
     override fun save(member: Member): Member? {
-        val parameters = mapOf(
-            "email" to member.email,
-            "password" to member.password,
-            "role" to member.role
-        )
+        val parameters =
+            mapOf(
+                "email" to member.email,
+                "password" to member.password,
+                "role" to member.role,
+            )
         val generatedId = insert.executeAndReturnKey(parameters).toLong()
         return member.copy(id = generatedId)
     }
 
-    override fun updateById(id: Long, member: Member): Member? {
+    override fun updateById(
+        id: Long,
+        member: Member,
+    ): Member? {
         val sql = "UPDATE member SET email = ?, password = ?, role = ? WHERE id = ?"
         val updated = jdbc.update(sql, member.email, member.password, member.role, id)
         return if (updated > 0) member.copy(id = id) else null

@@ -9,6 +9,8 @@ interface MemberService {
 
     fun findByEmail(email: String): MemberDTO
 
+    fun enrichedWithRole(memberDTO: MemberDTO): MemberDTO
+
     fun save(memberDTO: MemberDTO): MemberDTO
 
     fun updateById(
