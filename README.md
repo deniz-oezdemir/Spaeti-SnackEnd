@@ -84,9 +84,9 @@
   - [x] Create a JwtTokenProvider implement methods to interact with the jwt library for create and parse tokens
 - [x] Implement a member service and member Repository
   - [x] Implement the basic CRUD + validate email uniqueness
-- [ ] Implement an Auth service
-  - [ ] The service interacts with the jwt provider and the member service to find users and generate new Tokens
-- [ ] Implement the Member Controller
-  - [ ] should provide register, login and findMe endpoints
+- [x] Implement an Auth service
+  - [x] The service interacts with the jwt provider and the member service to find users and generate new Tokens
+- [x] Implement the Member Controller
+  - [x] should provide register, login and findMe endpoints
 - [ ] Create a new custom exception for Authorization and Forbidden
 - [ ] Handle the new exceptions on the Global Exception handler
