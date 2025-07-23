@@ -1,6 +1,5 @@
 package ecommerce.controller
 
-import ecommerce.exception.AuthorizationException
 import ecommerce.exception.ForbiddenException
 import ecommerce.infrastructure.AuthorizationExtractor
 import ecommerce.model.MemberDTO
@@ -25,16 +24,21 @@ class MemberController(
     private val memberService: MemberService,
 ) {
     @PostMapping("/register")
-    fun register(@Valid @RequestBody tokenRequestDTO: TokenRequestDTO): ResponseEntity<TokenResponseDTO> {
-        memberService.save(MemberDTO(email = tokenRequestDTO.email, password = tokenRequestDTO.password))
-        val tokenResponse = authService.createToken(tokenRequestDTO)
+    fun register(
+        @Valid @RequestBody tokenRequestDTO: TokenRequestDTO,
+    ): ResponseEntity<TokenResponseDTO> {
+        val memberDTO: MemberDTO = memberService.save(MemberDTO(email = tokenRequestDTO.email, password = tokenRequestDTO.password))
+        val tokenResponse = authService.createToken(memberDTO)
         return ResponseEntity.ok().body(tokenResponse)
     }
 
     @PostMapping("/login")
-    fun login(@Valid @RequestBody tokenRequestDTO: TokenRequestDTO): ResponseEntity<TokenResponseDTO> {
-        if (authService.checkInvalidLogin(tokenRequestDTO)) throw ForbiddenException("Invalid email or password.")
-        val tokenResponse = authService.createToken(tokenRequestDTO)
+    fun login(
+        @Valid @RequestBody memberDTO: MemberDTO,
+    ): ResponseEntity<TokenResponseDTO> {
+        if (authService.checkInvalidLogin(memberDTO)) throw ForbiddenException("Invalid email or password.")
+        val enrichedMemberDTO = memberService.enrichedWithRole(memberDTO)
+        val tokenResponse = authService.createToken(enrichedMemberDTO)
         return ResponseEntity.ok().body(tokenResponse)
     }
 
