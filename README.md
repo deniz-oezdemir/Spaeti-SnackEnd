@@ -91,7 +91,7 @@
 - [x] Create a new custom exception for Authorization and Forbidden
 - [x] Handle the new exceptions on the Global Exception handler
 ### Step 2.3
-- [x] create a WebMvcConfig and override an add an interceptor
+- [x] create a WebMvcConfig and override addInterceptors to add checkLogin Interceptor.
   - [x] This interceptor should protect the route from products with post, put, patch and delete methods.
   - [x] The interceptor should check for a valid token and the role ADMIN
 - [x] Create a default admin user on the DB
