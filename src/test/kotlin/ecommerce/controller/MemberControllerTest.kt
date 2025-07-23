@@ -4,18 +4,40 @@ import ecommerce.model.MemberDTO
 import ecommerce.model.TokenRequestDTO
 import ecommerce.model.TokenResponseDTO
 import io.restassured.RestAssured
+import io.restassured.http.ContentType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.annotation.DirtiesContext
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class MemberControllerTest {
+    lateinit var token: String
+
+    @BeforeEach
+    fun loginAndGetToken() {
+        val loginPayload = mapOf(
+            "email" to "sebas@sebas.com",
+            "password" to "123456"
+        )
+
+        val response = RestAssured.given()
+            .contentType(ContentType.JSON)
+            .body(loginPayload)
+            .post("/api/members/login")
+            .then().extract()
+
+        token = response.body().jsonPath().getString("accessToken")
+        assertThat(token).isNotBlank
+    }
 
     @Test
     fun createMember() {
@@ -33,6 +55,7 @@ class MemberControllerTest {
         val member =
             RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .header("Authorization", "Bearer $accessToken")
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .`when`().get("/api/members/me/token")
@@ -41,6 +64,7 @@ class MemberControllerTest {
 
         assertThat(member.email).isEqualTo(EMAIL)
     }
+
     companion object {
         private const val EMAIL = "email@email.com"
         private const val PASSWORD = "1234"
