@@ -78,7 +78,7 @@
   - [x] Validate the fields on MemberDTO
   - [x] Add .toDTO and .toEntity inside the mapper
 - [x] Create Member Table in the H2 database
-- [ ] Implement TokenResponseDTO and TokenRequestDTO for the auth request
+- [x] Implement TokenResponseDTO and TokenRequestDTO for the auth request
 - [ ] Implement the Jwt token infrastructure
   - [ ] Create an AuthorizationExtractor component to extract the Token from the request.
   - [ ] Create a JwtTokenProvider implement methods to interact with the jwt library for create and parse tokens
