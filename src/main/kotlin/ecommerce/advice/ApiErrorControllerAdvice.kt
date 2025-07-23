@@ -69,12 +69,13 @@ class ApiErrorControllerAdvice {
     fun handleForbiddenException(e: ForbiddenException): ResponseEntity<Map<String, Any>> {
         val errorMessage = e.message ?: "Invalid credentials"
         log.warn("ForbiddenException: $errorMessage", e)
-        val body = mapOf(
-            "status" to HttpStatus.FORBIDDEN.value(),
-            "error" to "Authorization failed. Invalid Credentials",
-            "message" to errorMessage,
-            "timestamp" to Instant.now()
-        )
+        val body =
+            mapOf(
+                "status" to HttpStatus.FORBIDDEN.value(),
+                "error" to "Authorization failed. Invalid Credentials",
+                "message" to errorMessage,
+                "timestamp" to Instant.now(),
+            )
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body)
     }
 

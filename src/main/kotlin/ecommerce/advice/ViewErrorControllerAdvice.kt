@@ -9,13 +9,11 @@ import org.springframework.dao.DataAccessException
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
-import java.time.Instant
 
 @ControllerAdvice(annotations = [Controller::class])
 class ViewErrorControllerAdvice {
@@ -46,17 +44,22 @@ class ViewErrorControllerAdvice {
     }
 
     @ExceptionHandler(AuthorizationException::class)
-    fun handleAuthorizationException(e: AuthorizationException, model: Model): String {
+    fun handleAuthorizationException(
+        e: AuthorizationException,
+        model: Model,
+    ): String {
         log.warn("AuthorizationException: ${e.message}", e)
         return "redirect:/login"
     }
 
     @ExceptionHandler(ForbiddenException::class)
-    fun handleForbiddenException(e: ForbiddenException, model: Model): String {
+    fun handleForbiddenException(
+        e: ForbiddenException,
+        model: Model,
+    ): String {
         log.warn("ForbiddenException: ${e.message}", e)
         return "redirect:/login"
     }
-
 
     /**
      * JDBC Exceptions: DB errors
