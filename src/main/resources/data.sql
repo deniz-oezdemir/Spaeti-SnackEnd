@@ -4,3 +4,6 @@ INSERT INTO PRODUCT (name, price, imageUrl) VALUES
 ('Truck', 30000.0, 'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=400&h=400&fit=crop'),
 ('Laptop', 1500.0, 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=400&fit=crop'),
 ('Phone', 800.0, 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop');
+
+INSERT INTO MEMBER (email, password, role) VALUES
+    ('sebas@sebas.com', '123456', 'ADMIN');
