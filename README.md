@@ -82,8 +82,8 @@
 - [x] Implement the Jwt token infrastructure
   - [x] Create an AuthorizationExtractor component to extract the Token from the request.
   - [x] Create a JwtTokenProvider implement methods to interact with the jwt library for create and parse tokens
-- [ ] Implement a member service
-  - [ ] Implement the basic CRUD + validate email uniqueness
+- [x] Implement a member service and member Repository
+  - [x] Implement the basic CRUD + validate email uniqueness
 - [ ] Implement an Auth service
   - [ ] The service interacts with the jwt provider and the member service to find users and generate new Tokens
 - [ ] Implement the Member Controller
