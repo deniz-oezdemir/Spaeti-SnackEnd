@@ -94,5 +94,5 @@
 - [x] create a WebMvcConfig and override an add an interceptor
   - [x] This interceptor should protect the route from products with post, put, patch and delete methods.
   - [x] The interceptor should check for a valid token and the role ADMIN
-- [ ] Create a default admin user on the DB
-- [ ] Modify the test to send the user token
+- [x] Create a default admin user on the DB
+- [x] Modify the test to send the user token
