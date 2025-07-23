@@ -48,17 +48,13 @@ class ViewErrorControllerAdvice {
     @ExceptionHandler(AuthorizationException::class)
     fun handleAuthorizationException(e: AuthorizationException, model: Model): String {
         log.warn("AuthorizationException: ${e.message}", e)
-        model.addAttribute("message", e.message ?: "Authorization failed")
-        model.addAttribute("status", HttpStatus.UNAUTHORIZED.value())
-        return "error"
+        return "redirect:/login"
     }
 
     @ExceptionHandler(ForbiddenException::class)
     fun handleForbiddenException(e: ForbiddenException, model: Model): String {
         log.warn("ForbiddenException: ${e.message}", e)
-        model.addAttribute("message", e.message ?: "Forbidden failed. Bad Credentials")
-        model.addAttribute("status", HttpStatus.FORBIDDEN.value())
-        return "error"
+        return "redirect:/login"
     }
 
 
