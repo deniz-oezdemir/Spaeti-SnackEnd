@@ -1,6 +1,5 @@
 package ecommerce.model
 
-import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Positive
 import jakarta.validation.constraints.Size
