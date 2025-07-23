@@ -19,21 +19,22 @@ class ProductControllerTest {
 
     @BeforeEach
     fun loginAndGetToken() {
-        val loginPayload = mapOf(
-            "email" to "sebas@sebas.com",
-            "password" to "123456"
-        )
+        val loginPayload =
+            mapOf(
+                "email" to "sebas@sebas.com",
+                "password" to "123456",
+            )
 
-        val response = RestAssured.given()
-            .contentType(ContentType.JSON)
-            .body(loginPayload)
-            .post("/api/members/login")
-            .then().extract()
+        val response =
+            RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(loginPayload)
+                .post("/api/members/login")
+                .then().extract()
 
         token = response.body().jsonPath().getString("accessToken")
         assertThat(token).isNotBlank
     }
-
 
     @Test
     fun getProducts() {
@@ -68,7 +69,6 @@ class ProductControllerTest {
 
         val response =
             RestAssured.given()
-                .auth().oauth2(token)
                 .get("/api/products/$id")
                 .then().log().all().extract()
 
@@ -79,10 +79,11 @@ class ProductControllerTest {
 
     @Test
     fun getProduct_notFound() {
-        val response = RestAssured.given()
-            .auth().oauth2(token)       // <-- add this line to send the token
-            .get("/api/products/999999")
-            .then().log().all().extract()
+        val response =
+            RestAssured.given()
+                .auth().oauth2(token) // <-- add this line to send the token
+                .get("/api/products/999999")
+                .then().log().all().extract()
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value())
     }
@@ -93,7 +94,7 @@ class ProductControllerTest {
 
         val response =
             RestAssured.given().log().all()
-                .auth().oauth2(token)       // <-- add this line to send the token
+                .auth().oauth2(token) // <-- add this line to send the token
                 .contentType(ContentType.JSON)
                 .body(newProductDTO)
                 .`when`().post("/api/products")
@@ -110,7 +111,7 @@ class ProductControllerTest {
 
         val response =
             RestAssured.given().log().all()
-                .auth().oauth2(token)       // <-- add this line to send the token
+                .auth().oauth2(token) // <-- add this line to send the token
                 .contentType(ContentType.JSON)
                 .body(newProductDTO)
                 .`when`().post("/api/products")
@@ -130,7 +131,7 @@ class ProductControllerTest {
 
         val response =
             RestAssured.given().log().all()
-                .auth().oauth2(token)       // <-- add this line to send the token
+                .auth().oauth2(token) // <-- add this line to send the token
                 .contentType(ContentType.JSON)
                 .body(newProductDTO)
                 .`when`().post("/api/products")
@@ -152,7 +153,7 @@ class ProductControllerTest {
         val duplicate =
             RestAssured.given()
                 .contentType(ContentType.JSON)
-                .auth().oauth2(token)       // <-- add this line to send the token
+                .auth().oauth2(token) // <-- add this line to send the token
                 .body(dto)
                 .post("/api/products")
                 .then().extract()
@@ -168,7 +169,7 @@ class ProductControllerTest {
 
         val response =
             RestAssured.given().log().all()
-                .auth().oauth2(token)       // <-- add this line to send the token
+                .auth().oauth2(token) // <-- add this line to send the token
                 .contentType(ContentType.JSON)
                 .body(newProductDTO)
                 .`when`().post("/api/products")
@@ -186,7 +187,7 @@ class ProductControllerTest {
         val created = ProductDTO(name = "Mouse", price = 25.0, imageUrl = "https://example.com/mouse.jpg")
         val id =
             RestAssured.given()
-                .auth().oauth2(token)       // <-- add this line to send the token
+                .auth().oauth2(token) // <-- add this line to send the token
                 .contentType(ContentType.JSON)
                 .body(created)
                 .post("/api/products")
@@ -196,7 +197,7 @@ class ProductControllerTest {
 
         val response =
             RestAssured.given().log().all()
-                .auth().oauth2(token)       // <-- add this line to send the token
+                .auth().oauth2(token) // <-- add this line to send the token
                 .contentType(ContentType.JSON)
                 .body(updated)
                 .put("/api/products/$id")
@@ -212,7 +213,7 @@ class ProductControllerTest {
         val created = ProductDTO(name = "Tablet", price = 299.0, imageUrl = "https://example.com/tablet.jpg")
         val id =
             RestAssured.given()
-                .auth().oauth2(token)       // <-- add this line to send the token
+                .auth().oauth2(token) // <-- add this line to send the token
                 .contentType(ContentType.JSON)
                 .body(created)
                 .post("/api/products")
@@ -222,7 +223,7 @@ class ProductControllerTest {
 
         val response =
             RestAssured.given().log().all()
-                .auth().oauth2(token)       // <-- add this line to send the token
+                .auth().oauth2(token) // <-- add this line to send the token
                 .contentType(ContentType.JSON)
                 .body(patch)
                 .patch("/api/products/$id")
@@ -237,7 +238,7 @@ class ProductControllerTest {
         val created = ProductDTO(name = "Keyboard", price = 59.99, imageUrl = "https://example.com/keyboard.jpg")
         val id =
             RestAssured.given()
-                .auth().oauth2(token)       // <-- add this line to send the token
+                .auth().oauth2(token) // <-- add this line to send the token
                 .contentType(ContentType.JSON)
                 .body(created)
                 .post("/api/products")
@@ -245,7 +246,7 @@ class ProductControllerTest {
 
         val deleteResponse =
             RestAssured.given()
-                .auth().oauth2(token)       // <-- add this line to send the token
+                .auth().oauth2(token) // <-- add this line to send the token
                 .delete("/api/products/$id")
                 .then().log().all().extract()
 
@@ -253,7 +254,7 @@ class ProductControllerTest {
 
         val getResponse =
             RestAssured.given()
-                .auth().oauth2(token)       // <-- add this line to send the token
+                .auth().oauth2(token) // <-- add this line to send the token
                 .get("/api/products/$id")
                 .then().log().all().extract()
 
