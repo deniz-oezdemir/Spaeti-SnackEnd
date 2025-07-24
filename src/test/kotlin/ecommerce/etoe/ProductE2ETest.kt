@@ -1,4 +1,4 @@
-package ecommerce.controller
+package ecommerce.etoe
 
 import ecommerce.model.ProductDTO
 import io.restassured.RestAssured
@@ -14,7 +14,7 @@ import org.springframework.test.annotation.DirtiesContext
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class ProductControllerTest {
+class ProductE2ETest {
     lateinit var token: String
 
     @BeforeEach

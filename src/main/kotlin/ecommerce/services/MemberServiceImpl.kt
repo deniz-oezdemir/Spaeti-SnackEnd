@@ -2,8 +2,8 @@ package ecommerce.services
 
 import ecommerce.exception.NotFoundException
 import ecommerce.exception.OperationFailedException
-import ecommerce.mappers.toDto
 import ecommerce.mappers.toEntity
+import ecommerce.mappers.toResponseDto
 import ecommerce.model.MemberDTO
 import ecommerce.repositories.MemberRepository
 import org.springframework.stereotype.Service
@@ -11,14 +11,14 @@ import org.springframework.stereotype.Service
 @Service
 class MemberServiceImpl(private val memberRepository: MemberRepository) : MemberService {
     override fun findAll(): List<MemberDTO> {
-        return memberRepository.findAll().map { it.toDto() }
+        return memberRepository.findAll().map { it.toResponseDto() }
     }
 
     override fun findById(id: Long): MemberDTO =
-        memberRepository.findById(id)?.toDto() ?: throw NotFoundException("Member with ID $id not found")
+        memberRepository.findById(id)?.toResponseDto() ?: throw NotFoundException("Member with ID $id not found")
 
     override fun findByEmail(email: String): MemberDTO {
-        return memberRepository.findByEmail(email)?.toDto()
+        return memberRepository.findByEmail(email)?.toResponseDto()
             ?: throw NotFoundException("Member with Email $email not found")
     }
 
@@ -26,7 +26,7 @@ class MemberServiceImpl(private val memberRepository: MemberRepository) : Member
         val member =
             memberRepository.findByEmail(memberDTO.email)
                 ?: throw NotFoundException("Member with Email ${memberDTO.email} not found")
-        return member.toDto().copy(role = member.role)
+        return member.toResponseDto().copy(role = member.role)
     }
 
     override fun save(memberDTO: MemberDTO): MemberDTO {
@@ -34,7 +34,7 @@ class MemberServiceImpl(private val memberRepository: MemberRepository) : Member
         val saved =
             memberRepository.save(memberDTO.toEntity())
                 ?: throw OperationFailedException("Failed to save product")
-        return saved.toDto()
+        return saved.toResponseDto()
     }
 
     override fun updateById(

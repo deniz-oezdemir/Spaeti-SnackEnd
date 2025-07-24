@@ -15,7 +15,7 @@ class ProductRepositoryImpl(private val jdbc: JdbcTemplate) : ProductRepository 
                 rs.getLong("id"),
                 rs.getString("name"),
                 rs.getDouble("price"),
-                rs.getString("imageUrl"),
+                rs.getString("image_url"),
             )
         }
 
@@ -43,7 +43,7 @@ class ProductRepositoryImpl(private val jdbc: JdbcTemplate) : ProductRepository 
     }
 
     override fun save(product: Product): Product? {
-        val sql = "INSERT INTO PRODUCT (name, price, imageUrl) VALUES (?, ?, ?)"
+        val sql = "INSERT INTO PRODUCT (name, price, image_url) VALUES (?, ?, ?)"
         val keyHolder = GeneratedKeyHolder()
 
         val rows =
@@ -64,7 +64,7 @@ class ProductRepositoryImpl(private val jdbc: JdbcTemplate) : ProductRepository 
         id: Long,
         product: Product,
     ): Product? {
-        val sql = "UPDATE PRODUCT SET name = ?, price = ?, imageUrl = ? WHERE id = ?"
+        val sql = "UPDATE PRODUCT SET name = ?, price = ?, image_url = ? WHERE id = ?"
         val rows = jdbc.update(sql, product.name, product.price, product.imageUrl, id)
         return if (rows > 0) product.copy(id = id) else null
     }
