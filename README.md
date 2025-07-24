@@ -105,5 +105,10 @@
   - [x] Create a CartItemController to handle the cart operations
 - [x] Create a Resolver to inject the memberDTO from the token
   - [x] The resolver should be able to extract the email from the token and inject it into the controller method
+### Step 2.4
 - [x] Create a Interceptor to check if the user is an admin
   - [x] The interceptor should check if the user is an admin and allow access to the product creation, update and delete methods
+  - [x] The interceptor should check the admin controller endpoints
+- [ ] Create an AdminController to handle the admin operations
+- [ ] Create endpoints for top-products and active-members
+- [ ] Create AdminService to handle the admin operations
