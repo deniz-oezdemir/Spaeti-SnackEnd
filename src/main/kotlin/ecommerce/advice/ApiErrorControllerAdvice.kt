@@ -2,6 +2,7 @@ package ecommerce.advice
 
 import ecommerce.exception.AuthorizationException
 import ecommerce.exception.ForbiddenException
+import ecommerce.exception.InvalidCartItemQuantityException
 import ecommerce.exception.NotFoundException
 import ecommerce.exception.OperationFailedException
 import ecommerce.util.logger
@@ -77,6 +78,20 @@ class ApiErrorControllerAdvice {
                 "timestamp" to Instant.now(),
             )
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body)
+    }
+
+    @ExceptionHandler(InvalidCartItemQuantityException::class)
+    fun handleInvalidCartItemQuantityException(e: InvalidCartItemQuantityException): ResponseEntity<Map<String, Any>> {
+        val errorMessage = e.message ?: "Invalid quantity"
+        log.warn("InvalidCartItemQuantityException: $errorMessage", e)
+        val body =
+            mapOf(
+                "status" to HttpStatus.BAD_REQUEST.value(),
+                "error" to "Invalid cart item quantity",
+                "message" to errorMessage,
+                "timestamp" to Instant.now(),
+            )
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body)
     }
 
     /**
