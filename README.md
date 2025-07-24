@@ -93,6 +93,16 @@
 ### Step 2.3
 - [x] create a WebMvcConfig and override addInterceptors to add checkLogin Interceptor.
   - [x] This interceptor should protect the route from products with post, put, patch and delete methods.
-  - [x] The interceptor should check for a valid token and the role ADMIN
-- [x] Create a default admin user on the DB
+  - [x] The interceptor should check for a valid token
+- [x] Create a default admin member on the DB
 - [x] Modify the test to send the user token
+- [ ] Create a CartItem Entity, request and response DTO, db table, service and repository
+  - [ ] The CartItem should contain a productId, memberId, quantity and addedAt
+  - [ ] The CartItem should be able to be created, updated and deleted
+  - [ ] The CartItem should be able to be retrieved by memberId
+  - [ ] The CartItemResponseDTO should contain the product information and the quantity
+  - [ ] The CartItemRequestDTO should contain the productId and quantity
+- [ ] Create a Resolver to inject the memberDTO from the token
+  - [ ] The resolver should be able to extract the email from the token and inject it into the controller method
+- [ ] Create a Interceptor to check if the user is an admin
+  - [ ] The interceptor should check if the user is an admin and allow access to the product creation, update and delete methods
