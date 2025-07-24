@@ -96,12 +96,13 @@
   - [x] The interceptor should check for a valid token
 - [x] Create a default admin member on the DB
 - [x] Modify the test to send the user token
-- [ ] Create a CartItem Entity, request and response DTO, db table, service and repository
-  - [ ] The CartItem should contain a productId, memberId, quantity and addedAt
-  - [ ] The CartItem should be able to be created, updated and deleted
-  - [ ] The CartItem should be able to be retrieved by memberId
+- [x] Create a CartItem Entity, request and response DTO, db table, service and repository
+  - [x] The CartItem should contain a productId, memberId, quantity and addedAt
+  - [x] The CartItem should be able to be created, updated and deleted
+  - [x] The CartItem should be able to be retrieved by memberId
   - [ ] The CartItemResponseDTO should contain the product information and the quantity
   - [ ] The CartItemRequestDTO should contain the productId and quantity
+  - [ ] Create a CartItemController to handle the cart operations
 - [ ] Create a Resolver to inject the memberDTO from the token
   - [ ] The resolver should be able to extract the email from the token and inject it into the controller method
 - [ ] Create a Interceptor to check if the user is an admin
