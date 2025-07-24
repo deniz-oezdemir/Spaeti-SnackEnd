@@ -1,11 +1,13 @@
 package ecommerce.config.interceptor
 
+import ecommerce.annotation.IgnoreCheckLogin
 import ecommerce.entities.Member
 import ecommerce.exception.AuthorizationException
 import ecommerce.infrastructure.JwtTokenProvider
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.stereotype.Component
+import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
 
 @Component
@@ -15,10 +17,17 @@ class CheckLoginInterceptor(private val jwtTokenProvider: JwtTokenProvider) : Ha
         response: HttpServletResponse,
         handler: Any,
     ): Boolean {
-        if (request.method == "GET") return true
-
+        if (handler is HandlerMethod) {
+            if (handler.hasMethodAnnotation(IgnoreCheckLogin::class.java) ||
+                handler.beanType.isAnnotationPresent(IgnoreCheckLogin::class.java)
+            ) {
+                return true
+            }
+        }
         val token = extractToken(request)
-        checkAdminCredentials(token)
+        val (email, role) = checkAndExtractAdminCredentials(token)
+        request.setAttribute("email", email)
+        request.setAttribute("role", role)
 
         return true
     }
@@ -28,14 +37,10 @@ class CheckLoginInterceptor(private val jwtTokenProvider: JwtTokenProvider) : Ha
         return header.removePrefix("Bearer ").trim()
     }
 
-    private fun checkAdminCredentials(token: String) {
+    private fun checkAndExtractAdminCredentials(token: String): Pair<String, Member.Role> {
         if (!jwtTokenProvider.validateToken(token)) {
             throw AuthorizationException("Invalid or expired token")
         }
-
-        val (_, role) = jwtTokenProvider.getPayload(token)
-        if (role != Member.Role.ADMIN) {
-            throw AuthorizationException("Access denied: admin role required")
-        }
+        return jwtTokenProvider.getPayload(token)
     }
 }
