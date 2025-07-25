@@ -109,6 +109,6 @@
 - [x] Create a Interceptor to check if the user is an admin
   - [x] The interceptor should check if the user is an admin and allow access to the product creation, update and delete methods
   - [x] The interceptor should check the admin controller endpoints
-- [ ] Create an AdminController to handle the admin operations
-- [ ] Create endpoints for top-products and active-members
-- [ ] Create AdminService to handle the admin operations
+- [x] Create an AdminController to handle the admin operations
+- [x] Create endpoints for top-products and active-members
+- [x] Create AdminService to handle the admin operations
