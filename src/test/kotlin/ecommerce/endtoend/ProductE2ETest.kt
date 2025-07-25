@@ -1,4 +1,4 @@
-package ecommerce.etoe
+package ecommerce.endtoend
 
 import ecommerce.model.ProductDTO
 import io.restassured.RestAssured
@@ -48,7 +48,7 @@ class ProductE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
         val names = response.body().jsonPath().getList<String>("name")
         assertThat(names).isNotEmpty()
-        assertThat(names.size).isEqualTo(5)
+        assertThat(names.size).isEqualTo(25)
     }
 
     @Test

@@ -1,4 +1,4 @@
-package ecommerce.etoe
+package ecommerce.endtoend
 
 import ecommerce.model.MemberDTO
 import ecommerce.model.TokenRequestDTO

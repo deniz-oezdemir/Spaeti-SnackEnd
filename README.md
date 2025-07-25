@@ -112,3 +112,5 @@
 - [x] Create an AdminController to handle the admin operations
 - [x] Create endpoints for top-products and active-members
 - [x] Create AdminService to handle the admin operations
+
+- [ ] Create Integration tests for the services
