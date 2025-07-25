@@ -2,7 +2,6 @@ package ecommerce.integration
 
 import ecommerce.entities.Product
 import ecommerce.model.CartItemRequestDTO
-import ecommerce.repositories.CartItemRepository
 import ecommerce.repositories.ProductRepository
 import ecommerce.services.CartItemServiceImpl
 import org.assertj.core.api.Assertions.assertThat
@@ -24,9 +23,6 @@ class CartItemServiceTest {
 
     @Autowired
     private lateinit var productRepository: ProductRepository
-
-    @Autowired
-    private lateinit var cartItemRepository: CartItemRepository
 
     private var productId: Long = 0
     private val memberId = 1L
