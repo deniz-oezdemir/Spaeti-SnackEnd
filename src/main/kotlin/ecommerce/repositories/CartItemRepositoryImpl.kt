@@ -2,6 +2,8 @@ package ecommerce.repositories
 
 import ecommerce.entities.CartItem
 import ecommerce.entities.Product
+import ecommerce.model.ActiveMemberDTO
+import ecommerce.model.TopProductDTO
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert
@@ -70,9 +72,12 @@ class CartItemRepositoryImpl(private val jdbc: JdbcTemplate) : CartItemRepositor
         return jdbc.query(sql, cartItemWithProductRowMapper, memberId)
     }
 
-    override fun existsByProduct(productId: Long): Boolean {
-        val sql = "SELECT COUNT(*) FROM CART_ITEM WHERE PRODUCT_ID = ?"
-        return jdbc.queryForObject(sql, Long::class.java, productId)!! > 0
+    override fun existsByProductAndMember(
+        productId: Long,
+        memberId: Long,
+    ): Boolean {
+        val sql = "SELECT COUNT(*) FROM cart_item WHERE product_id = ? AND member_id = ?"
+        return jdbc.queryForObject(sql, Long::class.java, productId, memberId)!! > 0
     }
 
     override fun create(cartItem: CartItem): Pair<CartItem, Product>? {
@@ -133,7 +138,7 @@ class CartItemRepositoryImpl(private val jdbc: JdbcTemplate) : CartItemRepositor
                    p.id AS product_id,
                    p.name AS product_name,
                    p.price AS product_price,
-                   p.image_url AS product_imageUrl
+                   p.image_url AS product_image_url
             FROM cart_item ci
             JOIN product p ON ci.product_id = p.id
             WHERE ci.product_id = ? AND ci.member_id = ?
@@ -145,5 +150,50 @@ class CartItemRepositoryImpl(private val jdbc: JdbcTemplate) : CartItemRepositor
     override fun deleteByProduct(cartItem: CartItem): Boolean {
         val sql = "DELETE FROM cart_item WHERE product_id = ? And member_id = ?"
         return jdbc.update(sql, cartItem.productId, cartItem.memberId) > 0
+    }
+
+    override fun findDistinctMembersWithCartActivityInLast7Days(): List<ActiveMemberDTO> {
+        val sql =
+            """
+            SELECT DISTINCT m.id, m.email
+            FROM cart_item c
+            JOIN member m ON c.member_id = m.id
+            WHERE c.added_at >= DATEADD('DAY', -7, CURRENT_TIMESTAMP)
+            """.trimIndent()
+
+        return jdbc.query(sql) { rs, _ ->
+            ActiveMemberDTO(
+                id = rs.getLong("id"),
+                email = rs.getString("email"),
+            )
+        }
+    }
+
+    override fun findTop5ProductsAddedInLast30Days(): List<TopProductDTO> {
+        val sql =
+            """
+            SELECT p.name,
+                   COUNT(*) AS added_count,
+                   MAX(c.added_at) AS most_recent_added_at
+            FROM cart_item c
+            JOIN product p ON c.product_id = p.id
+            WHERE c.added_at >=  DATEADD('DAY', -30, CURRENT_TIMESTAMP)
+            GROUP BY c.product_id, p.name
+            ORDER BY added_count DESC, most_recent_added_at DESC
+            LIMIT 5
+            """.trimIndent()
+
+        return jdbc.query(sql) { rs, _ ->
+            TopProductDTO(
+                name = rs.getString("name"),
+                count = rs.getInt("added_count"),
+                mostRecentAddedAt = rs.getTimestamp("most_recent_added_at").toLocalDateTime(),
+            )
+        }
+    }
+
+    override fun deleteAll() {
+        val sql = "DELETE CART_ITEM"
+        jdbc.update(sql)
     }
 }

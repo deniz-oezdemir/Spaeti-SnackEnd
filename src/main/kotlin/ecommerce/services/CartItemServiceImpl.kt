@@ -24,7 +24,7 @@ class CartItemServiceImpl(
         validateProductExists(cartItemRequestDTO.productId)
 
         val (cartItem, product) =
-            if (!cartItemRepository.existsByProduct(cartItemRequestDTO.productId)) {
+            if (!cartItemRepository.existsByProductAndMember(cartItemRequestDTO.productId, memberId)) {
                 handleCreate(cartItemRequestDTO, memberId)
             } else {
                 handleUpdate(cartItemRequestDTO, memberId)
@@ -90,5 +90,9 @@ class CartItemServiceImpl(
                 quantity = cartItemRequestDTO.quantity,
             ),
         ) ?: throw OperationFailedException()
+    }
+
+    override fun deleteAll() {
+        cartItemRepository.deleteAll()
     }
 }

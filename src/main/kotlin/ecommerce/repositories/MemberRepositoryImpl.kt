@@ -70,4 +70,9 @@ class MemberRepositoryImpl(private val jdbc: JdbcTemplate) : MemberRepository {
         val count = jdbc.queryForObject(sql, Long::class.java, email) ?: 0
         return count > 0
     }
+
+    override fun deleteAll() {
+        val sql = "DELETE FROM member"
+        jdbc.update(sql)
+    }
 }

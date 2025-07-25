@@ -13,12 +13,7 @@ interface MemberService {
 
     fun save(memberDTO: MemberDTO): MemberDTO
 
-    fun updateById(
-        id: Long,
-        memberDTO: MemberDTO,
-    ): MemberDTO?
-
-    fun deleteById(id: Long)
-
     fun validateEmailUniqueness(email: String)
+
+    fun deleteAll()
 }

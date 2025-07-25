@@ -37,20 +37,13 @@ class MemberServiceImpl(private val memberRepository: MemberRepository) : Member
         return saved.toResponseDto()
     }
 
-    override fun updateById(
-        id: Long,
-        memberDTO: MemberDTO,
-    ): MemberDTO? {
-        TODO("Not yet implemented")
-    }
-
-    override fun deleteById(id: Long) {
-        TODO("Not yet implemented")
-    }
-
     override fun validateEmailUniqueness(email: String) {
         if (memberRepository.existsByEmail(email)) {
             throw OperationFailedException("Member with email '$email' already exists")
         }
+    }
+
+    override fun deleteAll() {
+        memberRepository.deleteAll()
     }
 }

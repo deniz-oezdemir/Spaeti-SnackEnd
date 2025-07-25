@@ -19,4 +19,6 @@ interface MemberRepository {
     fun deleteById(id: Long): Boolean
 
     fun existsByEmail(email: String): Boolean
+
+    fun deleteAll()
 }

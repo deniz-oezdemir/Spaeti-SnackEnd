@@ -15,4 +15,6 @@ interface CartItemService {
         cartItemRequestDTO: CartItemRequestDTO,
         memberId: Long,
     )
+
+    fun deleteAll()
 }
