@@ -15,9 +15,9 @@ class WebMvcConfiguration(
     private val loginMemberArgumentResolver: LoginMemberArgumentResolver,
 ) : WebMvcConfigurer {
     override fun addInterceptors(registry: InterceptorRegistry) {
-        registry.addInterceptor(checkLogin).addPathPatterns("/**")
+        registry.addInterceptor(checkLogin).addPathPatterns("/api/**", "/products", "/admin/**")
             .excludePathPatterns("/api/members/**")
-        registry.addInterceptor(checkRole).addPathPatterns("/**")
+        registry.addInterceptor(checkRole).addPathPatterns("/admin/**", "/api/products/**")
     }
 
     override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver>) {
