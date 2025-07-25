@@ -1,3 +1,10 @@
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const fragment = document.getElementById("addProductModal")
     if (fragment && fragment.dataset.hasErrors === 'true') {
@@ -16,9 +23,14 @@ async function getProduct(id) {
 }
 
 async function updateProduct(id, data) {
+    const token = getCookie('token');
+    if (!token) {
+        console.warn('No auth token cookie found, aborting getProduct');
+        return;
+    }
     const res = await fetch(`/api/products/${id}`, {
         method: 'PUT',
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`},
         body: JSON.stringify(data)
     });
     if (!res.ok) {
@@ -94,8 +106,16 @@ function capitalize(s) {
 }
 
 async function deleteProductById(id) {
+    const token = getCookie('token');
+    if (!token) {
+        console.warn('No auth token cookie found, aborting getProduct');
+        return;
+    }
     try {
-        const res = await fetch(`/api/products/${id}`, {method: 'DELETE'});
+        const res = await fetch(`/api/products/${id}`, {
+            method: 'DELETE',
+            headers: {'Authorization': `Bearer ${token}`}
+        });
         if (!res.ok) {
             const errorText = await res.text();
             showNotification(errorText || 'Failed to delete product', 'error');

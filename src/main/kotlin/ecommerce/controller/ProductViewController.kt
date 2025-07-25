@@ -1,5 +1,6 @@
 package ecommerce.controller
 
+import ecommerce.annotation.IgnoreCheckLogin
 import ecommerce.model.ProductDTO
 import ecommerce.services.ProductService
 import jakarta.validation.Valid
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam
 @Controller
 @RequestMapping
 class ProductViewController(private val productService: ProductService) {
+    @IgnoreCheckLogin
     @GetMapping
     fun showProducts(
         model: Model,
