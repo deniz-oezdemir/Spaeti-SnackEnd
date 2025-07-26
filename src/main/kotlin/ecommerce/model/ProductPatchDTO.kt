@@ -1,16 +1,17 @@
 package ecommerce.model
 
+import ecommerce.util.ValidationMessages
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Positive
 import jakarta.validation.constraints.Size
 
 data class ProductPatchDTO(
     var id: Long? = null,
-    @field:Size(min = 1, max = 15, message = "The product name must contain between 1 and 15 characters")
-    @field:Pattern(regexp = "^[a-zA-Z0-9 ()\\[\\]+\\-&/_]*$", message = "Invalid characters in product name.")
+    @field:Size(min = 1, max = 15, message = ValidationMessages.NAME_SIZE)
+    @field:Pattern(regexp = "^[a-zA-Z0-9 ()\\[\\]+\\-&/_]*$", message = ValidationMessages.NAME_PATTERN)
     var name: String? = null,
-    @field:Positive
+    @field:Positive(message = ValidationMessages.PRICE_POSITIVE)
     var price: Double? = null,
-    @field:Pattern(regexp = "^https?://.*$", message = "Invalid imageUrl, should start with http:// or https://")
+    @field:Pattern(regexp = "^https?://.*$", message = ValidationMessages.IMAGE_FORMAT)
     var imageUrl: String? = null,
 )
