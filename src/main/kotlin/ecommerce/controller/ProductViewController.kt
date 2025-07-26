@@ -22,12 +22,7 @@ class ProductViewController(private val productService: ProductService) {
         @RequestParam(required = false) pageNumber: Int = 1,
         @RequestParam(required = false) pageSize: Int = 10,
     ): String {
-        val (products, totalCount) = productService.findAllPaginated(pageNumber, pageSize)
-        val totalPages = (totalCount + pageSize - 1) / pageSize
-
-        model.addAttribute("products", products)
-        model.addAttribute("currentPage", pageNumber)
-        model.addAttribute("totalPages", totalPages)
+        loadProductList(model, pageNumber, pageSize)
         model.addAttribute("productDTO", ProductDTO(null, "", 0.0, ""))
         model.addAttribute("hasErrors", false)
         return "product-list"
@@ -42,17 +37,21 @@ class ProductViewController(private val productService: ProductService) {
         @RequestParam(required = false) pageSize: Int = 10,
     ): String {
         if (bindingResult.hasErrors()) {
-            val (products, totalCount) = productService.findAllPaginated(pageNumber, pageSize)
-            val totalPages = (totalCount + pageSize - 1) / pageSize
-
-            model.addAttribute("products", products)
-            model.addAttribute("currentPage", pageNumber)
-            model.addAttribute("totalPages", totalPages)
+            loadProductList(model, pageNumber, pageSize)
             model.addAttribute("productDTO", productDTO)
             model.addAttribute("hasErrors", bindingResult.hasErrors())
             return "product-list"
         }
         productService.save(productDTO)
         return "redirect:/"
+    }
+
+    private fun loadProductList(model: Model, pageNumber: Int, pageSize: Int) {
+        val (products, totalCount) = productService.findAllPaginated(pageNumber, pageSize)
+        val totalPages = (totalCount + pageSize - 1) / pageSize
+
+        model.addAttribute("products", products)
+        model.addAttribute("currentPage", pageNumber)
+        model.addAttribute("totalPages", totalPages)
     }
 }
