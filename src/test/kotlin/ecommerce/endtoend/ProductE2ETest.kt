@@ -179,7 +179,7 @@ class ProductE2ETest {
         assertThat(response.body().jsonPath().getInt("status")).isEqualTo(400)
         assertThat(
             response.body().jsonPath().getString("message.price"),
-        ).isEqualTo("must be greater than 0")
+        ).contains("must be greater than zero")
     }
 
     @Test

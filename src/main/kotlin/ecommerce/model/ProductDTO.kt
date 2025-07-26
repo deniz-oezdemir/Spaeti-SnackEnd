@@ -15,14 +15,14 @@ import jakarta.validation.constraints.Size
 
 data class ProductDTO(
     var id: Long? = null,
-    @field:NotBlank(NAME_REQUIRED)
+    @field:NotBlank(message = NAME_REQUIRED)
     @field:Size(min = 1, max = 15, message = NAME_SIZE)
     @field:Pattern(regexp = "^[a-zA-Z0-9 ()\\[\\]+\\-&/_]*$", message = NAME_PATTERN)
     var name: String,
-    @field:NotNull(PRICE_REQUIRED)
-    @field:Positive(PRICE_POSITIVE)
+    @field:NotNull(message = PRICE_REQUIRED)
+    @field:Positive(message = PRICE_POSITIVE)
     var price: Double,
-    @field:NotBlank(IMAGE_REQUIRED)
+    @field:NotBlank(message = IMAGE_REQUIRED)
     @field:Pattern(regexp = "^https?://.*$", message = IMAGE_FORMAT)
     var imageUrl: String,
 ) {
