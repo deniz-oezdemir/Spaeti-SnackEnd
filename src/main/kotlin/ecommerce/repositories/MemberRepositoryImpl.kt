@@ -13,6 +13,7 @@ class MemberRepositoryImpl(private val jdbc: JdbcTemplate) : MemberRepository {
         RowMapper<Member> { rs: ResultSet, _: Int ->
             Member(
                 rs.getLong("id"),
+                rs.getString("name"),
                 rs.getString("email"),
                 rs.getString("password"),
                 Member.Role.valueOf(rs.getString("role")),
@@ -43,6 +44,7 @@ class MemberRepositoryImpl(private val jdbc: JdbcTemplate) : MemberRepository {
     override fun save(member: Member): Member? {
         val parameters =
             mapOf(
+                "name" to member.name,
                 "email" to member.email,
                 "password" to member.password,
                 "role" to member.role,
@@ -55,8 +57,8 @@ class MemberRepositoryImpl(private val jdbc: JdbcTemplate) : MemberRepository {
         id: Long,
         member: Member,
     ): Member? {
-        val sql = "UPDATE member SET email = ?, password = ?, role = ? WHERE id = ?"
-        val updated = jdbc.update(sql, member.email, member.password, member.role, id)
+        val sql = "UPDATE member SET name = ?, email = ?, password = ?, role = ? WHERE id = ?"
+        val updated = jdbc.update(sql, member.name, member.email, member.password, member.role, id)
         return if (updated > 0) member.copy(id = id) else null
     }
 

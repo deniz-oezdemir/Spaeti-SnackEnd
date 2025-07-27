@@ -25,20 +25,20 @@ class MemberController(
 ) {
     @PostMapping("/register")
     fun register(
-        @Valid @RequestBody tokenRequestDTO: TokenRequestDTO,
+        @Valid @RequestBody memberDTO: MemberDTO,
     ): ResponseEntity<TokenResponseDTO> {
-        val memberDTO: MemberDTO = memberService.save(MemberDTO(email = tokenRequestDTO.email, password = tokenRequestDTO.password))
+        val memberDTO: MemberDTO = memberService.save(memberDTO)
         val tokenResponse = authService.createToken(memberDTO)
         return ResponseEntity.ok().body(tokenResponse)
     }
 
     @PostMapping("/login")
     fun login(
-        @Valid @RequestBody memberDTO: MemberDTO,
+        @Valid @RequestBody tokenRequestDTO: TokenRequestDTO,
     ): ResponseEntity<TokenResponseDTO> {
-        if (authService.checkInvalidLogin(memberDTO)) throw ForbiddenException("Invalid email or password.")
-        val enrichedMemberDTO = memberService.enrichedWithRole(memberDTO)
-        val tokenResponse = authService.createToken(enrichedMemberDTO)
+        if (authService.checkInvalidLogin(tokenRequestDTO)) throw ForbiddenException("Invalid email or password.")
+        val memberDTO = memberService.findByEmail(tokenRequestDTO.email)
+        val tokenResponse = authService.createToken(memberDTO)
         return ResponseEntity.ok().body(tokenResponse)
     }
 

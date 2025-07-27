@@ -12,17 +12,6 @@ import java.sql.ResultSet
 
 @Repository
 class CartItemRepositoryImpl(private val jdbc: JdbcTemplate) : CartItemRepository {
-    private val cartItemRowMapper =
-        RowMapper<CartItem> { rs: ResultSet, _: Int ->
-            CartItem(
-                id = rs.getLong("id"),
-                memberId = rs.getLong("member_id"),
-                productId = rs.getLong("product_id"),
-                quantity = rs.getInt("quantity"),
-                addedAt = rs.getTimestamp("added_at").toLocalDateTime(),
-            )
-        }
-
     private val cartItemWithProductRowMapper =
         RowMapper<Pair<CartItem, Product>> { rs: ResultSet, _: Int ->
             val cartItem =
@@ -155,18 +144,16 @@ class CartItemRepositoryImpl(private val jdbc: JdbcTemplate) : CartItemRepositor
     override fun findDistinctMembersWithCartActivityInLast7Days(): List<ActiveMemberDTO> {
         val sql =
             """
-            SELECT m.id, m.email
-            FROM member m
-            WHERE EXISTS (
-              SELECT 1 FROM cart_item c
-              WHERE c.member_id = m.id
-                AND c.added_at >= DATEADD('DAY', -7, CURRENT_TIMESTAMP)
-            )
+            SELECT DISTINCT m.id, m.email, m.name
+            FROM cart_item c
+            JOIN member m ON c.member_id = m.id
+            WHERE c.added_at >= DATEADD('DAY', -7, CURRENT_TIMESTAMP)
             """.trimIndent()
 
         return jdbc.query(sql) { rs, _ ->
             ActiveMemberDTO(
                 id = rs.getLong("id"),
+                name = rs.getString("name"),
                 email = rs.getString("email"),
             )
         }
@@ -196,7 +183,7 @@ class CartItemRepositoryImpl(private val jdbc: JdbcTemplate) : CartItemRepositor
     }
 
     override fun deleteAll() {
-        val sql = "DELETE CART_ITEM"
+        val sql = "DELETE FROM CART_ITEM"
         jdbc.update(sql)
     }
 }

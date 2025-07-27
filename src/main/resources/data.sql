@@ -27,21 +27,21 @@ VALUES ('Car', 1000.0, 'https://images.unsplash.com/photo-1494905998402-395d579a
        ('Product 25', 120.34, 'https://placeholder.vn/placeholder/400x400?bg=8b4513&color=ffffff&text=Product25');
 
 -- 10 admin
-INSERT INTO MEMBER (email, password, role)
-VALUES ('sebas@sebas.com', '123456', 'ADMIN');
+INSERT INTO MEMBER (name, email, password, role)
+VALUES ('sebas','sebas@sebas.com', '123456', 'ADMIN');
 
 -- 10 customers
-INSERT INTO MEMBER (email, password, role)
-VALUES ('user1@example.com', 'pass', 'CUSTOMER'),
-       ('user2@example.com', 'pass', 'CUSTOMER'),
-       ('user3@example.com', 'pass', 'CUSTOMER'),
-       ('user4@example.com', 'pass', 'CUSTOMER'),
-       ('user5@example.com', 'pass', 'CUSTOMER'),
-       ('user6@example.com', 'pass', 'CUSTOMER'),
-       ('user7@example.com', 'pass', 'CUSTOMER'),
-       ('user8@example.com', 'pass', 'CUSTOMER'),
-       ('user9@example.com', 'pass', 'CUSTOMER'),
-       ('user10@example.com', 'pass', 'CUSTOMER');
+INSERT INTO MEMBER (name, email, password, role)
+VALUES ('User One', 'user1@example.com', 'pass', 'CUSTOMER'),
+       ('User Two', 'user2@example.com', 'pass', 'CUSTOMER'),
+       ('User Three', 'user3@example.com', 'pass', 'CUSTOMER'),
+       ('User Four', 'user4@example.com', 'pass', 'CUSTOMER'),
+       ('User Five', 'user5@example.com', 'pass', 'CUSTOMER'),
+       ('User Six', 'user6@example.com', 'pass', 'CUSTOMER'),
+       ('User Seven', 'user7@example.com', 'pass', 'CUSTOMER'),
+       ('User Eight', 'user8@example.com', 'pass', 'CUSTOMER'),
+       ('User Nine', 'user9@example.com', 'pass', 'CUSTOMER'),
+       ('User Ten', 'user10@example.com', 'pass', 'CUSTOMER');
 
 -- 20 random cart_item entries
 INSERT INTO CART_ITEM (member_id, product_id, quantity, added_at)

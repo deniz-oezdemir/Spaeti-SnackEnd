@@ -27,8 +27,8 @@ class MemberServiceTest {
 
     @Test
     fun `findAll should return all members`() {
-        memberRepository.save(Member(email = "a@a.com", password = "123", role = Member.Role.CUSTOMER))
-        memberRepository.save(Member(email = "b@b.com", password = "456", role = Member.Role.ADMIN))
+        memberRepository.save(Member(name = "a", email = "a@a.com", password = "123", role = Member.Role.CUSTOMER))
+        memberRepository.save(Member(name = "b", email = "b@b.com", password = "456", role = Member.Role.ADMIN))
 
         val result = memberService.findAll()
 
@@ -38,7 +38,7 @@ class MemberServiceTest {
 
     @Test
     fun `findById should return matching member`() {
-        val saved = memberRepository.save(Member(email = "c@c.com", password = "pass", role = Member.Role.ADMIN))!!
+        val saved = memberRepository.save(Member(name = "c", email = "c@c.com", password = "pass", role = Member.Role.ADMIN))!!
 
         val found = memberService.findById(saved.id!!)
 
@@ -56,7 +56,7 @@ class MemberServiceTest {
 
     @Test
     fun `findByEmail should return matching member`() {
-        memberRepository.save(Member(email = "findme@test.com", password = "pw", role = Member.Role.CUSTOMER))
+        memberRepository.save(Member(name = "find me", email = "findme@test.com", password = "pw", role = Member.Role.CUSTOMER))
 
         val found = memberService.findByEmail("findme@test.com")
 
@@ -73,30 +73,8 @@ class MemberServiceTest {
     }
 
     @Test
-    fun `enrichedWithRole should return correct role`() {
-        memberRepository.save(Member(email = "role@test.com", password = "pw", role = Member.Role.ADMIN))
-
-        val input = MemberDTO(email = "role@test.com", password = "pw")
-        val result = memberService.enrichedWithRole(input)
-
-        assertThat(result.role).isEqualTo(Member.Role.ADMIN)
-    }
-
-    @Test
-    fun `enrichedWithRole should throw if email not found`() {
-        val dto = MemberDTO(email = "nobody@test.com", password = "pw")
-
-        val ex =
-            assertThrows<EmptyResultDataAccessException> {
-                memberService.enrichedWithRole(dto)
-            }
-
-        assertThat(ex.message).contains("Incorrect result size")
-    }
-
-    @Test
     fun `save should persist member and return DTO`() {
-        val dto = MemberDTO(email = "new@test.com", password = "secure")
+        val dto = MemberDTO(name = "new", email = "new@test.com", password = "secure")
 
         val saved = memberService.save(dto)
 
@@ -106,11 +84,11 @@ class MemberServiceTest {
 
     @Test
     fun `save should throw if email exists`() {
-        memberRepository.save(Member(email = "exists@test.com", password = "old", role = Member.Role.CUSTOMER))
+        memberRepository.save(Member(name = "exists", email = "exists@test.com", password = "old", role = Member.Role.CUSTOMER))
 
         val ex =
             assertThrows<OperationFailedException> {
-                memberService.save(MemberDTO(email = "exists@test.com", password = "new"))
+                memberService.save(MemberDTO(name = "exists2", email = "exists@test.com", password = "new"))
             }
 
         assertThat(ex.message).contains("already exists")
@@ -123,7 +101,7 @@ class MemberServiceTest {
 
     @Test
     fun `validateEmailUniqueness should throw if email exists`() {
-        memberRepository.save(Member(email = "exists@test.com", password = "pw", role = Member.Role.CUSTOMER))
+        memberRepository.save(Member(name = "exists", email = "exists@test.com", password = "pw", role = Member.Role.CUSTOMER))
 
         assertThrows<OperationFailedException> {
             memberService.validateEmailUniqueness("exists@test.com")

@@ -4,15 +4,16 @@ DROP TABLE IF EXISTS CART_ITEM;
 
 CREATE TABLE PRODUCT
 (
-    id       BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name     VARCHAR(255)   NOT NULL,
-    price    DECIMAL(10, 2) NOT NULL,
+    id        BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name      VARCHAR(255)   NOT NULL,
+    price     DECIMAL(10, 2) NOT NULL,
     image_url VARCHAR(255)   NOT NULL
 );
 
 CREATE TABLE MEMBER
 (
     id       BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name     VARCHAR(255) NOT NULL,
     email    VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     role     VARCHAR(255) NOT NULL
@@ -31,7 +32,7 @@ CREATE TABLE CART_ITEM
     CONSTRAINT fk_product FOREIGN KEY (product_id) REFERENCES PRODUCT (id) ON DELETE CASCADE
 );
 
-CREATE INDEX idx_cart_item_member_id ON cart_item(member_id);
-CREATE INDEX idx_cart_item_product_member ON cart_item(product_id, member_id);
+CREATE INDEX idx_cart_item_member_id ON cart_item (member_id);
+CREATE INDEX idx_cart_item_product_member ON cart_item (product_id, member_id);
 CREATE INDEX idx_cart_item_added_at ON CART_ITEM (added_at);
-CREATE INDEX idx_cart_item_product_added ON cart_item(product_id, added_at);
+CREATE INDEX idx_cart_item_product_added ON cart_item (product_id, added_at);

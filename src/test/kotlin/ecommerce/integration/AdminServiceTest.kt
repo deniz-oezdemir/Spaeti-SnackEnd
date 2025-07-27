@@ -46,8 +46,8 @@ class AdminServiceTest {
         memberRepository.deleteAll()
         productRepository.deleteAll()
 
-        member1 = memberRepository.save(Member(email = "m1@example.com", password = "pw"))!!
-        member2 = memberRepository.save(Member(email = "m2@example.com", password = "pw"))!!
+        member1 = memberRepository.save(Member(name = "m1", email = "m1@example.com", password = "pw"))!!
+        member2 = memberRepository.save(Member(name = "m2", email = "m2@example.com", password = "pw"))!!
 
         product1 = productRepository.save(Product(name = "Mouse", price = 10.0, imageUrl = "mouse.jpg"))!!
         product2 = productRepository.save(Product(name = "Keyboard", price = 20.0, imageUrl = "keyboard.jpg"))!!
