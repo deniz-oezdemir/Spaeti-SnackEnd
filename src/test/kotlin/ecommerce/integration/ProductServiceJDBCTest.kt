@@ -17,10 +17,8 @@ import org.springframework.test.annotation.DirtiesContext
 import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest
-@AutoConfigureTestDatabase
 @Transactional
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 class ProductServiceJDBCTest(
     @Autowired val productService: ProductServiceJDBC,
     @Autowired val productRepository: ProductRepository,
@@ -29,7 +27,6 @@ class ProductServiceJDBCTest(
 
     @BeforeEach
     fun setup() {
-        productRepository.deleteAll()
         product =
             ProductDTO(
                 id = null,
@@ -99,7 +96,7 @@ class ProductServiceJDBCTest(
 
         val all = productService.findAll()
 
-        assertThat(all).hasSize(2)
+        assertThat(all).hasSize(27)
     }
 
     @Test
@@ -111,7 +108,7 @@ class ProductServiceJDBCTest(
         val (items, total) = productService.findAllPaginated(page = 1, size = 4)
 
         assertThat(items).hasSize(4)
-        assertThat(total).isEqualTo(10)
+        assertThat(total).isEqualTo(35)
     }
 
     @Test

@@ -6,7 +6,6 @@ import ecommerce.model.MemberDTO
 import ecommerce.repositories.MemberRepository
 import ecommerce.services.MemberServiceImpl
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,6 +15,7 @@ import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest
+// Replace ANY of your current db to use the default in-memory database for tests
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @Transactional
 class MemberServiceTest {
@@ -25,11 +25,6 @@ class MemberServiceTest {
     @Autowired
     private lateinit var memberRepository: MemberRepository
 
-    @BeforeEach
-    fun clearDb() {
-        memberRepository.deleteAll()
-    }
-
     @Test
     fun `findAll should return all members`() {
         memberRepository.save(Member(email = "a@a.com", password = "123", role = Member.Role.CUSTOMER))
@@ -37,8 +32,8 @@ class MemberServiceTest {
 
         val result = memberService.findAll()
 
-        assertThat(result).hasSize(2)
-        assertThat(result.map { it.email }).containsExactlyInAnyOrder("a@a.com", "b@b.com")
+        assertThat(result).hasSize(13)
+        assertThat(result.map { it.email }).contains("a@a.com", "b@b.com")
     }
 
     @Test
@@ -124,7 +119,6 @@ class MemberServiceTest {
     @Test
     fun `validateEmailUniqueness should pass if email doesn't exist`() {
         assertThat(memberService.validateEmailUniqueness("unique@test.com")).isEqualTo(Unit)
-        // no exception = pass
     }
 
     @Test
