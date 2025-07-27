@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test
 import java.util.Base64
 
 class JwtTokenProviderTest {
-
     private lateinit var jwtTokenProvider: JwtTokenProvider
 
     private val secretKey = Base64.getEncoder().encodeToString("test-secret-key-test-secret-key".toByteArray())

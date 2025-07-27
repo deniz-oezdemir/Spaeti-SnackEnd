@@ -3,11 +3,11 @@ package ecommerce.infrastructure
 import jakarta.servlet.http.HttpServletRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.*
-import java.util.*
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
+import java.util.Collections
 
 class AuthorizationExtractorTest {
-
     private val extractor = AuthorizationExtractor()
 
     @Test
