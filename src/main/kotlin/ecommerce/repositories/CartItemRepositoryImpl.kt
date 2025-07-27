@@ -155,10 +155,13 @@ class CartItemRepositoryImpl(private val jdbc: JdbcTemplate) : CartItemRepositor
     override fun findDistinctMembersWithCartActivityInLast7Days(): List<ActiveMemberDTO> {
         val sql =
             """
-            SELECT DISTINCT m.id, m.email
-            FROM cart_item c
-            JOIN member m ON c.member_id = m.id
-            WHERE c.added_at >= DATEADD('DAY', -7, CURRENT_TIMESTAMP)
+            SELECT m.id, m.email
+            FROM member m
+            WHERE EXISTS (
+              SELECT 1 FROM cart_item c
+              WHERE c.member_id = m.id
+                AND c.added_at >= DATEADD('DAY', -7, CURRENT_TIMESTAMP)
+            )
             """.trimIndent()
 
         return jdbc.query(sql) { rs, _ ->
