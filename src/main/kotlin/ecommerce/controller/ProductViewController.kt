@@ -46,7 +46,11 @@ class ProductViewController(private val productService: ProductService) {
         return "redirect:/"
     }
 
-    private fun loadProductList(model: Model, pageNumber: Int, pageSize: Int) {
+    private fun loadProductList(
+        model: Model,
+        pageNumber: Int,
+        pageSize: Int,
+    ) {
         val (products, totalCount) = productService.findAllPaginated(pageNumber, pageSize)
         val totalPages = (totalCount + pageSize - 1) / pageSize
 
