@@ -32,7 +32,5 @@ CREATE TABLE CART_ITEM
     CONSTRAINT fk_product FOREIGN KEY (product_id) REFERENCES PRODUCT (id) ON DELETE CASCADE
 );
 
-CREATE INDEX idx_cart_item_member_id ON cart_item (member_id);
-CREATE INDEX idx_cart_item_product_member ON cart_item (product_id, member_id);
-CREATE INDEX idx_cart_item_added_at ON CART_ITEM (added_at);
-CREATE INDEX idx_cart_item_product_added ON cart_item (product_id, added_at);
+CREATE INDEX idx_cart_item_cover ON cart_item(added_at, product_id);
+CREATE INDEX idx_product_cover ON product(id, name);
