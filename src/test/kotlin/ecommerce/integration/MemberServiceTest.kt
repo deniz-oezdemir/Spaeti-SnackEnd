@@ -9,15 +9,12 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.transaction.annotation.Transactional
 
-@SpringBootTest
-// Replace ANY of your current db to use the default in-memory database for tests
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @Transactional
+@SpringBootTest
 class MemberServiceTest {
     @Autowired
     private lateinit var memberService: MemberServiceImpl
@@ -51,7 +48,7 @@ class MemberServiceTest {
             assertThrows<EmptyResultDataAccessException> {
                 memberService.findById(999L)
             }
-        assertThat(ex.message).contains("Incorrect result size")
+        assertThat(ex.message).contains("Member with ID")
     }
 
     @Test
@@ -69,7 +66,7 @@ class MemberServiceTest {
             assertThrows<EmptyResultDataAccessException> {
                 memberService.findByEmail("missing@test.com")
             }
-        assertThat(ex.message).contains("Incorrect result size")
+        assertThat(ex.message).contains("Member with Email")
     }
 
     @Test
