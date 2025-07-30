@@ -2,6 +2,6 @@
 
 ## Features
 ### Step 1.1
-- [ ] Replace JdbcTemplate for spring data jpa.
-- [ ] Use JPA in the entities and services.
-- [ ] Add logging to JPA
+- [x] Replace JdbcTemplate for spring data jpa.
+- [x] Use JPA in the entities and services.
+- [x] Add logging to JPA
