@@ -18,4 +18,7 @@ data class MemberDTO(
     @field:NotBlank(message = PASSWORD_BLANK)
     var password: String,
     var role: Member.Role = Member.Role.CUSTOMER,
+    // TODO:
+//    val cartItems: Set<CartItemResponseDTO> = emptySet(),
+//    val wishItems: Set<WishItemResponseDTO> = emptySet(),
 )

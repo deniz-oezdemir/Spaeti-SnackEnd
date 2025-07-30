@@ -28,6 +28,8 @@ class Member(
     val role: Role = Role.CUSTOMER,
     @OneToMany(mappedBy = "member", cascade = [CascadeType.ALL], orphanRemoval = true)
     val cartItems: Set<CartItem> = emptySet(),
+    @OneToMany(mappedBy = "member", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val wishItems: Set<WishItem> = emptySet(),
 ) {
     enum class Role { CUSTOMER, ADMIN }
 }
