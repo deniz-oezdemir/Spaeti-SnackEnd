@@ -8,7 +8,7 @@ CREATE TABLE PRODUCT
     name      VARCHAR(255)   NOT NULL,
     price     DECIMAL(10, 2) NOT NULL,
     image_url VARCHAR(255)   NOT NULL
-);
+) engine=InnoDB;
 
 CREATE TABLE MEMBER
 (
@@ -17,7 +17,7 @@ CREATE TABLE MEMBER
     email    VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     role     VARCHAR(255) NOT NULL
-);
+) engine=InnoDB;
 
 CREATE TABLE CART_ITEM
 (
