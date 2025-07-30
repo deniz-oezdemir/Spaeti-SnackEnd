@@ -1,29 +1,10 @@
 package ecommerce.repositories
 
 import ecommerce.entities.Product
+import jakarta.transaction.Transactional
+import org.springframework.data.jpa.repository.JpaRepository
 
-interface ProductRepository {
-    fun findAll(): List<Product>
-
-    fun findAllPaginated(
-        offset: Int,
-        size: Int,
-    ): List<Product>
-
-    fun findById(id: Long): Product?
-
-    fun save(product: Product): Product?
-
-    fun updateById(
-        id: Long,
-        product: Product,
-    ): Product?
-
-    fun deleteById(id: Long): Boolean
-
-    fun deleteAll(): Boolean
-
-    fun countAll(): Int
-
+interface ProductRepository : JpaRepository<Product, Long> {
+    @Transactional
     fun existsByName(name: String): Boolean
 }
