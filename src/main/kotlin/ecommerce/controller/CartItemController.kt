@@ -6,14 +6,14 @@ import ecommerce.model.CartItemResponseDTO
 import ecommerce.model.MemberDTO
 import ecommerce.services.CartItemService
 import org.springframework.http.ResponseEntity
-import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
-@Controller
+@RestController
 @RequestMapping("/api/cart")
 class CartItemController(private val cartItemService: CartItemService) {
     @GetMapping
@@ -29,7 +29,7 @@ class CartItemController(private val cartItemService: CartItemService) {
         @RequestBody cartItemRequestDTO: CartItemRequestDTO,
         @LoginMember member: MemberDTO,
     ): ResponseEntity<CartItemResponseDTO> {
-        val cartItemResponseDTO = cartItemService.addOrUpdate(cartItemRequestDTO, member.id!!)
+        val cartItemResponseDTO = cartItemService.addOrUpdate(cartItemRequestDTO, member)
         return ResponseEntity.ok().body(cartItemResponseDTO)
     }
 

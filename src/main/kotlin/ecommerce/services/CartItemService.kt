@@ -2,11 +2,12 @@ package ecommerce.services
 
 import ecommerce.model.CartItemRequestDTO
 import ecommerce.model.CartItemResponseDTO
+import ecommerce.model.MemberDTO
 
 interface CartItemService {
     fun addOrUpdate(
         cartItemRequestDTO: CartItemRequestDTO,
-        memberId: Long,
+        member: MemberDTO,
     ): CartItemResponseDTO
 
     fun findByMember(memberId: Long): List<CartItemResponseDTO>

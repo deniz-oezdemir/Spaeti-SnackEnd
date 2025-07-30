@@ -5,17 +5,17 @@ import ecommerce.model.CartItemResponseDTO
 import ecommerce.model.ProductDTO
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
+import jakarta.transaction.Transactional
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import java.time.LocalDateTime
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@Transactional
 class CartItemE2ETest {
     lateinit var token: String
     private val productId: Long = 1L
@@ -76,7 +76,16 @@ class CartItemE2ETest {
 
     @Test
     fun `delete cart item`() {
-        addCartItem()
+//        addCartItem()
+        val cartItem = addCartItemAndReturn()
+        val products =
+            RestAssured.given()
+                .header("Authorization", "Bearer $token")
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .get("/api/products")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().body().jsonPath().getList("", ProductDTO::class.java)
 
         RestAssured.given()
             .header("Authorization", "Bearer $token")

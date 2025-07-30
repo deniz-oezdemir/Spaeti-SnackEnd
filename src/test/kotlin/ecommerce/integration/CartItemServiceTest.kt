@@ -1,28 +1,32 @@
 package ecommerce.integration
 
 import ecommerce.entities.Product
+import ecommerce.mappers.toDto
 import ecommerce.model.CartItemRequestDTO
+import ecommerce.repositories.MemberRepository
 import ecommerce.repositories.ProductRepository
-import ecommerce.services.CartItemServiceImpl
+import ecommerce.services.CartItemService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.dao.EmptyResultDataAccessException
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.transaction.annotation.Transactional
 
-@SpringBootTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @Transactional
+@SpringBootTest
 class CartItemServiceTest {
     @Autowired
-    private lateinit var cartItemService: CartItemServiceImpl
+    private lateinit var cartItemService: CartItemService
 
     @Autowired
     private lateinit var productRepository: ProductRepository
+
+    @Autowired
+    private lateinit var memberRepository: MemberRepository
 
     private var productId: Long = 0
     private val memberId = 1L
@@ -37,14 +41,15 @@ class CartItemServiceTest {
                 imageUrl = "keyboard.png",
             )
 
-        productId = productRepository.save(product)?.id!!
+        productId = productRepository.save(product).id!!
     }
 
     @Test
     fun `addOrUpdate should create new cart item if not exists`() {
         val dto = CartItemRequestDTO(productId = productId, quantity = 2)
+        val member = memberRepository.findByIdOrNull(memberId)?.toDto()
 
-        val response = cartItemService.addOrUpdate(dto, memberId)
+        val response = cartItemService.addOrUpdate(dto, member!!)
 
         assertThat(response.id).isNotNull()
         assertThat(response.quantity).isEqualTo(2)
@@ -54,26 +59,41 @@ class CartItemServiceTest {
     @Test
     fun `addOrUpdate should update quantity if item exists`() {
         val initial = CartItemRequestDTO(productId = productId, quantity = 1)
-        cartItemService.addOrUpdate(initial, memberId)
+        val member = memberRepository.findByIdOrNull(memberId)?.toDto()
+        val newItem = cartItemService.addOrUpdate(initial, member!!)
 
         val updated = CartItemRequestDTO(productId = productId, quantity = 5)
-        val result = cartItemService.addOrUpdate(updated, memberId)
+        val result = cartItemService.addOrUpdate(updated, member)
 
         assertThat(result.quantity).isEqualTo(5)
     }
+//    @Test
+//    fun `addOrUpdate should update quantity if item exists`() {
+//        val initial = CartItemRequestDTO(productId = productId, quantity = 1)
+//        val member = memberRepository.findByIdOrNull(memberId)?.toDto()
+//        val newItem = cartItemService.addOrUpdate(initial, member!!)
+// //
+// //
+// //        val updated = CartItemRequestDTO(productId = productId, quantity = 5)
+// //        val result = cartItemService.addOrUpdate(updated, member)
+// //
+//        assertThat(newItem.quantity).isEqualTo(1)
+//    }
 
     @Test
     fun `addOrUpdate should throw if product not found`() {
         val badDto = CartItemRequestDTO(productId = 9999L, quantity = 1)
+        val member = memberRepository.findByIdOrNull(memberId)?.toDto()
 
         assertThrows<EmptyResultDataAccessException> {
-            cartItemService.addOrUpdate(badDto, memberId)
+            cartItemService.addOrUpdate(badDto, member!!)
         }
     }
 
     @Test
     fun `findByMember should return cart items for a member`() {
-        cartItemService.addOrUpdate(CartItemRequestDTO(productId, 3), memberId)
+        val member = memberRepository.findByIdOrNull(memberId)?.toDto()
+        cartItemService.addOrUpdate(CartItemRequestDTO(productId, 3), member!!)
 
         val items = cartItemService.findByMember(memberId)
 
@@ -84,7 +104,8 @@ class CartItemServiceTest {
 
     @Test
     fun `delete should remove cart item for member`() {
-        cartItemService.addOrUpdate(CartItemRequestDTO(productId, 2), memberId)
+        val member = memberRepository.findByIdOrNull(memberId)?.toDto()
+        cartItemService.addOrUpdate(CartItemRequestDTO(productId, 2), member!!)
 
         cartItemService.delete(CartItemRequestDTO(productId, 2), memberId)
 
