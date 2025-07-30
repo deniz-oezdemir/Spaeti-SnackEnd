@@ -2,22 +2,21 @@ package ecommerce.integration
 
 import ecommerce.entities.Member
 import ecommerce.entities.Product
+import ecommerce.mappers.toDto
 import ecommerce.model.CartItemRequestDTO
 import ecommerce.repositories.CartItemRepository
 import ecommerce.repositories.MemberRepository
 import ecommerce.repositories.ProductRepository
 import ecommerce.services.AdminServiceImpl
 import ecommerce.services.CartItemServiceImpl
+import jakarta.transaction.Transactional
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @Transactional
 class AdminServiceTest {
     @Autowired
@@ -52,9 +51,9 @@ class AdminServiceTest {
         product1 = productRepository.save(Product(name = "Mouse", price = 10.0, imageUrl = "mouse.jpg"))!!
         product2 = productRepository.save(Product(name = "Keyboard", price = 20.0, imageUrl = "keyboard.jpg"))!!
 
-        cartItemService.addOrUpdate(CartItemRequestDTO(product1.id!!, 1), member1.id!!)
-        cartItemService.addOrUpdate(CartItemRequestDTO(product2.id!!, 2), member1.id!!)
-        cartItemService.addOrUpdate(CartItemRequestDTO(product2.id!!, 1), member2.id!!)
+        cartItemService.addOrUpdate(CartItemRequestDTO(product1.id!!, 1), member1.toDto())
+        cartItemService.addOrUpdate(CartItemRequestDTO(product2.id!!, 2), member1.toDto())
+        cartItemService.addOrUpdate(CartItemRequestDTO(product2.id!!, 1), member2.toDto())
     }
 
     @Test

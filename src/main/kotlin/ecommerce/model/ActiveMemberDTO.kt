@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotBlank
 data class ActiveMemberDTO(
     val id: Long,
     @field:NotBlank(message = MEMBER_NAME_REQUIRED)
-    var name: String,
+    val name: String,
     @field:Email(message = EMAIL_INVALID)
     val email: String,
 )

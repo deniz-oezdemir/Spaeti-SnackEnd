@@ -4,18 +4,18 @@ import ecommerce.model.ActiveMemberDTO
 import ecommerce.model.TopProductDTO
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
+import jakarta.transaction.Transactional
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import java.time.LocalDateTime
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@Transactional
 class AdminE2ETest {
     lateinit var token: String
 
@@ -51,7 +51,7 @@ class AdminE2ETest {
                 .extract()
                 .body()
                 .jsonPath()
-                .getList("", TopProductDTO::class.java)
+                .getList("$.data", TopProductDTO::class.java)
 
         assertThat(products).isNotNull()
         assertThat(products).allSatisfy {
