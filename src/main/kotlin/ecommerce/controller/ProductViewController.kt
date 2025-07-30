@@ -4,6 +4,9 @@ import ecommerce.annotation.IgnoreCheckLogin
 import ecommerce.model.ProductDTO
 import ecommerce.services.ProductService
 import jakarta.validation.Valid
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
@@ -19,10 +22,14 @@ class ProductViewController(private val productService: ProductService) {
     @GetMapping
     fun showProducts(
         model: Model,
-        @RequestParam(required = false) pageNumber: Int = 1,
-        @RequestParam(required = false) pageSize: Int = 10,
+        @PageableDefault(size = 10, sort = ["name"], direction = Sort.Direction.DESC)
+        pageable: Pageable
     ): String {
-        loadProductList(model, pageNumber, pageSize)
+        val products = productService.findAll(pageable)
+
+        model.addAttribute("products", products.content)
+        model.addAttribute("currentPage", products.number)
+        model.addAttribute("totalPages", products.totalPages)
         model.addAttribute("productDTO", ProductDTO(null, "", 0.0, ""))
         model.addAttribute("hasErrors", false)
         return "product-list"
@@ -33,29 +40,16 @@ class ProductViewController(private val productService: ProductService) {
         @Valid productDTO: ProductDTO,
         bindingResult: BindingResult,
         model: Model,
-        @RequestParam(required = false) pageNumber: Int = 1,
-        @RequestParam(required = false) pageSize: Int = 10,
+        @PageableDefault(size = 10, sort = ["name"], direction = Sort.Direction.DESC)
+        pageable: Pageable
     ): String {
         if (bindingResult.hasErrors()) {
-            loadProductList(model, pageNumber, pageSize)
+            val products = productService.findAll(pageable)
             model.addAttribute("productDTO", productDTO)
             model.addAttribute("hasErrors", bindingResult.hasErrors())
             return "product-list"
         }
         productService.save(productDTO)
         return "redirect:/"
-    }
-
-    private fun loadProductList(
-        model: Model,
-        pageNumber: Int,
-        pageSize: Int,
-    ) {
-        val (products, totalCount) = productService.findAllPaginated(pageNumber, pageSize)
-        val totalPages = (totalCount + pageSize - 1) / pageSize
-
-        model.addAttribute("products", products)
-        model.addAttribute("currentPage", pageNumber)
-        model.addAttribute("totalPages", totalPages)
     }
 }

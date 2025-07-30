@@ -11,7 +11,10 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.data.domain.Sort
 
 @Transactional
 @SpringBootTest
@@ -89,8 +92,9 @@ class ProductServiceTest(
     fun `should return all products`() {
         productService.save(product)
         productService.save(product.copy(name = "Second Product"))
-
-        val all = productService.findAll()
+        val sortedByName: Pageable =
+        PageRequest.of(0, 999, Sort.by("name"));
+        val all = productService.findAll(sortedByName)
 
         assertThat(all).hasSize(27)
     }
@@ -124,7 +128,9 @@ class ProductServiceTest(
 
         productService.deleteAll()
 
-        assertThat(productService.findAll()).isEmpty()
+        val sortedByName: Pageable =
+            PageRequest.of(0, 999, Sort.by("name"));
+        assertThat(productService.findAll(sortedByName)).isEmpty()
     }
 
     @Test

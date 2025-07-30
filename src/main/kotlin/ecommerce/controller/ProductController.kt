@@ -6,6 +6,11 @@ import ecommerce.model.ProductDTO
 import ecommerce.model.ProductPatchDTO
 import ecommerce.services.ProductService
 import jakarta.validation.Valid
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.net.URI
 
@@ -21,7 +27,10 @@ import java.net.URI
 class ProductController(private val productService: ProductService) {
     @IgnoreCheckLogin
     @GetMapping(PRODUCT_PATH)
-    fun getProducts(): List<ProductDTO> = productService.findAll()
+    fun getProducts(
+        @PageableDefault(size = 10, sort = ["name"], direction = Sort.Direction.ASC)
+        pageable: Pageable
+    ): Page<ProductDTO> = productService.findAll(pageable)
 
     @IgnoreCheckLogin
     @GetMapping(PRODUCT_PATH_ID)

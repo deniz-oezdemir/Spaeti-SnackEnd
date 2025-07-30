@@ -9,23 +9,20 @@ import ecommerce.model.ProductDTO
 import ecommerce.model.ProductPatchDTO
 import ecommerce.repositories.ProductRepository
 import org.springframework.context.annotation.Primary
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 @Primary
 class ProductServiceImpl(private val productRepository: ProductRepository) : ProductService {
-    override fun findAll(): List<ProductDTO> {
-        val products = productRepository.findAll()
+    @Transactional(readOnly = true)
+    override fun findAll(pageable: Pageable): Page<ProductDTO> {
+        val products = productRepository.findAll(pageable)
         val productDTOs = products.map { it.toDTO() }
         return productDTOs
-    }
-
-    override fun findAllPaginated(
-        page: Int,
-        size: Int,
-    ): Pair<List<ProductDTO>, Int> {
-        TODO("Not yet implemented")
     }
 
     override fun findById(id: Long): ProductDTO {

@@ -1,7 +1,9 @@
 package ecommerce.endtoend
 
+import ecommerce.model.PageResponseDTO
 import ecommerce.model.ProductDTO
 import io.restassured.RestAssured
+import io.restassured.common.mapper.TypeRef
 import io.restassured.http.ContentType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -44,9 +46,9 @@ class ProductE2ETest {
                 .then().log().all().extract()
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
-        val names = response.body().jsonPath().getList<String>("name")
-        assertThat(names).isNotEmpty()
-        assertThat(names.size).isEqualTo(28)
+        val page = response.body().`as`(object : TypeRef<PageResponseDTO<ProductDTO>>() {})
+        assertThat(page.content).isNotEmpty()
+        assertThat(page.content.size).isEqualTo(10)
     }
 
     @Test

@@ -2,8 +2,10 @@ package ecommerce.endtoend
 
 import ecommerce.model.CartItemRequestDTO
 import ecommerce.model.CartItemResponseDTO
+import ecommerce.model.PageResponseDTO
 import ecommerce.model.ProductDTO
 import io.restassured.RestAssured
+import io.restassured.common.mapper.TypeRef
 import io.restassured.http.ContentType
 import jakarta.transaction.Transactional
 import org.assertj.core.api.Assertions.assertThat
@@ -85,7 +87,7 @@ class CartItemE2ETest {
                 .get("/api/products")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .extract().body().jsonPath().getList("", ProductDTO::class.java)
+                .extract().body().`as`(object : TypeRef<PageResponseDTO<ProductDTO>>() {})
 
         RestAssured.given()
             .header("Authorization", "Bearer $token")
