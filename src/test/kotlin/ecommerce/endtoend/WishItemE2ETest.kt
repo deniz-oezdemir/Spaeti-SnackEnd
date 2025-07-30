@@ -1,9 +1,11 @@
 package ecommerce.endtoend
 
+import ecommerce.model.PageResponseDTO
 import ecommerce.model.WishItemRequestDTO
 import ecommerce.model.WishItemResponseDTO
 import ecommerce.model.ProductDTO
 import io.restassured.RestAssured
+import io.restassured.common.mapper.TypeRef
 import io.restassured.http.ContentType
 import jakarta.transaction.Transactional
 import org.assertj.core.api.Assertions.assertThat
@@ -12,10 +14,12 @@ import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.test.annotation.DirtiesContext
 import java.time.LocalDateTime
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @Transactional
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class WishItemE2ETest {
 
     lateinit var token: String
@@ -39,24 +43,6 @@ class WishItemE2ETest {
 
         token = response.body().jsonPath().getString("accessToken")
         assertThat(token).isNotBlank()
-
-        RestAssured.given()
-            .header("Authorization", "Bearer $token")
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .get("/api/wish")
-            .then().extract()
-            .body()
-            .jsonPath()
-            .getList("", WishItemResponseDTO::class.java)
-            .forEach {
-                RestAssured.given()
-                    .header("Authorization", "Bearer $token")
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(WishItemRequestDTO((it as WishItemResponseDTO).product.id!!))
-                    .delete("/api/wish")
-                    .then()
-                    .statusCode(HttpStatus.NO_CONTENT.value())
-            }
     }
 
     @Test
@@ -79,11 +65,11 @@ class WishItemE2ETest {
                 .get("/api/wish")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .extract().body().jsonPath().getList("", WishItemResponseDTO::class.java)
+                .extract().body().`as`(object : TypeRef<PageResponseDTO<WishItemResponseDTO>>() {})
 
-        assertThat(items).hasSize(1)
+        assertThat(items.content).hasSize(1)
 
-        val wishItem = items.first()
+        val wishItem = items.content.first()
         with(wishItem) {
             assertThat(product.id).isEqualTo(productId)
             assertThat(addedAt).isBefore(LocalDateTime.now().plusMinutes(1))
@@ -108,9 +94,9 @@ class WishItemE2ETest {
                 .header("Authorization", "Bearer $token")
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .get("/api/wish")
-                .then().extract().body().jsonPath().getList("", WishItemResponseDTO::class.java)
+                .then().extract().body().`as`(object : TypeRef<PageResponseDTO<ProductDTO>>() {})
 
-        assertThat(items).isEmpty()
+        assertThat(items.content).isEmpty()
     }
 
     private fun addWishItemAndReturn(): WishItemResponseDTO {

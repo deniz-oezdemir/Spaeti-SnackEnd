@@ -11,6 +11,8 @@ import ecommerce.model.MemberDTO
 import ecommerce.repositories.WishItemRepository
 import ecommerce.repositories.ProductRepository
 import org.springframework.dao.EmptyResultDataAccessException
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -38,9 +40,22 @@ class WishItemService(
     }
 
     fun findByMember(memberId: Long): List<WishItemResponseDTO> {
-        val itemsWithProducts = wishItemRepository.findByMemberId(memberId)
+        val wishItems = wishItemRepository.findByMemberId(memberId)
 
-        return itemsWithProducts.map { cartItem ->
+        return wishItems.map { cartItem ->
+            WishItemResponseDTO(
+                id = cartItem.id!!,
+                memberId = cartItem.member.id!!,
+                product = cartItem.product.toDTO(),
+                addedAt = cartItem.addedAt,
+            )
+        }
+    }
+
+    fun findByMember(memberId: Long, page: Pageable): Page<WishItemResponseDTO> {
+        val wishItems = wishItemRepository.findByMemberId(memberId, page)
+
+        return wishItems.map { cartItem ->
             WishItemResponseDTO(
                 id = cartItem.id!!,
                 memberId = cartItem.member.id!!,
