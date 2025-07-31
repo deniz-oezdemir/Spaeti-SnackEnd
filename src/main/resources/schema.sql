@@ -46,4 +46,4 @@ CREATE TABLE WISH_ITEM
     UNIQUE (member_id, product_id),
     CONSTRAINT fk_wish_member FOREIGN KEY (member_id) REFERENCES MEMBER (id) ON DELETE CASCADE ,
     CONSTRAINT fk_wish_product FOREIGN KEY (product_id) REFERENCES PRODUCT (id) ON DELETE CASCADE
-)engine=InnoDB;
+) engine=InnoDB;

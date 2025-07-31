@@ -34,8 +34,8 @@ class WishItemController(private val wishItemService: WishItemService) {
         @RequestBody wishItemRequestDTO: WishItemRequestDTO,
         @LoginMember member: MemberDTO,
     ): ResponseEntity<WishItemResponseDTO> {
-        val WishItemResponseDTO = wishItemService.save(wishItemRequestDTO, member)
-        return ResponseEntity.ok().body(WishItemResponseDTO)
+        val wishItemResponseDTO = wishItemService.save(wishItemRequestDTO, member)
+        return ResponseEntity.ok().body(wishItemResponseDTO)
     }
 
     @DeleteMapping

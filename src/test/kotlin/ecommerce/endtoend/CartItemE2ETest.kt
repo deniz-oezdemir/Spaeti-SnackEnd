@@ -11,13 +11,14 @@ import jakarta.transaction.Transactional
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import java.time.LocalDateTime
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@Transactional
 class CartItemE2ETest {
     lateinit var token: String
     private val productId: Long = 1L
@@ -105,16 +106,6 @@ class CartItemE2ETest {
                 .then().extract().body().jsonPath().getList("", CartItemResponseDTO::class.java)
 
         assertThat(items).isEmpty()
-    }
-
-    private fun addCartItem() {
-        RestAssured.given()
-            .header("Authorization", "Bearer $token")
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(request)
-            .post("/api/cart")
-            .then()
-            .statusCode(HttpStatus.OK.value())
     }
 
     private fun addCartItemAndReturn(): CartItemResponseDTO {
