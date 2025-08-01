@@ -3,11 +3,10 @@ package ecommerce.endtoend
 import ecommerce.model.CartItemRequestDTO
 import ecommerce.model.CartItemResponseDTO
 import ecommerce.model.PageResponseDTO
-import ecommerce.model.ProductDTO
+import ecommerce.model.ProductResponseDTO
 import io.restassured.RestAssured
 import io.restassured.common.mapper.TypeRef
 import io.restassured.http.ContentType
-import jakarta.transaction.Transactional
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -47,7 +46,7 @@ class CartItemE2ETest {
     fun `add cart item`() {
         val cartItem = addCartItemAndReturn()
 
-        assertThat(cartItem.product).isInstanceOf(ProductDTO::class.java)
+        assertThat(cartItem.product).isInstanceOf(ProductResponseDTO::class.java)
         assertThat(cartItem.product.id).isEqualTo(productId)
         assertThat(cartItem.quantity).isEqualTo(2)
         assertThat(cartItem.addedAt).isBefore(LocalDateTime.now().plusMinutes(1))
@@ -88,7 +87,7 @@ class CartItemE2ETest {
                 .get("/api/products")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .extract().body().`as`(object : TypeRef<PageResponseDTO<ProductDTO>>() {})
+                .extract().body().`as`(object : TypeRef<PageResponseDTO<ProductResponseDTO>>() {})
 
         RestAssured.given()
             .header("Authorization", "Bearer $token")
