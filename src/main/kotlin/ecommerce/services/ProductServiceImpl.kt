@@ -42,7 +42,6 @@ class ProductServiceImpl(
         validateProductNameUniqueness(productRequestDTO.name)
 
         val product = productRequestDTO.toEntity()
-        product.options = productRequestDTO.options.map { it.toEntity(product) }
 
         productRequestDTO.options.forEach { optionDTO ->
             val option = optionDTO.toEntity(product)
