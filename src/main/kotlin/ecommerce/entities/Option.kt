@@ -25,10 +25,9 @@ class Option(
     val id: Long? = null,
     name: String,
     quantity: Long,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    var product: Product? = null
+    var product: Product? = null,
 ) {
     @Column(name = "name", nullable = false, length = 50)
     var name: String = name
@@ -36,6 +35,7 @@ class Option(
             validateName(value)
             field = value
         }
+
     @Column(name = "quantity", nullable = false)
     var quantity: Long = quantity
         set(value) {

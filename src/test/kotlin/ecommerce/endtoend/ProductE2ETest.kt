@@ -60,13 +60,13 @@ class ProductE2ETest {
                 id = null,
                 name = "TV",
                 price = 99.99,
-                imageUrl = "https://example.com/speaker.jpg", // Use a more complete URL
+                imageUrl = "https://example.com/speaker.jpg",
                 options =
                     setOf(
                         OptionDTO(
                             id = null,
                             name = "hi",
-                            quantity = 99, // Try using Integer instead of Long if needed
+                            quantity = 99,
                             productId = null,
                         ),
                     ),
@@ -107,13 +107,13 @@ class ProductE2ETest {
                 id = null,
                 name = "Monitor",
                 price = 150.0,
-                imageUrl = "https://example.com/speaker.jpg", // Use a more complete URL
+                imageUrl = "https://example.com/speaker.jpg",
                 options =
                     setOf(
                         OptionDTO(
                             id = null,
                             name = "hi",
-                            quantity = 99, // Try using Integer instead of Long if needed
+                            quantity = 99,
                             productId = null,
                         ),
                     ),
@@ -139,13 +139,13 @@ class ProductE2ETest {
                 id = null,
                 name = "!@#$%^&*()_+}{",
                 price = 99.99,
-                imageUrl = "https://example.com/speaker.jpg", // Use a more complete URL
+                imageUrl = "https://example.com/speaker.jpg",
                 options =
                     setOf(
                         OptionDTO(
                             id = null,
                             name = "hi",
-                            quantity = 99, // Try using Integer instead of Long if needed
+                            quantity = 99,
                             productId = null,
                         ),
                     ),
@@ -173,13 +173,13 @@ class ProductE2ETest {
                 id = null,
                 name = "SpeakersareLovemyDearDearDear",
                 price = 99.99,
-                imageUrl = "https://example.com/speaker.jpg", // Use a more complete URL
+                imageUrl = "https://example.com/speaker.jpg",
                 options =
                     setOf(
                         OptionDTO(
                             id = null,
                             name = "hi",
-                            quantity = 99, // Try using Integer instead of Long if needed
+                            quantity = 99,
                             productId = null,
                         ),
                     ),
@@ -207,13 +207,13 @@ class ProductE2ETest {
                 id = null,
                 name = "Speaker",
                 price = 99.99,
-                imageUrl = "https://example.com/speaker.jpg", // Use a more complete URL
+                imageUrl = "https://example.com/speaker.jpg",
                 options =
                     setOf(
                         OptionDTO(
                             id = null,
                             name = "hi",
-                            quantity = 99, // Try using Integer instead of Long if needed
+                            quantity = 99,
                             productId = null,
                         ),
                     ),
@@ -241,13 +241,13 @@ class ProductE2ETest {
                 id = null,
                 name = "Speaker",
                 price = -99.99,
-                imageUrl = "https://example.com/speaker.jpg", // Use a more complete URL
+                imageUrl = "https://example.com/speaker.jpg",
                 options =
                     setOf(
                         OptionDTO(
                             id = null,
                             name = "hi",
-                            quantity = 99, // Try using Integer instead of Long if needed
+                            quantity = 99,
                             productId = null,
                         ),
                     ),
@@ -275,13 +275,13 @@ class ProductE2ETest {
                 id = null,
                 name = "Speaker",
                 price = 99.99,
-                imageUrl = "https://example.com/speaker.jpg", // Use a more complete URL
+                imageUrl = "https://example.com/speaker.jpg",
                 options =
                     setOf(
                         OptionDTO(
                             id = null,
                             name = "hi",
-                            quantity = 99, // Try using Integer instead of Long if needed
+                            quantity = 99,
                             productId = null,
                         ),
                     ),
@@ -299,13 +299,13 @@ class ProductE2ETest {
                 id = null,
                 name = "Gaming Mouse",
                 price = 45.0,
-                imageUrl = "https://example.com/speaker.jpg", // Use a more complete URL
+                imageUrl = "https://example.com/speaker.jpg",
                 options =
                     setOf(
                         OptionDTO(
                             id = null,
                             name = "ello",
-                            quantity = 99, // Try using Integer instead of Long if needed
+                            quantity = 99,
                             productId = null,
                         ),
                     ),
@@ -356,13 +356,13 @@ class ProductE2ETest {
                 id = null,
                 name = "Toilet",
                 price = 99.99,
-                imageUrl = "https://example.com/speaker.jpg", // Use a more complete URL
+                imageUrl = "https://example.com/speaker.jpg",
                 options =
                     setOf(
                         OptionDTO(
                             id = null,
                             name = "hi",
-                            quantity = 99, // Try using Integer instead of Long if needed
+                            quantity = 99,
                             productId = null,
                         ),
                     ),

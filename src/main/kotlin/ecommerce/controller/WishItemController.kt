@@ -1,16 +1,21 @@
 package ecommerce.controller
 
 import ecommerce.annotation.LoginMember
-import ecommerce.model.WishItemResponseDTO
 import ecommerce.model.MemberDTO
 import ecommerce.model.WishItemRequestDTO
+import ecommerce.model.WishItemResponseDTO
 import ecommerce.services.WishItemService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/wish")
@@ -19,10 +24,8 @@ class WishItemController(private val wishItemService: WishItemService) {
     fun getAllByMember(
         @LoginMember member: MemberDTO,
         @PageableDefault(size = 10, direction = Sort.Direction.ASC)
-        page: Pageable
+        page: Pageable,
     ): Page<WishItemResponseDTO> {
-//        val pageImpl = PageImpl(member.wishItems.toMutableList(), page, member.wishItems.size.toLong())
-//        return pageImpl
         return wishItemService.findByMember(member.id!!, page = page)
     }
 

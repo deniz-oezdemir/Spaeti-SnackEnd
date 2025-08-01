@@ -115,12 +115,13 @@ class ApiErrorControllerAdvice {
     fun handleInvalidOptionNameException(e: InvalidOptionNameException): ResponseEntity<Map<String, Any>> {
         val errorMessage = e.message ?: "Invalid option name"
         log.warn("InvalidOptionNameException: $errorMessage", e)
-        val body = mapOf(
-            "status" to HttpStatus.BAD_REQUEST.value(),
-            "error" to "Invalid option name",
-            "message" to errorMessage,
-            "timestamp" to Instant.now(),
-        )
+        val body =
+            mapOf(
+                "status" to HttpStatus.BAD_REQUEST.value(),
+                "error" to "Invalid option name",
+                "message" to errorMessage,
+                "timestamp" to Instant.now(),
+            )
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body)
     }
 
@@ -128,12 +129,13 @@ class ApiErrorControllerAdvice {
     fun handleInvalidOptionQuantityException(e: InvalidOptionQuantityException): ResponseEntity<Map<String, Any>> {
         val errorMessage = e.message ?: "Invalid option quantity"
         log.warn("InvalidOptionQuantityException: $errorMessage", e)
-        val body = mapOf(
-            "status" to HttpStatus.BAD_REQUEST.value(),
-            "error" to "Invalid option quantity",
-            "message" to errorMessage,
-            "timestamp" to Instant.now(),
-        )
+        val body =
+            mapOf(
+                "status" to HttpStatus.BAD_REQUEST.value(),
+                "error" to "Invalid option quantity",
+                "message" to errorMessage,
+                "timestamp" to Instant.now(),
+            )
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body)
     }
 
@@ -141,12 +143,13 @@ class ApiErrorControllerAdvice {
     fun handleInsufficientStockException(e: InsufficientStockException): ResponseEntity<Map<String, Any>> {
         val errorMessage = e.message ?: "Insufficient stock"
         log.warn("InsufficientStockException: $errorMessage", e)
-        val body = mapOf(
-            "status" to HttpStatus.CONFLICT.value(),
-            "error" to "Insufficient stock",
-            "message" to errorMessage,
-            "timestamp" to Instant.now(),
-        )
+        val body =
+            mapOf(
+                "status" to HttpStatus.CONFLICT.value(),
+                "error" to "Insufficient stock",
+                "message" to errorMessage,
+                "timestamp" to Instant.now(),
+            )
         return ResponseEntity.status(HttpStatus.CONFLICT).body(body)
     }
 

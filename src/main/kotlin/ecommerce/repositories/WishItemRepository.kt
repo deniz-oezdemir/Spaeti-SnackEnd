@@ -11,7 +11,10 @@ interface WishItemRepository : JpaRepository<WishItem, Long> {
     fun findByMemberId(memberId: Long): List<WishItem>
 
     @Transactional
-    fun findByMemberId(memberId: Long, page: Pageable): Page<WishItem>
+    fun findByMemberId(
+        memberId: Long,
+        page: Pageable,
+    ): Page<WishItem>
 
     @Transactional
     fun findByProductIdAndMemberId(

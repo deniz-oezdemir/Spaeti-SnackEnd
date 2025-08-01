@@ -30,7 +30,7 @@ class Product(
     val cartItems: Set<CartItem> = emptySet(),
     @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true)
     @JoinColumn(name = "product", nullable = false)
-    private val _options: MutableList<Option> = mutableListOf()
+    private val _options: MutableList<Option> = mutableListOf(),
 ) {
     var options: List<Option>
         get() = _options.toList()
@@ -46,21 +46,26 @@ class Product(
         _options.add(option)
     }
 
-    fun copyFrom(other: ProductRequestDTO, optionDTOs: Set<OptionDTO> = emptySet()) {
+    fun copyFrom(
+        other: ProductRequestDTO,
+        optionDTOs: Set<OptionDTO> = emptySet(),
+    ) {
         this.name = other.name
         this.price = other.price
         this.imageUrl = other.imageUrl
 
-        options = optionDTOs.map { optionDTO ->
-            val option = _options
-                .find { it.id == optionDTO.id }
-                ?.apply {
-                    name = optionDTO.name
-                    quantity = optionDTO.quantity
-                }
-                ?: optionDTO.toEntity(this)
+        options =
+            optionDTOs.map { optionDTO ->
+                val option =
+                    _options
+                        .find { it.id == optionDTO.id }
+                        ?.apply {
+                            name = optionDTO.name
+                            quantity = optionDTO.quantity
+                        }
+                        ?: optionDTO.toEntity(this)
 
-            option
-        }
+                option
+            }
     }
 }

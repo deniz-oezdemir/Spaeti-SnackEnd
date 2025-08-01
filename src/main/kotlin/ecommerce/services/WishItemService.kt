@@ -5,11 +5,11 @@ import ecommerce.exception.OperationFailedException
 import ecommerce.mappers.toDTO
 import ecommerce.mappers.toDto
 import ecommerce.mappers.toEntity
+import ecommerce.model.MemberDTO
 import ecommerce.model.WishItemRequestDTO
 import ecommerce.model.WishItemResponseDTO
-import ecommerce.model.MemberDTO
-import ecommerce.repositories.WishItemRepository
 import ecommerce.repositories.ProductRepository
+import ecommerce.repositories.WishItemRepository
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -52,7 +52,10 @@ class WishItemService(
         }
     }
 
-    fun findByMember(memberId: Long, page: Pageable): Page<WishItemResponseDTO> {
+    fun findByMember(
+        memberId: Long,
+        page: Pageable,
+    ): Page<WishItemResponseDTO> {
         val wishItems = wishItemRepository.findByMemberId(memberId, page)
 
         return wishItems.map { cartItem ->

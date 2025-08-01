@@ -23,7 +23,7 @@ class ProductViewController(private val productService: ProductService) {
     fun showProducts(
         model: Model,
         @PageableDefault(size = 10, sort = ["name"], direction = Sort.Direction.DESC)
-        pageable: Pageable
+        pageable: Pageable,
     ): String {
         val products = productService.findAll(pageable)
 
@@ -35,13 +35,14 @@ class ProductViewController(private val productService: ProductService) {
         return "product-list"
     }
 
+    // TODO:
     @PostMapping("/products")
     fun createProduct(
         @Valid productDTO: ProductRequestDTO,
         bindingResult: BindingResult,
         model: Model,
         @PageableDefault(size = 10, sort = ["name"], direction = Sort.Direction.DESC)
-        pageable: Pageable
+        pageable: Pageable,
     ): String {
         if (bindingResult.hasErrors()) {
             val products = productService.findAll(pageable)

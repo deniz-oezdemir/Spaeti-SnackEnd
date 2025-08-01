@@ -7,9 +7,9 @@ data class PageResponseDTO<T>(
     val size: Int,
     val number: Int,
     val numberOfElements: Int,
-    val sort: Any?, // or define your own SortResponse if needed
-    val pageable: Any?, // or define PageableResponse
+    val sort: Any?,
+    val pageable: Any?,
     val first: Boolean,
     val last: Boolean,
-    val empty: Boolean
+    val empty: Boolean,
 )

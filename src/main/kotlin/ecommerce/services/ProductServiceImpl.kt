@@ -1,14 +1,12 @@
 package ecommerce.services
 
-import ecommerce.entities.Option
-import ecommerce.entities.Product
 import ecommerce.exception.NotFoundException
 import ecommerce.exception.OperationFailedException
 import ecommerce.mappers.toDTO
 import ecommerce.mappers.toEntity
-import ecommerce.model.ProductResponseDTO
 import ecommerce.model.ProductPatchDTO
 import ecommerce.model.ProductRequestDTO
+import ecommerce.model.ProductResponseDTO
 import ecommerce.repositories.OptionRepository
 import ecommerce.repositories.ProductRepository
 import org.springframework.context.annotation.Primary
@@ -22,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional
 @Primary
 class ProductServiceImpl(
     private val productRepository: ProductRepository,
-    private val optionRepository: OptionRepository
 ) : ProductService {
     @Transactional(readOnly = true)
     override fun findAll(pageable: Pageable): Page<ProductResponseDTO> {
@@ -56,8 +53,9 @@ class ProductServiceImpl(
         id: Long,
         productDTO: ProductRequestDTO,
     ): ProductResponseDTO? {
-        val originalProduct = productRepository.findByIdOrNull(id)
-            ?: throw NotFoundException("Product with id=$id not found")
+        val originalProduct =
+            productRepository.findByIdOrNull(id)
+                ?: throw NotFoundException("Product with id=$id not found")
 
         if (originalProduct.name != productDTO.name) {
             validateProductNameUniqueness(productDTO.name)

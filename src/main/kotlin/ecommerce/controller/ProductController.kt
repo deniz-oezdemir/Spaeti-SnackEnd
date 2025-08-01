@@ -2,9 +2,9 @@ package ecommerce.controller
 
 import ecommerce.annotation.CheckAdminOnly
 import ecommerce.annotation.IgnoreCheckLogin
-import ecommerce.model.ProductResponseDTO
 import ecommerce.model.ProductPatchDTO
 import ecommerce.model.ProductRequestDTO
+import ecommerce.model.ProductResponseDTO
 import ecommerce.services.ProductService
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
@@ -28,7 +28,7 @@ class ProductController(private val productService: ProductService) {
     @GetMapping(PRODUCT_PATH)
     fun getProducts(
         @PageableDefault(size = 10, sort = ["name"], direction = Sort.Direction.ASC)
-        pageable: Pageable
+        pageable: Pageable,
     ): Page<ProductResponseDTO> = productService.findAll(pageable)
 
     @IgnoreCheckLogin

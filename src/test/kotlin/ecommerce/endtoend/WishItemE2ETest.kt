@@ -1,9 +1,9 @@
 package ecommerce.endtoend
 
 import ecommerce.model.PageResponseDTO
+import ecommerce.model.ProductResponseDTO
 import ecommerce.model.WishItemRequestDTO
 import ecommerce.model.WishItemResponseDTO
-import ecommerce.model.ProductResponseDTO
 import io.restassured.RestAssured
 import io.restassured.common.mapper.TypeRef
 import io.restassured.http.ContentType
@@ -21,7 +21,6 @@ import java.time.LocalDateTime
 @Transactional
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class WishItemE2ETest {
-
     lateinit var token: String
     private val productId: Long = 1L
     private val request get() = WishItemRequestDTO(productId = productId)
@@ -79,7 +78,7 @@ class WishItemE2ETest {
 
     @Test
     fun `delete wish item`() {
-        val addedItem = addWishItemAndReturn()
+        addWishItemAndReturn()
 
         RestAssured.given()
             .header("Authorization", "Bearer $token")

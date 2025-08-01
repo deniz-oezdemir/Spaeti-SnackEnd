@@ -4,10 +4,10 @@ import ecommerce.util.ValidationMessages.IMAGE_FORMAT
 import ecommerce.util.ValidationMessages.IMAGE_REQUIRED
 import ecommerce.util.ValidationMessages.NAME_PATTERN
 import ecommerce.util.ValidationMessages.NAME_REQUIRED
-import ecommerce.util.ValidationMessages.PRODUCT_NAME_SIZE
 import ecommerce.util.ValidationMessages.OPTION_REQUIRED
 import ecommerce.util.ValidationMessages.PRICE_POSITIVE
 import ecommerce.util.ValidationMessages.PRICE_REQUIRED
+import ecommerce.util.ValidationMessages.PRODUCT_NAME_SIZE
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.NotNull
@@ -28,5 +28,5 @@ data class ProductRequestDTO(
     @field:Pattern(regexp = "^https?://.*$", message = IMAGE_FORMAT)
     var imageUrl: String,
     @field:NotEmpty(message = OPTION_REQUIRED)
-    val options: Set<OptionDTO>
+    val options: Set<OptionDTO>,
 )
