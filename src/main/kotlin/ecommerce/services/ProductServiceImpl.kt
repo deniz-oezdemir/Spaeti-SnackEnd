@@ -1,12 +1,15 @@
 package ecommerce.services
 
+import ecommerce.entities.Option
 import ecommerce.entities.Product
 import ecommerce.exception.NotFoundException
 import ecommerce.exception.OperationFailedException
 import ecommerce.mappers.toDTO
 import ecommerce.mappers.toEntity
-import ecommerce.model.ProductDTO
+import ecommerce.model.ProductResponseDTO
 import ecommerce.model.ProductPatchDTO
+import ecommerce.model.ProductRequestDTO
+import ecommerce.repositories.OptionRepository
 import ecommerce.repositories.ProductRepository
 import org.springframework.context.annotation.Primary
 import org.springframework.data.domain.Page
@@ -17,40 +20,59 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 @Primary
-class ProductServiceImpl(private val productRepository: ProductRepository) : ProductService {
+class ProductServiceImpl(
+    private val productRepository: ProductRepository,
+    private val optionRepository: OptionRepository
+) : ProductService {
     @Transactional(readOnly = true)
-    override fun findAll(pageable: Pageable): Page<ProductDTO> {
+    override fun findAll(pageable: Pageable): Page<ProductResponseDTO> {
         val products = productRepository.findAll(pageable)
         val productDTOs = products.map { it.toDTO() }
         return productDTOs
     }
 
-    override fun findById(id: Long): ProductDTO {
+    override fun findById(id: Long): ProductResponseDTO {
         val product = productRepository.findByIdOrNull(id)
+
         if (product == null) throw NotFoundException("Product with id=$id not found")
         return product.toDTO()
     }
 
-    override fun save(productDTO: ProductDTO): ProductDTO {
-        validateProductNameUniqueness(productDTO.name)
-        val product: Product = productRepository.save(productDTO.toEntity())
-        return product.toDTO()
+    override fun save(productRequestDTO: ProductRequestDTO): ProductResponseDTO {
+        validateProductNameUniqueness(productRequestDTO.name)
+
+        val product = productRequestDTO.toEntity()
+        product.options = productRequestDTO.options.map { it.toEntity(product) }
+
+        productRequestDTO.options.forEach { optionDTO ->
+            val option = optionDTO.toEntity(product)
+            product.addOption(option)
+        }
+
+        val savedProduct = productRepository.save(product)
+        return savedProduct.toDTO()
     }
 
     override fun updateById(
         id: Long,
-        productDTO: ProductDTO,
-    ): ProductDTO? {
-        val originalProduct = findById(id)
-        val newProduct = productDTO.copy(id = originalProduct.id)
-        val updatedProduct = productRepository.save(newProduct.toEntity())
-        return updatedProduct.toDTO()
+        productDTO: ProductRequestDTO,
+    ): ProductResponseDTO? {
+        val originalProduct = productRepository.findByIdOrNull(id)
+            ?: throw NotFoundException("Product with id=$id not found")
+
+        if (originalProduct.name != productDTO.name) {
+            validateProductNameUniqueness(productDTO.name)
+        }
+
+        originalProduct.copyFrom(productDTO, productDTO.options)
+
+        return productRepository.save(originalProduct).toDTO()
     }
 
     override fun patchById(
         id: Long,
         productPatchDTO: ProductPatchDTO,
-    ): ProductDTO? {
+    ): ProductResponseDTO? {
         val existing = findById(id)
         val updatedProduct = existing.copyFrom(productPatchDTO)
         return productRepository.save(updatedProduct.toEntity()).toDTO()
