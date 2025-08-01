@@ -10,3 +10,11 @@ class ForbiddenException(message: String? = null) : RuntimeException(message)
 
 class InvalidCartItemQuantityException(quantity: Int) :
     RuntimeException("Quantity must be non-negative, got $quantity")
+
+class NoSuchElementException(message: String? = null) : RuntimeException(message)
+
+class InvalidOptionNameException(message: String? = null) : RuntimeException(message)
+
+class InvalidOptionQuantityException(message: String? = null) : RuntimeException(message)
+
+class InsufficientStockException(message: String? = null) : RuntimeException(message)

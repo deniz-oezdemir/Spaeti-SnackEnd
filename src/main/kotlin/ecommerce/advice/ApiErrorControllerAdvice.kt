@@ -2,7 +2,10 @@ package ecommerce.advice
 
 import ecommerce.exception.AuthorizationException
 import ecommerce.exception.ForbiddenException
+import ecommerce.exception.InsufficientStockException
 import ecommerce.exception.InvalidCartItemQuantityException
+import ecommerce.exception.InvalidOptionNameException
+import ecommerce.exception.InvalidOptionQuantityException
 import ecommerce.exception.NotFoundException
 import ecommerce.exception.OperationFailedException
 import ecommerce.util.logger
@@ -28,6 +31,20 @@ class ApiErrorControllerAdvice {
     fun handleNotFoundException(e: NotFoundException): ResponseEntity<Map<String, Any>> {
         val errorMessage = e.message ?: "Not Found error"
         log.warn("NotFoundException occurred: $errorMessage", e)
+        val body =
+            mapOf(
+                "status" to HttpStatus.NOT_FOUND.value(),
+                "error" to "Operation failed",
+                "message" to errorMessage,
+                "timestamp" to Instant.now(),
+            )
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body)
+    }
+
+    @ExceptionHandler(NoSuchElementException::class)
+    fun handleNotSuchElementException(e: NoSuchElementException): ResponseEntity<Map<String, Any>> {
+        val errorMessage = e.message ?: "Not such element"
+        log.warn("NoSuchElementException occurred: $errorMessage", e)
         val body =
             mapOf(
                 "status" to HttpStatus.NOT_FOUND.value(),
@@ -92,6 +109,45 @@ class ApiErrorControllerAdvice {
                 "timestamp" to Instant.now(),
             )
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body)
+    }
+
+    @ExceptionHandler(InvalidOptionNameException::class)
+    fun handleInvalidOptionNameException(e: InvalidOptionNameException): ResponseEntity<Map<String, Any>> {
+        val errorMessage = e.message ?: "Invalid option name"
+        log.warn("InvalidOptionNameException: $errorMessage", e)
+        val body = mapOf(
+            "status" to HttpStatus.BAD_REQUEST.value(),
+            "error" to "Invalid option name",
+            "message" to errorMessage,
+            "timestamp" to Instant.now(),
+        )
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body)
+    }
+
+    @ExceptionHandler(InvalidOptionQuantityException::class)
+    fun handleInvalidOptionQuantityException(e: InvalidOptionQuantityException): ResponseEntity<Map<String, Any>> {
+        val errorMessage = e.message ?: "Invalid option quantity"
+        log.warn("InvalidOptionQuantityException: $errorMessage", e)
+        val body = mapOf(
+            "status" to HttpStatus.BAD_REQUEST.value(),
+            "error" to "Invalid option quantity",
+            "message" to errorMessage,
+            "timestamp" to Instant.now(),
+        )
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body)
+    }
+
+    @ExceptionHandler(InsufficientStockException::class)
+    fun handleInsufficientStockException(e: InsufficientStockException): ResponseEntity<Map<String, Any>> {
+        val errorMessage = e.message ?: "Insufficient stock"
+        log.warn("InsufficientStockException: $errorMessage", e)
+        val body = mapOf(
+            "status" to HttpStatus.CONFLICT.value(),
+            "error" to "Insufficient stock",
+            "message" to errorMessage,
+            "timestamp" to Instant.now(),
+        )
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(body)
     }
 
     /**
