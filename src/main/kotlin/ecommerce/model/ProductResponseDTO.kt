@@ -28,12 +28,4 @@ data class ProductResponseDTO(
     var imageUrl: String,
     @field:NotEmpty
     val options: List<OptionDTO> = emptyList(),
-) {
-    fun copyFrom(productPatchDTO: ProductPatchDTO): ProductResponseDTO {
-        productPatchDTO.id?.let { this.id = it }
-        productPatchDTO.name?.takeIf { it.isNotBlank() }?.let { this.name = it }
-        productPatchDTO.price?.let { this.price = it }
-        productPatchDTO.imageUrl?.takeIf { it.isNotBlank() }?.let { this.imageUrl = it }
-        return this
-    }
-}
+)

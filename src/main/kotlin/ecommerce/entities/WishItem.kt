@@ -17,7 +17,7 @@ import java.time.LocalDateTime
     name = "wish_item",
     uniqueConstraints = [UniqueConstraint(columnNames = ["member_id", "product_id"])],
 )
-data class WishItem(
+class WishItem(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,

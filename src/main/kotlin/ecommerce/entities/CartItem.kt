@@ -17,7 +17,7 @@ import java.time.LocalDateTime
     name = "cart_item",
     uniqueConstraints = [UniqueConstraint(columnNames = ["member_id", "product_id"])],
 )
-data class CartItem(
+class CartItem(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
@@ -28,7 +28,7 @@ data class CartItem(
     @JoinColumn(name = "product_id", nullable = false)
     val product: Product,
     @Column(name = "quantity", nullable = false)
-    val quantity: Int,
+    var quantity: Int,
     @Column(name = "added_at", nullable = false)
     val addedAt: LocalDateTime,
 )

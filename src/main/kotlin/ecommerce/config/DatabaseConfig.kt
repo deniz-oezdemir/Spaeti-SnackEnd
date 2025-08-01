@@ -58,7 +58,6 @@ class DatabaseConfig(
                     }
             val savedProducts = productRepository.saveAll(products)
 
-            // Add members
             val admin =
                 Member(
                     name = "sebas",
@@ -77,7 +76,6 @@ class DatabaseConfig(
                 }
             val savedMembers = memberRepository.saveAll(listOf(admin) + customers)
 
-            // Add cart items
             val cartItems =
                 listOf(
                     CartItem(
@@ -92,11 +90,9 @@ class DatabaseConfig(
                         quantity = 2,
                         addedAt = LocalDateTime.now(),
                     ),
-                    // Add more cart items as needed
                 )
             cartItemRepository.saveAll(cartItems)
 
-            // Add options
             val carOptions =
                 listOf(
                     Option(name = "Red Color", quantity = 5, product = savedProducts[0]),
@@ -147,7 +143,6 @@ class DatabaseConfig(
                     ),
                 )
 
-            // Add options to products
             savedProducts[0].options = carOptions
             savedProducts[1].options = bikeOptions
             productRepository.saveAll(listOf(savedProducts[0], savedProducts[1]))
