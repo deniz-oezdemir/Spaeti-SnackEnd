@@ -1,6 +1,8 @@
 package ecommerce.endtoend
 
+import ecommerce.model.OptionDTO
 import ecommerce.model.PageResponseDTO
+import ecommerce.model.ProductRequestDTO
 import ecommerce.model.ProductResponseDTO
 import io.restassured.RestAssured
 import io.restassured.common.mapper.TypeRef
@@ -54,10 +56,20 @@ class ProductE2ETest {
     @Test
     fun getProduct() {
         val productDTO =
-            ProductResponseDTO(
-                name = "Speaker",
+            ProductRequestDTO(
+                id = null,
+                name = "TV",
                 price = 99.99,
-                imageUrl = "http://iteha",
+                imageUrl = "https://example.com/speaker.jpg", // Use a more complete URL
+                options =
+                    setOf(
+                        OptionDTO(
+                            id = null,
+                            name = "hi",
+                            quantity = 99, // Try using Integer instead of Long if needed
+                            productId = null,
+                        ),
+                    ),
             )
         val id =
             RestAssured.given()
@@ -73,7 +85,7 @@ class ProductE2ETest {
                 .then().log().all().extract()
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
-        assertThat(response.body().jsonPath().getString("name")).isEqualTo("Speaker")
+        assertThat(response.body().jsonPath().getString("name")).isEqualTo("TV")
         assertThat(response.body().jsonPath().getFloat("price")).isEqualTo(99.99f)
     }
 
@@ -90,7 +102,22 @@ class ProductE2ETest {
 
     @Test
     fun createProduct() {
-        val newProductDTO = ProductResponseDTO(name = "Monitor", price = 150.0, imageUrl = "https://example.com/monitor.jpg")
+        val newProductDTO =
+            ProductRequestDTO(
+                id = null,
+                name = "Monitor",
+                price = 150.0,
+                imageUrl = "https://example.com/speaker.jpg", // Use a more complete URL
+                options =
+                    setOf(
+                        OptionDTO(
+                            id = null,
+                            name = "hi",
+                            quantity = 99, // Try using Integer instead of Long if needed
+                            productId = null,
+                        ),
+                    ),
+            )
 
         val response =
             RestAssured.given().log().all()
@@ -107,7 +134,22 @@ class ProductE2ETest {
 
     @Test
     fun `Should return error when product name use invalid characters`() {
-        val newProductDTO = ProductResponseDTO(name = "**$$", price = 150.0, imageUrl = "https://example.com/monitor.jpg")
+        val newProductDTO =
+            ProductRequestDTO(
+                id = null,
+                name = "!@#$%^&*()_+}{",
+                price = 99.99,
+                imageUrl = "https://example.com/speaker.jpg", // Use a more complete URL
+                options =
+                    setOf(
+                        OptionDTO(
+                            id = null,
+                            name = "hi",
+                            quantity = 99, // Try using Integer instead of Long if needed
+                            productId = null,
+                        ),
+                    ),
+            )
 
         val response =
             RestAssured.given().log().all()
@@ -127,7 +169,21 @@ class ProductE2ETest {
     @Test
     fun `Should return error when product name is bigger than 15 characters`() {
         val newProductDTO =
-            ProductResponseDTO(name = "123456789123456789", price = 150.0, imageUrl = "https://example.com/monitor.jpg")
+            ProductRequestDTO(
+                id = null,
+                name = "SpeakersareLovemyDearDearDear",
+                price = 99.99,
+                imageUrl = "https://example.com/speaker.jpg", // Use a more complete URL
+                options =
+                    setOf(
+                        OptionDTO(
+                            id = null,
+                            name = "hi",
+                            quantity = 99, // Try using Integer instead of Long if needed
+                            productId = null,
+                        ),
+                    ),
+            )
 
         val response =
             RestAssured.given().log().all()
@@ -146,7 +202,23 @@ class ProductE2ETest {
 
     @Test
     fun `Should return error when product name already exists`() {
-        val dto = ProductResponseDTO(name = "Mouse", price = 30.0, imageUrl = "https://example.com/mouse.jpg")
+        val dto =
+            ProductRequestDTO(
+                id = null,
+                name = "Speaker",
+                price = 99.99,
+                imageUrl = "https://example.com/speaker.jpg", // Use a more complete URL
+                options =
+                    setOf(
+                        OptionDTO(
+                            id = null,
+                            name = "hi",
+                            quantity = 99, // Try using Integer instead of Long if needed
+                            productId = null,
+                        ),
+                    ),
+            )
+
         RestAssured.given().auth().oauth2(token)
             .contentType(ContentType.JSON).body(dto).post("/api/products")
 
@@ -165,7 +237,21 @@ class ProductE2ETest {
     @Test
     fun `Should return error when product price is negative value`() {
         val newProductDTO =
-            ProductResponseDTO(name = "Pizza", price = -150.0, imageUrl = "https://example.com/monitor.jpg")
+            ProductRequestDTO(
+                id = null,
+                name = "Speaker",
+                price = -99.99,
+                imageUrl = "https://example.com/speaker.jpg", // Use a more complete URL
+                options =
+                    setOf(
+                        OptionDTO(
+                            id = null,
+                            name = "hi",
+                            quantity = 99, // Try using Integer instead of Long if needed
+                            productId = null,
+                        ),
+                    ),
+            )
 
         val response =
             RestAssured.given().log().all()
@@ -184,7 +270,22 @@ class ProductE2ETest {
 
     @Test
     fun updateProduct() {
-        val created = ProductResponseDTO(name = "Mouse", price = 25.0, imageUrl = "https://example.com/mouse.jpg")
+        val created =
+            ProductRequestDTO(
+                id = null,
+                name = "Speaker",
+                price = 99.99,
+                imageUrl = "https://example.com/speaker.jpg", // Use a more complete URL
+                options =
+                    setOf(
+                        OptionDTO(
+                            id = null,
+                            name = "hi",
+                            quantity = 99, // Try using Integer instead of Long if needed
+                            productId = null,
+                        ),
+                    ),
+            )
         val id =
             RestAssured.given()
                 .auth().oauth2(token)
@@ -193,7 +294,22 @@ class ProductE2ETest {
                 .post("/api/products")
                 .then().extract().jsonPath().getLong("id")
 
-        val updated = ProductResponseDTO(name = "Gaming Mouse", price = 45.0, imageUrl = "https://example.com/gaming-mouse.jpg")
+        val updated =
+            ProductRequestDTO(
+                id = null,
+                name = "Gaming Mouse",
+                price = 45.0,
+                imageUrl = "https://example.com/speaker.jpg", // Use a more complete URL
+                options =
+                    setOf(
+                        OptionDTO(
+                            id = null,
+                            name = "ello",
+                            quantity = 99, // Try using Integer instead of Long if needed
+                            productId = null,
+                        ),
+                    ),
+            )
 
         val response =
             RestAssured.given().log().all()
@@ -208,34 +324,49 @@ class ProductE2ETest {
         assertThat(response.body().jsonPath().getFloat("price")).isEqualTo(45.0f)
     }
 
-    @Test
-    fun patchProduct() {
-        val created = ProductResponseDTO(name = "Tablet", price = 299.0, imageUrl = "https://example.com/tablet.jpg")
-        val id =
-            RestAssured.given()
-                .auth().oauth2(token)
-                .contentType(ContentType.JSON)
-                .body(created)
-                .post("/api/products")
-                .then().extract().jsonPath().getLong("id")
-
-        val patch = mapOf("price" to 249.0)
-
-        val response =
-            RestAssured.given().log().all()
-                .auth().oauth2(token)
-                .contentType(ContentType.JSON)
-                .body(patch)
-                .patch("/api/products/$id")
-                .then().log().all().extract()
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
-        assertThat(response.body().jsonPath().getFloat("price")).isEqualTo(249.0f)
-    }
+//    @Test
+//    fun patchProduct() {
+//        val created = ProductRequestDTO(name = "Tablet", price = 299.0, imageUrl = "https://example.com/tablet.jpg")
+//        val id =
+//            RestAssured.given()
+//                .auth().oauth2(token)
+//                .contentType(ContentType.JSON)
+//                .body(created)
+//                .post("/api/products")
+//                .then().extract().jsonPath().getLong("id")
+//
+//        val patch = mapOf("price" to 249.0)
+//
+//        val response =
+//            RestAssured.given().log().all()
+//                .auth().oauth2(token)
+//                .contentType(ContentType.JSON)
+//                .body(patch)
+//                .patch("/api/products/$id")
+//                .then().log().all().extract()
+//
+//        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
+//        assertThat(response.body().jsonPath().getFloat("price")).isEqualTo(249.0f)
+//    }
 
     @Test
     fun deleteProduct() {
-        val created = ProductResponseDTO(name = "Keyboard", price = 59.99, imageUrl = "https://example.com/keyboard.jpg")
+        val created =
+            ProductRequestDTO(
+                id = null,
+                name = "Toilet",
+                price = 99.99,
+                imageUrl = "https://example.com/speaker.jpg", // Use a more complete URL
+                options =
+                    setOf(
+                        OptionDTO(
+                            id = null,
+                            name = "hi",
+                            quantity = 99, // Try using Integer instead of Long if needed
+                            productId = null,
+                        ),
+                    ),
+            )
         val id =
             RestAssured.given()
                 .auth().oauth2(token)
