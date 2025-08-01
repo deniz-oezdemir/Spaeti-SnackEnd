@@ -1,7 +1,7 @@
 package ecommerce.endtoend
 
 import ecommerce.model.PageResponseDTO
-import ecommerce.model.ProductDTO
+import ecommerce.model.ProductResponseDTO
 import io.restassured.RestAssured
 import io.restassured.common.mapper.TypeRef
 import io.restassured.http.ContentType
@@ -46,7 +46,7 @@ class ProductE2ETest {
                 .then().log().all().extract()
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
-        val page = response.body().`as`(object : TypeRef<PageResponseDTO<ProductDTO>>() {})
+        val page = response.body().`as`(object : TypeRef<PageResponseDTO<ProductResponseDTO>>() {})
         assertThat(page.content).isNotEmpty()
         assertThat(page.content.size).isEqualTo(10)
     }
@@ -54,7 +54,7 @@ class ProductE2ETest {
     @Test
     fun getProduct() {
         val productDTO =
-            ProductDTO(
+            ProductResponseDTO(
                 name = "Speaker",
                 price = 99.99,
                 imageUrl = "http://iteha",
@@ -90,7 +90,7 @@ class ProductE2ETest {
 
     @Test
     fun createProduct() {
-        val newProductDTO = ProductDTO(name = "Monitor", price = 150.0, imageUrl = "https://example.com/monitor.jpg")
+        val newProductDTO = ProductResponseDTO(name = "Monitor", price = 150.0, imageUrl = "https://example.com/monitor.jpg")
 
         val response =
             RestAssured.given().log().all()
@@ -107,7 +107,7 @@ class ProductE2ETest {
 
     @Test
     fun `Should return error when product name use invalid characters`() {
-        val newProductDTO = ProductDTO(name = "**$$", price = 150.0, imageUrl = "https://example.com/monitor.jpg")
+        val newProductDTO = ProductResponseDTO(name = "**$$", price = 150.0, imageUrl = "https://example.com/monitor.jpg")
 
         val response =
             RestAssured.given().log().all()
@@ -127,7 +127,7 @@ class ProductE2ETest {
     @Test
     fun `Should return error when product name is bigger than 15 characters`() {
         val newProductDTO =
-            ProductDTO(name = "123456789123456789", price = 150.0, imageUrl = "https://example.com/monitor.jpg")
+            ProductResponseDTO(name = "123456789123456789", price = 150.0, imageUrl = "https://example.com/monitor.jpg")
 
         val response =
             RestAssured.given().log().all()
@@ -146,7 +146,7 @@ class ProductE2ETest {
 
     @Test
     fun `Should return error when product name already exists`() {
-        val dto = ProductDTO(name = "Mouse", price = 30.0, imageUrl = "https://example.com/mouse.jpg")
+        val dto = ProductResponseDTO(name = "Mouse", price = 30.0, imageUrl = "https://example.com/mouse.jpg")
         RestAssured.given().auth().oauth2(token)
             .contentType(ContentType.JSON).body(dto).post("/api/products")
 
@@ -165,7 +165,7 @@ class ProductE2ETest {
     @Test
     fun `Should return error when product price is negative value`() {
         val newProductDTO =
-            ProductDTO(name = "Pizza", price = -150.0, imageUrl = "https://example.com/monitor.jpg")
+            ProductResponseDTO(name = "Pizza", price = -150.0, imageUrl = "https://example.com/monitor.jpg")
 
         val response =
             RestAssured.given().log().all()
@@ -184,7 +184,7 @@ class ProductE2ETest {
 
     @Test
     fun updateProduct() {
-        val created = ProductDTO(name = "Mouse", price = 25.0, imageUrl = "https://example.com/mouse.jpg")
+        val created = ProductResponseDTO(name = "Mouse", price = 25.0, imageUrl = "https://example.com/mouse.jpg")
         val id =
             RestAssured.given()
                 .auth().oauth2(token)
@@ -193,7 +193,7 @@ class ProductE2ETest {
                 .post("/api/products")
                 .then().extract().jsonPath().getLong("id")
 
-        val updated = ProductDTO(name = "Gaming Mouse", price = 45.0, imageUrl = "https://example.com/gaming-mouse.jpg")
+        val updated = ProductResponseDTO(name = "Gaming Mouse", price = 45.0, imageUrl = "https://example.com/gaming-mouse.jpg")
 
         val response =
             RestAssured.given().log().all()
@@ -210,7 +210,7 @@ class ProductE2ETest {
 
     @Test
     fun patchProduct() {
-        val created = ProductDTO(name = "Tablet", price = 299.0, imageUrl = "https://example.com/tablet.jpg")
+        val created = ProductResponseDTO(name = "Tablet", price = 299.0, imageUrl = "https://example.com/tablet.jpg")
         val id =
             RestAssured.given()
                 .auth().oauth2(token)
@@ -235,7 +235,7 @@ class ProductE2ETest {
 
     @Test
     fun deleteProduct() {
-        val created = ProductDTO(name = "Keyboard", price = 59.99, imageUrl = "https://example.com/keyboard.jpg")
+        val created = ProductResponseDTO(name = "Keyboard", price = 59.99, imageUrl = "https://example.com/keyboard.jpg")
         val id =
             RestAssured.given()
                 .auth().oauth2(token)

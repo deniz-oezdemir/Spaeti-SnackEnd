@@ -1,7 +1,7 @@
 package ecommerce.integration
 
 import ecommerce.exception.NotFoundException
-import ecommerce.model.ProductDTO
+import ecommerce.model.ProductResponseDTO
 import ecommerce.model.ProductPatchDTO
 import ecommerce.repositories.ProductRepository
 import ecommerce.services.ProductService
@@ -22,12 +22,12 @@ class ProductServiceTest(
     @Autowired val productService: ProductService,
     @Autowired val productRepository: ProductRepository,
 ) {
-    private lateinit var product: ProductDTO
+    private lateinit var product: ProductResponseDTO
 
     @BeforeEach
     fun setup() {
         product =
-            ProductDTO(
+            ProductResponseDTO(
                 id = null,
                 name = "Test Product",
                 price = 19.99,

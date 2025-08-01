@@ -2,11 +2,11 @@ package ecommerce.controller
 
 import ecommerce.annotation.CheckAdminOnly
 import ecommerce.annotation.IgnoreCheckLogin
-import ecommerce.model.ProductDTO
+import ecommerce.model.ProductResponseDTO
 import ecommerce.model.ProductPatchDTO
+import ecommerce.model.ProductRequestDTO
 import ecommerce.services.ProductService
 import jakarta.validation.Valid
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.net.URI
 
@@ -30,36 +29,36 @@ class ProductController(private val productService: ProductService) {
     fun getProducts(
         @PageableDefault(size = 10, sort = ["name"], direction = Sort.Direction.ASC)
         pageable: Pageable
-    ): Page<ProductDTO> = productService.findAll(pageable)
+    ): Page<ProductResponseDTO> = productService.findAll(pageable)
 
     @IgnoreCheckLogin
     @GetMapping(PRODUCT_PATH_ID)
     fun getProductById(
         @PathVariable id: Long,
-    ): ResponseEntity<ProductDTO> = ResponseEntity.ok(productService.findById(id))
+    ): ResponseEntity<ProductResponseDTO> = ResponseEntity.ok(productService.findById(id))
 
     @CheckAdminOnly
     @PostMapping(PRODUCT_PATH)
     fun createProduct(
-        @Valid @RequestBody productDTO: ProductDTO,
-    ): ResponseEntity<ProductDTO> {
-        val saved = productService.save(productDTO)
+        @Valid @RequestBody productRequestDTO: ProductRequestDTO,
+    ): ResponseEntity<ProductResponseDTO> {
+        val saved = productService.save(productRequestDTO)
         return ResponseEntity.created(URI.create("$PRODUCT_PATH/${saved.id}")).body(saved)
     }
 
     @CheckAdminOnly
     @PutMapping(PRODUCT_PATH_ID)
     fun updateProductById(
-        @Valid @RequestBody productDTO: ProductDTO,
+        @Valid @RequestBody productDTO: ProductRequestDTO,
         @PathVariable id: Long,
-    ): ResponseEntity<ProductDTO> = ResponseEntity.ok(productService.updateById(id, productDTO))
+    ): ResponseEntity<ProductResponseDTO> = ResponseEntity.ok(productService.updateById(id, productDTO))
 
     @CheckAdminOnly
     @PatchMapping(PRODUCT_PATH_ID)
     fun patchProductById(
         @Valid @RequestBody productPatchDTO: ProductPatchDTO,
         @PathVariable id: Long,
-    ): ResponseEntity<ProductDTO> = ResponseEntity.ok(productService.patchById(id, productPatchDTO))
+    ): ResponseEntity<ProductResponseDTO> = ResponseEntity.ok(productService.patchById(id, productPatchDTO))
 
     @CheckAdminOnly
     @DeleteMapping(PRODUCT_PATH_ID)
