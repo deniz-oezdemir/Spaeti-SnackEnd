@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
 @Service
@@ -22,6 +23,7 @@ class WishItemService(
     private val wishItemRepository: WishItemRepository,
     private val productRepository: ProductRepository,
 ) {
+    @Transactional
     fun save(
         wishItemRequestDTO: WishItemRequestDTO,
         member: MemberDTO,
@@ -39,6 +41,7 @@ class WishItemService(
         ).toDto()
     }
 
+    @Transactional(readOnly = true)
     fun findByMember(memberId: Long): List<WishItemResponseDTO> {
         val wishItems = wishItemRepository.findByMemberId(memberId)
 
@@ -52,6 +55,7 @@ class WishItemService(
         }
     }
 
+    @Transactional(readOnly = true)
     fun findByMember(
         memberId: Long,
         page: Pageable,
@@ -68,11 +72,17 @@ class WishItemService(
         }
     }
 
+    @Transactional
     fun delete(
         wishItemRequestDTO: WishItemRequestDTO,
         memberId: Long,
     ) {
         wishItemRepository.deleteByProductIdAndMemberId(wishItemRequestDTO.productId, memberId)
+    }
+
+    @Transactional
+    fun deleteAll() {
+        wishItemRepository.deleteAll()
     }
 
     private fun validateProductExists(productId: Long) {
@@ -81,7 +91,4 @@ class WishItemService(
         }
     }
 
-    fun deleteAll() {
-        wishItemRepository.deleteAll()
-    }
 }

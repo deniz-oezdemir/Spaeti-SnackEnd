@@ -7,7 +7,6 @@ import ecommerce.mappers.toEntity
 import ecommerce.model.ProductPatchDTO
 import ecommerce.model.ProductRequestDTO
 import ecommerce.model.ProductResponseDTO
-import ecommerce.repositories.OptionRepository
 import ecommerce.repositories.ProductRepository
 import org.springframework.context.annotation.Primary
 import org.springframework.data.domain.Page
@@ -28,6 +27,7 @@ class ProductServiceImpl(
         return productDTOs
     }
 
+    @Transactional(readOnly = true)
     override fun findById(id: Long): ProductResponseDTO {
         val product = productRepository.findByIdOrNull(id)
 
@@ -35,6 +35,7 @@ class ProductServiceImpl(
         return product.toDTO()
     }
 
+    @Transactional
     override fun save(productRequestDTO: ProductRequestDTO): ProductResponseDTO {
         validateProductNameUniqueness(productRequestDTO.name)
 
@@ -49,6 +50,7 @@ class ProductServiceImpl(
         return savedProduct.toDTO()
     }
 
+    @Transactional
     override fun updateById(
         id: Long,
         productDTO: ProductRequestDTO,
@@ -66,6 +68,7 @@ class ProductServiceImpl(
         return productRepository.save(originalProduct).toDTO()
     }
 
+    @Transactional
     override fun patchById(
         id: Long,
         productPatchDTO: ProductPatchDTO,
@@ -75,11 +78,13 @@ class ProductServiceImpl(
         return productRepository.save(updatedProduct.toEntity()).toDTO()
     }
 
+    @Transactional
     override fun deleteById(id: Long) {
         if (!productRepository.existsById(id)) throw NotFoundException("Product with ID $id not found")
         productRepository.deleteById(id)
     }
 
+    @Transactional
     override fun deleteAll() {
         productRepository.deleteAll()
     }

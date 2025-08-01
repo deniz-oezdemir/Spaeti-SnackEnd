@@ -13,6 +13,7 @@ import ecommerce.repositories.ProductRepository
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
 @Service
@@ -20,6 +21,7 @@ class CartItemServiceImpl(
     private val cartItemRepository: CartItemRepository,
     private val productRepository: ProductRepository,
 ) : CartItemService {
+    @Transactional
     override fun addOrUpdate(
         cartItemRequestDTO: CartItemRequestDTO,
         member: MemberDTO,
@@ -36,6 +38,7 @@ class CartItemServiceImpl(
         return cartItem.toDto()
     }
 
+    @Transactional(readOnly = true)
     override fun findByMember(memberId: Long): List<CartItemResponseDTO> {
         val itemsWithProducts = cartItemRepository.findByMemberId(memberId)
 
@@ -50,6 +53,7 @@ class CartItemServiceImpl(
         }
     }
 
+    @Transactional
     override fun delete(
         cartItemRequestDTO: CartItemRequestDTO,
         memberId: Long,
@@ -61,6 +65,11 @@ class CartItemServiceImpl(
         if (!productRepository.existsById(productId)) {
             throw EmptyResultDataAccessException("Product with ID $productId does not exist", 1)
         }
+    }
+
+    @Transactional
+    override fun deleteAll() {
+        cartItemRepository.deleteAll()
     }
 
     private fun handleCreate(
@@ -89,9 +98,5 @@ class CartItemServiceImpl(
                 ?: throw OperationFailedException("Cart item not found")
 
         return cartItemRepository.save(existing.copy(quantity = cartItemRequestDTO.quantity))
-    }
-
-    override fun deleteAll() {
-        cartItemRepository.deleteAll()
     }
 }

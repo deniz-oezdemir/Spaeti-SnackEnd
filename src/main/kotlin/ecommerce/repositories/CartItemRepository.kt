@@ -8,22 +8,18 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 
 interface CartItemRepository : JpaRepository<CartItem, Long> {
-    @Transactional
     fun findByMemberId(memberId: Long): List<CartItem>
 
-    @Transactional
     fun existsByProductIdAndMemberId(
         productId: Long,
         memberId: Long,
     ): Boolean
 
-    @Transactional
     fun findByProductIdAndMemberId(
         productId: Long,
         memberId: Long,
     ): CartItem?
 
-    @Transactional
     fun deleteByProductIdAndMemberId(
         productId: Long,
         memberId: Long,
