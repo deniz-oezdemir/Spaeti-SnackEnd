@@ -90,5 +90,4 @@ class WishItemService(
             throw EmptyResultDataAccessException("Product with ID $productId does not exist", 1)
         }
     }
-
 }

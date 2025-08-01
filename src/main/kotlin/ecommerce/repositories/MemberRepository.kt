@@ -1,7 +1,6 @@
 package ecommerce.repositories
 
 import ecommerce.entities.Member
-import jakarta.transaction.Transactional
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface MemberRepository : JpaRepository<Member, Long> {

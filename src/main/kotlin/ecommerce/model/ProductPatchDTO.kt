@@ -1,8 +1,6 @@
 package ecommerce.model
 
 import ecommerce.util.ValidationMessages
-import ecommerce.util.ValidationMessages.OPTION_REQUIRED
-import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Positive
 import jakarta.validation.constraints.Size
@@ -17,12 +15,4 @@ data class ProductPatchDTO(
     @field:Pattern(regexp = "^https?://.*$", message = ValidationMessages.IMAGE_FORMAT)
     var imageUrl: String? = null,
     val options: Set<OptionDTO> = emptySet(),
-) {
-    fun copyFrom(productPatchDTO: ProductPatchDTO): ProductPatchDTO {
-        productPatchDTO.id?.let { this.id = it }
-        productPatchDTO.name?.takeIf { it.isNotBlank() }?.let { this.name = it }
-        productPatchDTO.price?.let { this.price = it }
-        productPatchDTO.imageUrl?.takeIf { it.isNotBlank() }?.let { this.imageUrl = it }
-        return this
-    }
-}
+)
