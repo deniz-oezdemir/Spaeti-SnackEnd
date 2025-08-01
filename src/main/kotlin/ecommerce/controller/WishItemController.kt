@@ -1,14 +1,11 @@
 package ecommerce.controller
 
 import ecommerce.annotation.LoginMember
-import ecommerce.entities.Member
 import ecommerce.model.WishItemResponseDTO
 import ecommerce.model.MemberDTO
-import ecommerce.model.ProductDTO
 import ecommerce.model.WishItemRequestDTO
 import ecommerce.services.WishItemService
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault

@@ -3,7 +3,7 @@ package ecommerce.endtoend
 import ecommerce.model.PageResponseDTO
 import ecommerce.model.WishItemRequestDTO
 import ecommerce.model.WishItemResponseDTO
-import ecommerce.model.ProductDTO
+import ecommerce.model.ProductResponseDTO
 import io.restassured.RestAssured
 import io.restassured.common.mapper.TypeRef
 import io.restassured.http.ContentType
@@ -49,7 +49,7 @@ class WishItemE2ETest {
     fun `add wish item`() {
         val wishItem = addWishItemAndReturn()
 
-        assertThat(wishItem.product).isInstanceOf(ProductDTO::class.java)
+        assertThat(wishItem.product).isInstanceOf(ProductResponseDTO::class.java)
         assertThat(wishItem.product.id).isEqualTo(productId)
         assertThat(wishItem.addedAt).isBefore(LocalDateTime.now().plusMinutes(1))
     }
@@ -94,7 +94,7 @@ class WishItemE2ETest {
                 .header("Authorization", "Bearer $token")
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .get("/api/wish")
-                .then().extract().body().`as`(object : TypeRef<PageResponseDTO<ProductDTO>>() {})
+                .then().extract().body().`as`(object : TypeRef<PageResponseDTO<ProductResponseDTO>>() {})
 
         assertThat(items.content).isEmpty()
     }
