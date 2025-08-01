@@ -16,12 +16,12 @@ interface ProductService {
     fun updateById(
         id: Long,
         productDTO: ProductRequestDTO,
-    ): ProductResponseDTO?
+    ): ProductResponseDTO
 
     fun patchById(
         id: Long,
         productPatchDTO: ProductPatchDTO,
-    ): ProductResponseDTO?
+    ): ProductResponseDTO
 
     fun deleteById(id: Long)
 

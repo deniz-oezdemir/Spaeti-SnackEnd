@@ -54,28 +54,35 @@ class ProductServiceImpl(
     override fun updateById(
         id: Long,
         productDTO: ProductRequestDTO,
-    ): ProductResponseDTO? {
-        val originalProduct =
+    ): ProductResponseDTO {
+        val existing =
             productRepository.findByIdOrNull(id)
                 ?: throw NotFoundException("Product with id=$id not found")
 
-        if (originalProduct.name != productDTO.name) {
+        if (existing.name != productDTO.name) {
             validateProductNameUniqueness(productDTO.name)
         }
 
-        originalProduct.copyFrom(productDTO, productDTO.options)
+        existing.copyFrom(productDTO, productDTO.options)
 
-        return productRepository.save(originalProduct).toDTO()
+        return productRepository.save(existing).toDTO()
     }
 
     @Transactional
     override fun patchById(
         id: Long,
         productPatchDTO: ProductPatchDTO,
-    ): ProductResponseDTO? {
-        val existing = findById(id)
-        val updatedProduct = existing.copyFrom(productPatchDTO)
-        return productRepository.save(updatedProduct.toEntity()).toDTO()
+    ): ProductResponseDTO {
+        val existing =
+            productRepository.findByIdOrNull(id)
+                ?: throw NotFoundException("Product with id=$id not found")
+        if (productPatchDTO.name != null && existing.name != productPatchDTO.name) {
+            validateProductNameUniqueness(productPatchDTO.name!!)
+        }
+
+        existing.copyFrom(productPatchDTO, productPatchDTO.options)
+
+        return productRepository.save(existing).toDTO()
     }
 
     @Transactional

@@ -324,30 +324,45 @@ class ProductE2ETest {
         assertThat(response.body().jsonPath().getFloat("price")).isEqualTo(45.0f)
     }
 
-//    @Test
-//    fun patchProduct() {
-//        val created = ProductRequestDTO(name = "Tablet", price = 299.0, imageUrl = "https://example.com/tablet.jpg")
-//        val id =
-//            RestAssured.given()
-//                .auth().oauth2(token)
-//                .contentType(ContentType.JSON)
-//                .body(created)
-//                .post("/api/products")
-//                .then().extract().jsonPath().getLong("id")
-//
-//        val patch = mapOf("price" to 249.0)
-//
-//        val response =
-//            RestAssured.given().log().all()
-//                .auth().oauth2(token)
-//                .contentType(ContentType.JSON)
-//                .body(patch)
-//                .patch("/api/products/$id")
-//                .then().log().all().extract()
-//
-//        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
-//        assertThat(response.body().jsonPath().getFloat("price")).isEqualTo(249.0f)
-//    }
+    @Test
+    fun patchProduct() {
+        val created =
+            ProductRequestDTO(
+                id = null,
+                name = "Tv",
+                price = 99.99,
+                imageUrl = "https://example.com/speaker.jpg",
+                options =
+                    setOf(
+                        OptionDTO(
+                            id = null,
+                            name = "hi",
+                            quantity = 99,
+                            productId = null,
+                        ),
+                    ),
+            )
+        val id =
+            RestAssured.given()
+                .auth().oauth2(token)
+                .contentType(ContentType.JSON)
+                .body(created)
+                .post("/api/products")
+                .then().extract().jsonPath().getLong("id")
+
+        val patch = mapOf("price" to 249.0)
+
+        val response =
+            RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .contentType(ContentType.JSON)
+                .body(patch)
+                .patch("/api/products/$id")
+                .then().log().all().extract()
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
+        assertThat(response.body().jsonPath().getFloat("price")).isEqualTo(249.0f)
+    }
 
     @Test
     fun deleteProduct() {

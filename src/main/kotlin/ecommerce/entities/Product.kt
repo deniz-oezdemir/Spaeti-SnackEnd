@@ -3,6 +3,7 @@ package ecommerce.entities
 import ecommerce.exception.InvalidOptionNameException
 import ecommerce.mappers.toEntity
 import ecommerce.model.OptionDTO
+import ecommerce.model.ProductPatchDTO
 import ecommerce.model.ProductRequestDTO
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
@@ -53,19 +54,27 @@ class Product(
         this.name = other.name
         this.price = other.price
         this.imageUrl = other.imageUrl
+        this.options = mapOptionDTOs(optionDTOs)
+    }
 
-        options =
-            optionDTOs.map { optionDTO ->
-                val option =
-                    _options
-                        .find { it.id == optionDTO.id }
-                        ?.apply {
-                            name = optionDTO.name
-                            quantity = optionDTO.quantity
-                        }
-                        ?: optionDTO.toEntity(this)
+    fun copyFrom(
+        other: ProductPatchDTO,
+        optionDTOs: Set<OptionDTO> = emptySet(),
+    ) {
+        other.name?.let { if (it.isNotBlank()) this.name = it }
+        other.price?.let { this.price = it }
+        other.imageUrl?.let { if (it.isNotBlank()) this.imageUrl = it }
+        if (optionDTOs.isNotEmpty()) {
+            this.options = mapOptionDTOs(optionDTOs)
+        }
+    }
 
-                option
-            }
+    private fun mapOptionDTOs(optionDTOs: Set<OptionDTO>): List<Option> {
+        return optionDTOs.map { dto ->
+            _options.find { it.id == dto.id }?.apply {
+                name = dto.name
+                quantity = dto.quantity
+            } ?: dto.toEntity(this)
+        }
     }
 }

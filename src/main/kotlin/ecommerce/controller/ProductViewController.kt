@@ -35,7 +35,6 @@ class ProductViewController(private val productService: ProductService) {
         return "product-list"
     }
 
-    // TODO:
     @PostMapping("/products")
     fun createProduct(
         @Valid productDTO: ProductRequestDTO,
@@ -46,6 +45,9 @@ class ProductViewController(private val productService: ProductService) {
     ): String {
         if (bindingResult.hasErrors()) {
             val products = productService.findAll(pageable)
+            model.addAttribute("products", products.content)
+            model.addAttribute("currentPage", products.number)
+            model.addAttribute("totalPages", products.totalPages)
             model.addAttribute("productDTO", productDTO)
             model.addAttribute("hasErrors", bindingResult.hasErrors())
             return "product-list"
