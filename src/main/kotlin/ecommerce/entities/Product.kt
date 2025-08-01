@@ -1,5 +1,6 @@
 package ecommerce.entities
 
+import ecommerce.exception.InvalidOptionNameException
 import ecommerce.mappers.toEntity
 import ecommerce.model.OptionDTO
 import ecommerce.model.ProductRequestDTO
@@ -40,7 +41,7 @@ class Product(
 
     fun addOption(option: Option) {
         if (_options.any { it.name == option.name }) {
-            throw IllegalArgumentException("Option with name '${option.name}' already exists")
+            throw InvalidOptionNameException("Option with name '${option.name}' already exists")
         }
         _options.add(option)
     }
