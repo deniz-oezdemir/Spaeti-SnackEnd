@@ -31,21 +31,25 @@ class Option(
 ) {
     @Column(name = "name", nullable = false, length = 50)
     var name: String = name
-        set(value) {
-            validateName(value)
-            field = value
-        }
+        private set
 
     @Column(name = "quantity", nullable = false)
     var quantity: Long = quantity
-        set(value) {
-            validateQuantity(value)
-            field = value
-        }
+        private set
 
     init {
-        this.name = name
-        this.quantity = quantity
+        updateName(name)
+        updateQuantity(quantity)
+    }
+
+    fun updateName(newName: String) {
+        validateName(newName)
+        this.name = newName
+    }
+
+    fun updateQuantity(newQuantity: Long) {
+        validateQuantity(newQuantity)
+        this.quantity = newQuantity
     }
 
     fun subtract(quantity: Long) {

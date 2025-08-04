@@ -72,8 +72,8 @@ class Product(
     private fun mapOptionDTOs(optionDTOs: Set<OptionDTO>): List<Option> {
         return optionDTOs.map { dto ->
             _options.find { it.id == dto.id }?.apply {
-                name = dto.name
-                quantity = dto.quantity
+                updateName(dto.name)
+                updateQuantity(dto.quantity)
             } ?: dto.toEntity(this)
         }
     }
