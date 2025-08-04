@@ -29,7 +29,13 @@ class Option(
     @JoinColumn(name = "product_id")
     var product: Product? = null,
 ) {
-    @Column(name = "name", nullable = false, length = 50)
+    companion object {
+        const val MAX_NAME_LENGTH = 50
+        const val MIN_QUANTITY = 1L
+        const val MAX_QUANTITY = 99_999_999L
+    }
+
+    @Column(name = "name", nullable = false, length = MAX_NAME_LENGTH)
     var name: String = name
         private set
 
@@ -53,18 +59,19 @@ class Option(
     }
 
     fun subtract(quantity: Long) {
-        if (quantity < 1) throw InvalidOptionQuantityException("Subtract amount must be >= 1")
+        if (quantity < MIN_QUANTITY) throw InvalidOptionQuantityException("Subtract amount must be >= $MIN_QUANTITY")
         if (this.quantity < quantity) throw InsufficientStockException("Not enough stock")
         this.quantity -= quantity
     }
 
     private fun validateName(name: String) {
-        if (name.length > 50) throw InvalidOptionNameException("Option name too long")
+        if (name.length > MAX_NAME_LENGTH) throw InvalidOptionNameException("Option name too long")
         val allowed = Regex("^[\\p{Alnum} \\(\\)\\[\\]\\+\\-\\&\\/_]+$")
         if (!allowed.matches(name)) throw InvalidOptionNameException("Option names contains invalid characters: '$name'")
     }
 
     private fun validateQuantity(quantity: Long) {
-        if (quantity < 1 || quantity >= 100_000_000) throw InvalidOptionQuantityException("Quantity must be between 1 and 99,999,999")
+        if (quantity < MIN_QUANTITY || quantity > MAX_QUANTITY)
+            throw InvalidOptionQuantityException("Quantity must be between $MIN_QUANTITY and $MAX_QUANTITY")
     }
 }

@@ -220,7 +220,7 @@ class AdminE2ETest {
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
         assertThat(response.body().jsonPath().getString("message"))
-            .contains("must be between 1 and 99,999,999")
+            .contains("must be between 1 and 99999999")
     }
 
     @Test
