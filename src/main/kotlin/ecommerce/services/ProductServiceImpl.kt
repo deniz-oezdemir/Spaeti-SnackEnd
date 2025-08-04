@@ -59,18 +59,19 @@ class ProductServiceImpl(
             validateProductNameUniqueness(productDTO.name)
         }
 
-        val options = productDTO.options.map { dto ->
-            existing.options.find { it.id == dto.id }?.apply {
-                updateName(dto.name)
-                updateQuantity(dto.quantity)
-            } ?: dto.toEntity(existing)
-        }
+        val options =
+            productDTO.options.map { dto ->
+                existing.options.find { it.id == dto.id }?.apply {
+                    updateName(dto.name)
+                    updateQuantity(dto.quantity)
+                } ?: dto.toEntity(existing)
+            }
 
         existing.applyUpdate(
             productDTO.name,
             productDTO.price,
             productDTO.imageUrl,
-            options
+            options,
         )
 
         return productRepository.save(existing).toDTO()

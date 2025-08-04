@@ -71,7 +71,8 @@ class Option(
     }
 
     private fun validateQuantity(quantity: Long) {
-        if (quantity < MIN_QUANTITY || quantity > MAX_QUANTITY)
+        if (quantity < MIN_QUANTITY || quantity > MAX_QUANTITY) {
             throw InvalidOptionQuantityException("Quantity must be between $MIN_QUANTITY and $MAX_QUANTITY")
+        }
     }
 }

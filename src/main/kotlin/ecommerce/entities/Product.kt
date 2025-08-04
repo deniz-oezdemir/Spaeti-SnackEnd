@@ -1,10 +1,6 @@
 package ecommerce.entities
 
 import ecommerce.exception.InvalidOptionNameException
-import ecommerce.mappers.toEntity
-import ecommerce.model.OptionDTO
-import ecommerce.model.ProductPatchDTO
-import ecommerce.model.ProductRequestDTO
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -48,14 +44,24 @@ class Product(
         _options.add(option)
     }
 
-    fun applyUpdate(name: String, price: Double, imageUrl: String, options: List<Option>) {
+    fun applyUpdate(
+        name: String,
+        price: Double,
+        imageUrl: String,
+        options: List<Option>,
+    ) {
         this.name = name
         this.price = price
         this.imageUrl = imageUrl
         this.options = options
     }
 
-    fun applyPatch(name: String?, price: Double?, imageUrl: String?, options: List<Option>?) {
+    fun applyPatch(
+        name: String?,
+        price: Double?,
+        imageUrl: String?,
+        options: List<Option>?,
+    ) {
         name?.let { if (it.isNotBlank()) this.name = it }
         price?.let { this.price = it }
         imageUrl?.let { if (it.isNotBlank()) this.imageUrl = it }

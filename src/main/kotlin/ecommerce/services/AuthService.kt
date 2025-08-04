@@ -5,7 +5,6 @@ import ecommerce.model.MemberDTO
 import ecommerce.model.TokenRequestDTO
 import ecommerce.model.TokenResponseDTO
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AuthService(private val jwtTokenProvider: JwtTokenProvider, private val memberService: MemberService) {

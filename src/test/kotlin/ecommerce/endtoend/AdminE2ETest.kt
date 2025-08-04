@@ -272,12 +272,13 @@ class AdminE2ETest {
 
     @Test
     fun `Should return error when creating option without productId`() {
-        val optionDTO = OptionDTO(
-            id = null,
-            name = "Orphan Option",
-            quantity = 5,
-            productId = null, // missing on purpose
-        )
+        val optionDTO =
+            OptionDTO(
+                id = null,
+                name = "Orphan Option",
+                quantity = 5,
+                productId = null,
+            )
 
         val response =
             RestAssured.given()

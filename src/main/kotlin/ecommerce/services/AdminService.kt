@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class AdminService( // Renamed the class
+class AdminService(
     private val cartItemRepository: CartItemRepository,
     private val productRepository: ProductRepository,
 ) { // Removed ": AdminService" and @Primary
@@ -29,8 +29,9 @@ class AdminService( // Renamed the class
 
     @Transactional
     fun createOption(optionDTO: OptionDTO) {
-        val productId = optionDTO.productId
-            ?: throw MissingProductIdException("productId is required when creating an option standalone")
+        val productId =
+            optionDTO.productId
+                ?: throw MissingProductIdException("productId is required when creating an option standalone")
         val product =
             productRepository.findByIdOrNull(productId)
                 ?: throw NoSuchElementException("Product with id $productId doesn't exist")

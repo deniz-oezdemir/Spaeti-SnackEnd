@@ -19,7 +19,7 @@ class DatabaseSeeder(
     private val memberRepository: MemberRepository,
     private val cartItemRepository: CartItemRepository,
     private val wishItemRepository: WishItemRepository,
-    private val entityManager: EntityManager, // Inject EntityManager
+    private val entityManager: EntityManager,
 ) {
     fun seed() {
         // Seed logic remains exactly the same...
@@ -51,13 +51,13 @@ class DatabaseSeeder(
                     imageUrl = "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop",
                 ),
             ) +
-                    (6..25).map { i ->
-                        Product(
-                            name = "Product $i",
-                            price = (i * 11.11),
-                            imageUrl = "https://placeholder.vn/placeholder/400x400?bg=ff7f50&color=ffffff&text=Product$i",
-                        )
-                    }
+                (6..25).map { i ->
+                    Product(
+                        name = "Product $i",
+                        price = (i * 11.11),
+                        imageUrl = "https://placeholder.vn/placeholder/400x400?bg=ff7f50&color=ffffff&text=Product$i",
+                    )
+                }
         val savedProducts = productRepository.saveAll(products)
 
         val admin =

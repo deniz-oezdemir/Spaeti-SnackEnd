@@ -23,12 +23,13 @@ fun Product.applyPatchFromDTO(patch: ProductPatchDTO) {
     patch.price?.let { this.price = it }
     patch.imageUrl?.let { if (it.isNotBlank()) this.imageUrl = it }
     if (patch.options.isNotEmpty()) {
-        val updatedOptions = patch.options.map { dto ->
-            this.options.find { it.id == dto.id }?.apply {
-                updateName(dto.name)
-                updateQuantity(dto.quantity)
-            } ?: dto.toEntity(this)
-        }
+        val updatedOptions =
+            patch.options.map { dto ->
+                this.options.find { it.id == dto.id }?.apply {
+                    updateName(dto.name)
+                    updateQuantity(dto.quantity)
+                } ?: dto.toEntity(this)
+            }
         this.options = updatedOptions
     }
 }

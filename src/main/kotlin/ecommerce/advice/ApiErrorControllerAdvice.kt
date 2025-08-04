@@ -131,10 +131,11 @@ class ApiErrorControllerAdvice {
     fun handleMissingProductId(e: MissingProductIdException): ResponseEntity<ApiError> {
         val errorMessage = e.message ?: "productId is required"
         log.warn("MissingProductIdException: $errorMessage", e)
-        val apiError = ApiError.badRequest(
-            error = "Validation failed",
-            message = errorMessage
-        )
+        val apiError =
+            ApiError.badRequest(
+                error = "Validation failed",
+                message = errorMessage,
+            )
         return buildResponse(apiError)
     }
 
