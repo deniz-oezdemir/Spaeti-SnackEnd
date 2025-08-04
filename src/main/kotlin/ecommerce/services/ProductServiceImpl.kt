@@ -2,8 +2,10 @@ package ecommerce.services
 
 import ecommerce.exception.NotFoundException
 import ecommerce.exception.OperationFailedException
+import ecommerce.mappers.applyPatchFromDTO
 import ecommerce.mappers.toDTO
 import ecommerce.mappers.toEntity
+import ecommerce.mappers.toEntityWithOptions
 import ecommerce.model.ProductPatchDTO
 import ecommerce.model.ProductRequestDTO
 import ecommerce.model.ProductResponseDTO
@@ -39,13 +41,7 @@ class ProductServiceImpl(
     override fun save(productRequestDTO: ProductRequestDTO): ProductResponseDTO {
         validateProductNameUniqueness(productRequestDTO.name)
 
-        val product = productRequestDTO.toEntity()
-
-        productRequestDTO.options.forEach { optionDTO ->
-            val option = optionDTO.toEntity(product)
-            product.addOption(option)
-        }
-
+        val product = productRequestDTO.toEntityWithOptions()
         val savedProduct = productRepository.save(product)
         return savedProduct.toDTO()
     }
@@ -63,7 +59,19 @@ class ProductServiceImpl(
             validateProductNameUniqueness(productDTO.name)
         }
 
-        existing.copyFrom(productDTO, productDTO.options)
+        val options = productDTO.options.map { dto ->
+            existing.options.find { it.id == dto.id }?.apply {
+                updateName(dto.name)
+                updateQuantity(dto.quantity)
+            } ?: dto.toEntity(existing)
+        }
+
+        existing.applyUpdate(
+            productDTO.name,
+            productDTO.price,
+            productDTO.imageUrl,
+            options
+        )
 
         return productRepository.save(existing).toDTO()
     }
@@ -80,7 +88,7 @@ class ProductServiceImpl(
             validateProductNameUniqueness(productPatchDTO.name!!)
         }
 
-        existing.copyFrom(productPatchDTO, productPatchDTO.options)
+        existing.applyPatchFromDTO(productPatchDTO)
 
         return productRepository.save(existing).toDTO()
     }

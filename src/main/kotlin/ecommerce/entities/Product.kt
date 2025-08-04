@@ -48,34 +48,19 @@ class Product(
         _options.add(option)
     }
 
-    fun copyFrom(
-        other: ProductRequestDTO,
-        optionDTOs: Set<OptionDTO> = emptySet(),
-    ) {
-        this.name = other.name
-        this.price = other.price
-        this.imageUrl = other.imageUrl
-        this.options = mapOptionDTOs(optionDTOs)
+    fun applyUpdate(name: String, price: Double, imageUrl: String, options: List<Option>) {
+        this.name = name
+        this.price = price
+        this.imageUrl = imageUrl
+        this.options = options
     }
 
-    fun copyFrom(
-        other: ProductPatchDTO,
-        optionDTOs: Set<OptionDTO> = emptySet(),
-    ) {
-        other.name?.let { if (it.isNotBlank()) this.name = it }
-        other.price?.let { this.price = it }
-        other.imageUrl?.let { if (it.isNotBlank()) this.imageUrl = it }
-        if (optionDTOs.isNotEmpty()) {
-            this.options = mapOptionDTOs(optionDTOs)
-        }
-    }
-
-    private fun mapOptionDTOs(optionDTOs: Set<OptionDTO>): List<Option> {
-        return optionDTOs.map { dto ->
-            _options.find { it.id == dto.id }?.apply {
-                updateName(dto.name)
-                updateQuantity(dto.quantity)
-            } ?: dto.toEntity(this)
+    fun applyPatch(name: String?, price: Double?, imageUrl: String?, options: List<Option>?) {
+        name?.let { if (it.isNotBlank()) this.name = it }
+        price?.let { this.price = it }
+        imageUrl?.let { if (it.isNotBlank()) this.imageUrl = it }
+        if (options != null && options.isNotEmpty()) {
+            this.options = options
         }
     }
 }
