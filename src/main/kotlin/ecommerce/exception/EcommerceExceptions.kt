@@ -18,3 +18,5 @@ class InvalidOptionNameException(message: String? = null) : RuntimeException(mes
 class InvalidOptionQuantityException(message: String? = null) : RuntimeException(message)
 
 class InsufficientStockException(message: String? = null) : RuntimeException(message)
+
+class MissingProductIdException(message: String) : RuntimeException(message)

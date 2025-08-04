@@ -263,6 +263,29 @@ class AdminE2ETest {
             .contains("Option with name 'Test Option' already exists")
     }
 
+    @Test
+    fun `Should return error when creating option without productId`() {
+        val optionDTO = OptionDTO(
+            id = null,
+            name = "Orphan Option",
+            quantity = 5,
+            productId = null, // missing on purpose
+        )
+
+        val response =
+            RestAssured.given()
+                .auth().oauth2(token)
+                .contentType(ContentType.JSON)
+                .body(optionDTO)
+                .post("/admin/options")
+                .then().log().all()
+                .extract()
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
+        assertThat(response.body().jsonPath().getString("message"))
+            .containsIgnoringCase("productId is required")
+    }
+
     private fun createTestProduct(): Long {
         val productDTO =
             ProductRequestDTO(

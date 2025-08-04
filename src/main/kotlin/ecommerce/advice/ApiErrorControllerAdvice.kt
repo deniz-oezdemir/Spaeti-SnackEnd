@@ -6,6 +6,7 @@ import ecommerce.exception.InsufficientStockException
 import ecommerce.exception.InvalidCartItemQuantityException
 import ecommerce.exception.InvalidOptionNameException
 import ecommerce.exception.InvalidOptionQuantityException
+import ecommerce.exception.MissingProductIdException
 import ecommerce.exception.NotFoundException
 import ecommerce.exception.OperationFailedException
 import ecommerce.util.logger
@@ -123,6 +124,17 @@ class ApiErrorControllerAdvice {
         val errorMessage = e.message ?: "Empty result for your query"
         log.warn("EmptyResultDataAccessException: $errorMessage", e)
         val apiError = ApiError.notFound(errorMessage)
+        return buildResponse(apiError)
+    }
+
+    @ExceptionHandler(MissingProductIdException::class)
+    fun handleMissingProductId(e: MissingProductIdException): ResponseEntity<ApiError> {
+        val errorMessage = e.message ?: "productId is required"
+        log.warn("MissingProductIdException: $errorMessage", e)
+        val apiError = ApiError.badRequest(
+            error = "Validation failed",
+            message = errorMessage
+        )
         return buildResponse(apiError)
     }
 

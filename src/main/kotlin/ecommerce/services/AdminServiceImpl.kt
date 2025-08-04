@@ -1,5 +1,6 @@
 package ecommerce.services
 
+import ecommerce.exception.MissingProductIdException
 import ecommerce.exception.NoSuchElementException
 import ecommerce.mappers.toEntity
 import ecommerce.model.ActiveMemberDTO
@@ -30,9 +31,11 @@ class AdminServiceImpl(
 
     @Transactional
     override fun createOption(optionDTO: OptionDTO) {
+        val productId = optionDTO.productId
+            ?: throw MissingProductIdException("productId is required when creating an option standalone")
         val product =
-            productRepository.findByIdOrNull(optionDTO.productId!!)
-                ?: throw NoSuchElementException("Product with id ${optionDTO.productId} doesn't exist")
+            productRepository.findByIdOrNull(productId)
+                ?: throw NoSuchElementException("Product with id $productId doesn't exist")
         val option = optionDTO.toEntity(product)
         product.addOption(option)
         productRepository.save(product)
