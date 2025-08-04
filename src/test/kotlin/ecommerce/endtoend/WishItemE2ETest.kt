@@ -1,5 +1,6 @@
 package ecommerce.endtoend
 
+import ecommerce.config.DatabaseSeeder
 import ecommerce.model.PageResponseDTO
 import ecommerce.model.ProductResponseDTO
 import ecommerce.model.WishItemRequestDTO
@@ -7,23 +8,30 @@ import ecommerce.model.WishItemResponseDTO
 import io.restassured.RestAssured
 import io.restassured.common.mapper.TypeRef
 import io.restassured.http.ContentType
-import jakarta.transaction.Transactional
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.test.annotation.DirtiesContext
 import java.time.LocalDateTime
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@Transactional
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class WishItemE2ETest {
     lateinit var token: String
     private val productId: Long = 1L
     private val request get() = WishItemRequestDTO(productId = productId)
+
+    @Autowired
+    private lateinit var databaseSeeder: DatabaseSeeder
+
+    @AfterEach
+    fun cleanup() {
+        databaseSeeder.cleanup()
+        databaseSeeder.seed()
+    }
 
     @BeforeEach
     fun setup() {

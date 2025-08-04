@@ -1,5 +1,6 @@
 package ecommerce.endtoend
 
+import ecommerce.config.DatabaseSeeder
 import ecommerce.model.ActiveMemberDTO
 import ecommerce.model.OptionDTO
 import ecommerce.model.ProductRequestDTO
@@ -7,25 +8,31 @@ import ecommerce.model.ProductResponseDTO
 import ecommerce.model.TopProductDTO
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
-import jakarta.transaction.Transactional
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.test.annotation.DirtiesContext
 import java.time.LocalDateTime
 import kotlin.jvm.java
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-@Transactional
 class AdminE2ETest {
     lateinit var token: String
-
     lateinit var product: ProductResponseDTO
+
+    @Autowired
+    private lateinit var databaseSeeder: DatabaseSeeder
+
+    @AfterEach
+    fun cleanup() {
+        databaseSeeder.cleanup()
+        databaseSeeder.seed()
+    }
 
     @BeforeEach
     fun setup() {
