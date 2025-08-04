@@ -100,7 +100,7 @@ class CartItemServiceImpl(
         if (cartItemRequestDTO.quantity <= 0) throw OperationFailedException("Quantity must be greater than zero")
         if (existing.quantity == cartItemRequestDTO.quantity) return existing
 
-        existing.quantity = cartItemRequestDTO.quantity
+        existing.updateQuantity(cartItemRequestDTO.quantity)
         return cartItemRepository.save(existing)
     }
 }

@@ -31,4 +31,9 @@ class CartItem(
     var quantity: Int,
     @Column(name = "added_at", nullable = false)
     val addedAt: LocalDateTime,
-)
+) {
+    fun updateQuantity(newQuantity: Int) {
+        require(newQuantity > 0) { "Quantity must be greater than 0." }
+        this.quantity = newQuantity
+    }
+}
