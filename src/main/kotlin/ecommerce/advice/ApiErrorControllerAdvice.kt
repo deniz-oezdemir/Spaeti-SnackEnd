@@ -12,208 +12,145 @@ import ecommerce.util.logger
 import org.springframework.dao.DataAccessException
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.dao.EmptyResultDataAccessException
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.RestControllerAdvice
-import java.time.Instant
 
 @RestControllerAdvice(annotations = [RestController::class])
 class ApiErrorControllerAdvice {
     private val log = logger<ApiErrorControllerAdvice>()
 
+    private fun buildResponse(error: ApiError): ResponseEntity<ApiError> = ResponseEntity.status(error.status).body(error)
+
     /**
      * Custom Exceptions
      */
     @ExceptionHandler(NotFoundException::class)
-    fun handleNotFoundException(e: NotFoundException): ResponseEntity<Map<String, Any>> {
+    fun handleNotFoundException(e: NotFoundException): ResponseEntity<ApiError> {
         val errorMessage = e.message ?: "Not Found error"
         log.warn("NotFoundException occurred: $errorMessage", e)
-        val body =
-            mapOf(
-                "status" to HttpStatus.NOT_FOUND.value(),
-                "error" to "Operation failed",
-                "message" to errorMessage,
-                "timestamp" to Instant.now(),
-            )
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body)
+        val apiError = ApiError.notFound(errorMessage)
+        return buildResponse(apiError)
     }
 
     @ExceptionHandler(NoSuchElementException::class)
-    fun handleNotSuchElementException(e: NoSuchElementException): ResponseEntity<Map<String, Any>> {
+    fun handleNotSuchElementException(e: NoSuchElementException): ResponseEntity<ApiError> {
         val errorMessage = e.message ?: "Not such element"
         log.warn("NoSuchElementException occurred: $errorMessage", e)
-        val body =
-            mapOf(
-                "status" to HttpStatus.NOT_FOUND.value(),
-                "error" to "Operation failed",
-                "message" to errorMessage,
-                "timestamp" to Instant.now(),
-            )
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body)
+        val apiError = ApiError.notFound(errorMessage)
+        return buildResponse(apiError)
     }
 
     @ExceptionHandler(OperationFailedException::class)
-    fun handleOperationFailedException(e: OperationFailedException): ResponseEntity<Map<String, Any>> {
+    fun handleOperationFailedException(e: OperationFailedException): ResponseEntity<ApiError> {
         val errorMessage = e.message ?: "Operation failed"
         log.warn("OperationFailedException: $errorMessage", e)
-        val body =
-            mapOf(
-                "status" to HttpStatus.BAD_REQUEST.value(),
-                "error" to "Operation failed",
-                "message" to errorMessage,
-                "timestamp" to Instant.now(),
-            )
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body)
+        val apiError = ApiError.badRequest(errorMessage, e.message ?: "No additional details provided")
+        return buildResponse(apiError)
     }
 
     @ExceptionHandler(AuthorizationException::class)
-    fun handleAuthorizationException(e: AuthorizationException): ResponseEntity<Map<String, Any>> {
+    fun handleAuthorizationException(e: AuthorizationException): ResponseEntity<ApiError> {
         val errorMessage = e.message ?: "Authorization failed"
         log.warn("AuthorizationException: $errorMessage", e)
-        val body =
-            mapOf(
-                "status" to HttpStatus.UNAUTHORIZED.value(),
-                "error" to "Authorization failed",
-                "message" to errorMessage,
-                "timestamp" to Instant.now(),
-            )
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body)
+        val apiError = ApiError.unauthorized(errorMessage)
+        return buildResponse(apiError)
     }
 
     @ExceptionHandler(ForbiddenException::class)
-    fun handleForbiddenException(e: ForbiddenException): ResponseEntity<Map<String, Any>> {
+    fun handleForbiddenException(e: ForbiddenException): ResponseEntity<ApiError> {
         val errorMessage = e.message ?: "Invalid credentials"
         log.warn("ForbiddenException: $errorMessage", e)
-        val body =
-            mapOf(
-                "status" to HttpStatus.FORBIDDEN.value(),
-                "error" to "Authorization failed. Invalid Credentials",
-                "message" to errorMessage,
-                "timestamp" to Instant.now(),
-            )
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body)
+        val apiError = ApiError.forbidden(errorMessage)
+        return buildResponse(apiError)
     }
 
     @ExceptionHandler(InvalidCartItemQuantityException::class)
-    fun handleInvalidCartItemQuantityException(e: InvalidCartItemQuantityException): ResponseEntity<Map<String, Any>> {
+    fun handleInvalidCartItemQuantityException(e: InvalidCartItemQuantityException): ResponseEntity<ApiError> {
         val errorMessage = e.message ?: "Invalid quantity"
         log.warn("InvalidCartItemQuantityException: $errorMessage", e)
-        val body =
-            mapOf(
-                "status" to HttpStatus.BAD_REQUEST.value(),
-                "error" to "Invalid cart item quantity",
-                "message" to errorMessage,
-                "timestamp" to Instant.now(),
-            )
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body)
+        val apiError = ApiError.badRequest(errorMessage, e.message ?: "No additional details provided")
+        return buildResponse(apiError)
     }
 
     @ExceptionHandler(InvalidOptionNameException::class)
-    fun handleInvalidOptionNameException(e: InvalidOptionNameException): ResponseEntity<Map<String, Any>> {
+    fun handleInvalidOptionNameException(e: InvalidOptionNameException): ResponseEntity<ApiError> {
         val errorMessage = e.message ?: "Invalid option name"
         log.warn("InvalidOptionNameException: $errorMessage", e)
-        val body =
-            mapOf(
-                "status" to HttpStatus.BAD_REQUEST.value(),
-                "error" to "Invalid option name",
-                "message" to errorMessage,
-                "timestamp" to Instant.now(),
-            )
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body)
+        val apiError = ApiError.badRequest(errorMessage, e.message ?: "No additional details provided")
+        return buildResponse(apiError)
     }
 
     @ExceptionHandler(InvalidOptionQuantityException::class)
-    fun handleInvalidOptionQuantityException(e: InvalidOptionQuantityException): ResponseEntity<Map<String, Any>> {
+    fun handleInvalidOptionQuantityException(e: InvalidOptionQuantityException): ResponseEntity<ApiError> {
         val errorMessage = e.message ?: "Invalid option quantity"
         log.warn("InvalidOptionQuantityException: $errorMessage", e)
-        val body =
-            mapOf(
-                "status" to HttpStatus.BAD_REQUEST.value(),
-                "error" to "Invalid option quantity",
-                "message" to errorMessage,
-                "timestamp" to Instant.now(),
-            )
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body)
+        val apiError = ApiError.badRequest(errorMessage, e.message ?: "No additional details provided")
+        return buildResponse(apiError)
     }
 
     @ExceptionHandler(InsufficientStockException::class)
-    fun handleInsufficientStockException(e: InsufficientStockException): ResponseEntity<Map<String, Any>> {
+    fun handleInsufficientStockException(e: InsufficientStockException): ResponseEntity<ApiError> {
         val errorMessage = e.message ?: "Insufficient stock"
         log.warn("InsufficientStockException: $errorMessage", e)
-        val body =
-            mapOf(
-                "status" to HttpStatus.CONFLICT.value(),
-                "error" to "Insufficient stock",
-                "message" to errorMessage,
-                "timestamp" to Instant.now(),
-            )
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(body)
+        val apiError = ApiError.conflict(errorMessage, e.message ?: "No additional details provided")
+        return buildResponse(apiError)
     }
 
     /**
      * JDBC Exceptions: DB errors
      */
     @ExceptionHandler(DataAccessException::class)
-    fun handleDataAccessException(e: DataAccessException): ResponseEntity<Map<String, Any>> {
+    fun handleDataAccessException(e: DataAccessException): ResponseEntity<ApiError> {
         val errorMessage = e.message ?: "Data Access Error"
         log.warn("DataAccessException: $errorMessage", e)
-        val body =
-            mapOf(
-                "status" to HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "error" to "Empty result data access error",
-                "message" to errorMessage,
-                "timestamp" to Instant.now(),
-            )
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body)
+        val apiError = ApiError.internalError(errorMessage, e.message ?: "No additional details provided")
+        return buildResponse(apiError)
     }
 
     @ExceptionHandler(DuplicateKeyException::class)
-    fun handleDuplicateKeyException(e: DuplicateKeyException): ResponseEntity<Map<String, Any>> {
+    fun handleDuplicateKeyException(e: DuplicateKeyException): ResponseEntity<ApiError> {
         val errorMessage = e.message ?: "Duplicate key error"
         log.warn("DuplicateKeyException: $errorMessage", e)
-        val body =
-            mapOf(
-                "status" to HttpStatus.CONFLICT.value(),
-                "error" to "Duplicate Key Error",
-                "message" to errorMessage,
-                "timestamp" to Instant.now(),
-            )
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(body)
+        val apiError = ApiError.conflict(errorMessage, e.message ?: "No additional details provided")
+        return buildResponse(apiError)
     }
 
     @ExceptionHandler(EmptyResultDataAccessException::class)
-    fun handleEmptyResultException(e: EmptyResultDataAccessException): ResponseEntity<Map<String, Any>> {
+    fun handleEmptyResultException(e: EmptyResultDataAccessException): ResponseEntity<ApiError> {
         val errorMessage = e.message ?: "Empty result for your query"
         log.warn("EmptyResultDataAccessException: $errorMessage", e)
-        val body =
-            mapOf(
-                "status" to HttpStatus.NOT_FOUND.value(),
-                "error" to "Empty Result Data Access",
-                "message" to errorMessage,
-                "timestamp" to Instant.now(),
-            )
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body)
+        val apiError = ApiError.notFound(errorMessage)
+        return buildResponse(apiError)
     }
 
     /**
      * @Valid Exceptions, thrown when validation using jakarta fails.
      */
     @ExceptionHandler(MethodArgumentNotValidException::class)
-    fun handleValidationException(e: MethodArgumentNotValidException): ResponseEntity<Map<String, Any>> {
+    fun handleValidationException(e: MethodArgumentNotValidException): ResponseEntity<ApiError> {
         log.warn("Validation failed: ${e.message}")
 
-        val errors = e.bindingResult.fieldErrors.associate { it.field to (it.defaultMessage ?: "Validation error") }
+        val errors =
+            e.bindingResult.fieldErrors.associate {
+                it.field to (it.defaultMessage ?: "Validation error")
+            }
 
-        val body =
-            mapOf(
-                "status" to HttpStatus.BAD_REQUEST.value(),
-                "error" to "Validation failed",
-                "message" to errors,
-                "timestamp" to Instant.now(),
+        val apiError =
+            ApiError.badRequest(
+                error = "Validation failed",
+                message = "One or more fields are invalid",
+                details = errors,
             )
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body)
+        return buildResponse(apiError)
+    }
+
+    @ExceptionHandler(Exception::class)
+    fun handleGenericException(e: Exception): ResponseEntity<ApiError> {
+        log.error("Unhandled exception", e)
+        val apiError = ApiError.internalError("Internal server error", e.message)
+        return buildResponse(apiError)
     }
 }

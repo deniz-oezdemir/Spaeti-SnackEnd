@@ -162,7 +162,7 @@ class ProductE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
         assertThat(response.body().jsonPath().getInt("status")).isEqualTo(400)
         assertThat(
-            response.body().jsonPath().getString("message.name"),
+            response.body().jsonPath().getString("details.name"),
         ).isEqualTo("Invalid characters in product name.")
     }
 
@@ -196,7 +196,7 @@ class ProductE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
         assertThat(response.body().jsonPath().getInt("status")).isEqualTo(400)
         assertThat(
-            response.body().jsonPath().getString("message.name"),
+            response.body().jsonPath().getString("details.name"),
         ).isEqualTo("The product name must contain between 1 and 15 characters")
     }
 
@@ -264,7 +264,7 @@ class ProductE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
         assertThat(response.body().jsonPath().getInt("status")).isEqualTo(400)
         assertThat(
-            response.body().jsonPath().getString("message.price"),
+            response.body().jsonPath().getString("details.price"),
         ).contains("must be greater than zero")
     }
 
