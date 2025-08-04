@@ -27,9 +27,17 @@ class ProductController(private val productService: ProductService) {
     @IgnoreCheckLogin
     @GetMapping(PRODUCT_PATH)
     fun getProducts(
-        @PageableDefault(size = 10, sort = ["name"], direction = Sort.Direction.ASC)
+        @PageableDefault(size = 10, sort = [DEFAULT_SORT_FIELD], direction = Sort.Direction.ASC)
         pageable: Pageable,
-    ): Page<ProductResponseDTO> = productService.findAll(pageable)
+    ): Page<ProductResponseDTO> = productService.findAll(validateSort(pageable))
+
+    private fun validateSort(pageable: Pageable): Pageable {
+        val invalid = pageable.sort.any { it.property !in ALLOWED_SORT_FIELDS }
+        if (invalid) {
+            throw IllegalArgumentException("Invalid sort field; allowed fields are: $ALLOWED_SORT_FIELDS")
+        }
+        return pageable
+    }
 
     @IgnoreCheckLogin
     @GetMapping(PRODUCT_PATH_ID)
@@ -79,5 +87,8 @@ class ProductController(private val productService: ProductService) {
     companion object {
         const val PRODUCT_PATH = "/api/products"
         const val PRODUCT_PATH_ID = "$PRODUCT_PATH/{id}"
+
+        const val DEFAULT_SORT_FIELD = "name"
+        val ALLOWED_SORT_FIELDS = setOf("name", "price")
     }
 }
