@@ -97,7 +97,6 @@ class CartItemServiceImpl(
                 .findByProductIdAndMemberId(cartItemRequestDTO.productId, member.id!!)
                 ?: throw OperationFailedException("Cart item not found")
 
-        if (cartItemRequestDTO.quantity <= 0) throw OperationFailedException("Quantity must be greater than zero")
         if (existing.quantity == cartItemRequestDTO.quantity) return existing
 
         existing.updateQuantity(cartItemRequestDTO.quantity)
