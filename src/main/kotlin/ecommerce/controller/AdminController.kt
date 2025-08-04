@@ -22,7 +22,7 @@ class AdminController(private val adminService: AdminService) {
     @GetMapping("/active-members")
     fun getActiveMembers(): List<ActiveMemberDTO> = adminService.findMembersWithRecentCartActivity()
 
-    @PostMapping("/newOption")
+    @PostMapping("/options")
     fun createOption(
         @RequestBody optionDTO: OptionDTO,
     ): ResponseEntity<Unit> {

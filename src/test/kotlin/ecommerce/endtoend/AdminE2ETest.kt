@@ -147,7 +147,7 @@ class AdminE2ETest {
                 .auth().oauth2(token)
                 .contentType(ContentType.JSON)
                 .body(optionDTO)
-                .post("/admin/newOption")
+                .post("/admin/options")
                 .then().log().all()
 
         // Check status code
@@ -170,7 +170,7 @@ class AdminE2ETest {
                 .auth().oauth2(token)
                 .contentType(ContentType.JSON)
                 .body(optionDTO)
-                .post("/admin/newOption")
+                .post("/admin/options")
                 .then().log().all()
                 .extract()
 
@@ -192,7 +192,7 @@ class AdminE2ETest {
                 .auth().oauth2(token)
                 .contentType(ContentType.JSON)
                 .body(optionDTO)
-                .post("/admin/newOption")
+                .post("/admin/options")
                 .then().log().all()
                 .extract()
 
@@ -214,7 +214,7 @@ class AdminE2ETest {
                 .auth().oauth2(token)
                 .contentType(ContentType.JSON)
                 .body(optionDTO)
-                .post("/admin/newOption")
+                .post("/admin/options")
                 .then().log().all()
                 .extract()
 
@@ -246,7 +246,7 @@ class AdminE2ETest {
             .auth().oauth2(token)
             .contentType(ContentType.JSON)
             .body(optionDTO)
-            .post("/admin/newOption")
+            .post("/admin/options")
 
         // Try to create duplicate option
         val response =
@@ -254,7 +254,7 @@ class AdminE2ETest {
                 .auth().oauth2(token)
                 .contentType(ContentType.JSON)
                 .body(optionDTO)
-                .post("/admin/newOption")
+                .post("/admin/options")
                 .then().log().all()
                 .extract()
 

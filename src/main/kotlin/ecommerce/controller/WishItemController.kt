@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/wish")
+@RequestMapping("/api/wish-items")
 class WishItemController(private val wishItemService: WishItemService) {
     @GetMapping
     fun getAllByMember(
