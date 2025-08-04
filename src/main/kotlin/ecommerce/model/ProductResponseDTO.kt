@@ -15,17 +15,17 @@ import jakarta.validation.constraints.Positive
 import jakarta.validation.constraints.Size
 
 data class ProductResponseDTO(
-    var id: Long? = null,
+    val id: Long? = null,
     @field:NotBlank(message = NAME_REQUIRED)
     @field:Size(min = 1, max = 15, message = PRODUCT_NAME_SIZE)
     @field:Pattern(regexp = "^[a-zA-Z0-9 ()\\[\\]+\\-&/_]*$", message = NAME_PATTERN)
-    var name: String,
+    val name: String,
     @field:NotNull(message = PRICE_REQUIRED)
     @field:Positive(message = PRICE_POSITIVE)
-    var price: Double,
+    val price: Double,
     @field:NotBlank(message = IMAGE_REQUIRED)
     @field:Pattern(regexp = "^https?://.*$", message = IMAGE_FORMAT)
-    var imageUrl: String,
+    val imageUrl: String,
     @field:NotEmpty
     val options: List<OptionDTO> = emptyList(),
 )
