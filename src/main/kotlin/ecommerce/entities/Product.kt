@@ -44,6 +44,7 @@ class Product(
         if (_options.any { it.name == option.name }) {
             throw InvalidOptionNameException("Option with name '${option.name}' already exists")
         }
+        option.product = this
         _options.add(option)
     }
 
