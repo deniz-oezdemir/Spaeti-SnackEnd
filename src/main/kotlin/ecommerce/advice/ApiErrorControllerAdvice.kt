@@ -9,6 +9,7 @@ import ecommerce.exception.InvalidOptionQuantityException
 import ecommerce.exception.MissingProductIdException
 import ecommerce.exception.NotFoundException
 import ecommerce.exception.OperationFailedException
+import ecommerce.exception.PaymentFailedException
 import ecommerce.util.logger
 import org.springframework.dao.DataAccessException
 import org.springframework.dao.DuplicateKeyException
@@ -136,6 +137,17 @@ class ApiErrorControllerAdvice {
                 error = "Validation failed",
                 message = errorMessage,
             )
+        return buildResponse(apiError)
+    }
+
+    @ExceptionHandler(PaymentFailedException::class)
+    fun handlePaymentFailedException(e: PaymentFailedException): ResponseEntity<ApiError> {
+        val errorMessage = e.message ?: "Payment processing failed."
+        log.warn("PaymentFailedException: $errorMessage", e)
+        val apiError = ApiError.badRequest(
+            error = "Payment failed",
+            message = errorMessage
+        )
         return buildResponse(apiError)
     }
 

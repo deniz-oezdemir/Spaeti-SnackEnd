@@ -6,6 +6,7 @@ import ecommerce.mappers.applyPatchFromDTO
 import ecommerce.mappers.toDTO
 import ecommerce.mappers.toEntity
 import ecommerce.mappers.toEntityWithOptions
+import ecommerce.model.OptionDTO
 import ecommerce.model.ProductPatchDTO
 import ecommerce.model.ProductRequestDTO
 import ecommerce.model.ProductResponseDTO
@@ -35,6 +36,14 @@ class ProductServiceImpl(
 
         if (product == null) throw NotFoundException("Product with id=$id not found")
         return product.toDTO()
+    }
+
+    @Transactional(readOnly = true)
+    override fun findOptionsByProductId(productId: Long): List<OptionDTO> {
+        val product = productRepository.findById(productId)
+            .orElseThrow { NotFoundException("Product with id=$productId not found") }
+
+        return product.options.map { it.toDTO() }
     }
 
     @Transactional

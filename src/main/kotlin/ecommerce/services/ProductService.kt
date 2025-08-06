@@ -1,5 +1,6 @@
 package ecommerce.services
 
+import ecommerce.model.OptionDTO
 import ecommerce.model.ProductPatchDTO
 import ecommerce.model.ProductRequestDTO
 import ecommerce.model.ProductResponseDTO
@@ -10,6 +11,8 @@ interface ProductService {
     fun findAll(pageable: Pageable): Page<ProductResponseDTO>
 
     fun findById(id: Long): ProductResponseDTO
+
+    fun findOptionsByProductId(productId: Long): List<OptionDTO>
 
     fun save(productRequestDTO: ProductRequestDTO): ProductResponseDTO
 

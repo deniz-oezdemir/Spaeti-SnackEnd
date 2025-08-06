@@ -20,3 +20,5 @@ class InvalidOptionQuantityException(message: String? = null) : RuntimeException
 class InsufficientStockException(message: String? = null) : RuntimeException(message)
 
 class MissingProductIdException(message: String) : RuntimeException(message)
+
+class PaymentFailedException(message: String) : RuntimeException(message)

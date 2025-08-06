@@ -2,6 +2,7 @@ package ecommerce.controller
 
 import ecommerce.annotation.CheckAdminOnly
 import ecommerce.annotation.IgnoreCheckLogin
+import ecommerce.model.OptionDTO
 import ecommerce.model.ProductPatchDTO
 import ecommerce.model.ProductRequestDTO
 import ecommerce.model.ProductResponseDTO
@@ -44,6 +45,13 @@ class ProductController(private val productService: ProductService) {
     fun getProductById(
         @PathVariable id: Long,
     ): ResponseEntity<ProductResponseDTO> = ResponseEntity.ok(productService.findById(id))
+
+    @IgnoreCheckLogin
+    @GetMapping("$PRODUCT_PATH/{productId}/options")
+    fun getProductOptions(@PathVariable productId: Long): ResponseEntity<List<OptionDTO>> {
+        val options = productService.findOptionsByProductId(productId)
+        return ResponseEntity.ok(options)
+    }
 
     @CheckAdminOnly
     @PostMapping(PRODUCT_PATH)
