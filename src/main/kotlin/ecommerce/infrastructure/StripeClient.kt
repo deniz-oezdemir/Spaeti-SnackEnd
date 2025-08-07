@@ -1,6 +1,7 @@
 package ecommerce.infrastructure
 
 import ecommerce.config.StripeProperties
+import ecommerce.model.StripePaymentIntentResponse
 import ecommerce.model.StripePaymentRequest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -13,7 +14,7 @@ class StripeClient(
 ) {
     private val restClient = RestClient.create()
 
-    fun createPaymentIntent(req: StripePaymentRequest): String? {
+    fun createPaymentIntent(req: StripePaymentRequest): StripePaymentIntentResponse {
         val body =
             listOf(
                 "amount=${req.amount}",
@@ -32,9 +33,9 @@ class StripeClient(
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                     .body(body)
                     .retrieve()
-                    .toEntity(String::class.java)
+                    .toEntity(StripePaymentIntentResponse::class.java)
 
-            return response.body
+            return response.body!!
         } catch (e: Exception) {
             throw IllegalArgumentException("Stripe API error: ${e.message}")
         }

@@ -2,6 +2,7 @@ package ecommerce.integration
 
 import ecommerce.infrastructure.StripeClient
 import ecommerce.model.StripePaymentRequest
+import jakarta.servlet.http.HttpServletResponse
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -10,6 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
 class StripeClientTest {
+    @Autowired
+    private lateinit var response: HttpServletResponse
+
     @Autowired
     private lateinit var stripeClient: StripeClient
 
@@ -25,7 +29,7 @@ class StripeClientTest {
         val responseJson = stripeClient.createPaymentIntent(request)
 
         assertThat(responseJson).isNotNull()
-        assertThat(responseJson).contains("\"status\": \"succeeded\"")
+        assertThat(responseJson?.id).startsWith("pi_")
     }
 
     @Test

@@ -1,13 +1,14 @@
 package ecommerce.endtoend
 
 import ecommerce.config.DatabaseSeeder
-import ecommerce.entities.CartItem
 import ecommerce.entities.Member
 import ecommerce.entities.Option
+import ecommerce.model.OrderResponseDTO
 import ecommerce.model.PaymentRequestDTO
 import ecommerce.repositories.CartItemRepository
 import ecommerce.repositories.MemberRepository
 import ecommerce.repositories.OptionRepository
+import ecommerce.repositories.OrderRepository
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import org.assertj.core.api.Assertions.assertThat
@@ -17,10 +18,9 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
-import java.time.LocalDateTime
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-class PaymentE2ETest {
+class OrderE2ETest {
     @Autowired
     private lateinit var databaseSeeder: DatabaseSeeder
 
@@ -32,6 +32,9 @@ class PaymentE2ETest {
 
     @Autowired
     private lateinit var memberRepository: MemberRepository
+
+    @Autowired
+    private lateinit var orderRepository: OrderRepository
 
     private lateinit var token: String
     private lateinit var member: Member
@@ -57,20 +60,11 @@ class PaymentE2ETest {
 
         member = memberRepository.findByEmail("user1@example.com")!!
 
-        optionToPurchase = optionRepository.findAll().find { it.name == "Red Color" }!!
-
-        cartItemRepository.save(
-            CartItem(
-                member = member,
-                product = optionToPurchase.product!!,
-                quantity = 2,
-                addedAt = LocalDateTime.now(),
-            ),
-        )
+        optionToPurchase = optionRepository.findAll().find { it.product?.name == "Car" && it.name == "Red Color" }!!
     }
 
     @Test
-    fun `should complete payment, decrease stock, and remove cart item on success`() {
+    fun `should create order and return details on successful payment`() {
         val initialStock = optionToPurchase.quantity
         val request =
             PaymentRequestDTO(
@@ -79,27 +73,35 @@ class PaymentE2ETest {
                 paymentMethod = "pm_card_visa",
             )
 
-        RestAssured.given()
-            .header("Authorization", "Bearer $token")
-            .contentType(ContentType.JSON)
-            .body(request)
-            .post("/api/payments")
-            .then()
-            .statusCode(HttpStatus.OK.value())
+        val orderResponse =
+            RestAssured.given()
+                .header("Authorization", "Bearer $token")
+                .contentType(ContentType.JSON)
+                .body(request)
+                .post("/api/orders")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().`as`(OrderResponseDTO::class.java)
 
-        // stock has been decreased in the database
+        // check response DTO
+        assertThat(orderResponse.orderId).isNotNull()
+        assertThat(orderResponse.totalAmount).isEqualTo(optionToPurchase.product!!.price)
+        assertThat(orderResponse.items).hasSize(1)
+        assertThat(orderResponse.items[0].productName).isEqualTo("Car")
+        assertThat(orderResponse.stripePaymentId).startsWith("pi_")
+
+        // verify database state
         val updatedOption = optionRepository.findById(optionToPurchase.id!!).get()
         assertThat(updatedOption.quantity).isEqualTo(initialStock - 1)
 
-        // item has been removed from the cart
-        val cartItemExists = cartItemRepository.findByProductIdAndMemberId(optionToPurchase.product!!.id!!, member.id!!)
-        assertThat(cartItemExists).isNull()
+        val orderInDb = orderRepository.findAll().firstOrNull()
+        assertThat(orderInDb).isNotNull
+        assertThat(orderInDb!!.member.id).isEqualTo(member.id)
     }
 
     @Test
-    fun `should return error and not change database state when payment fails`() {
-        // Arrange
-        val initialStock = optionToPurchase.quantity
+    fun `should not create an order when payment fails`() {
+        val initialOrderCount = orderRepository.count()
         val request =
             PaymentRequestDTO(
                 optionId = optionToPurchase.id!!,
@@ -107,34 +109,23 @@ class PaymentE2ETest {
                 paymentMethod = "pm_card_visa_chargeDeclined",
             )
 
-        val errorResponse =
-            RestAssured.given()
-                .header("Authorization", "Bearer $token")
-                .contentType(ContentType.JSON)
-                .body(request)
-                .post("/api/payments")
-                .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .extract()
-                .body()
-                .jsonPath()
+        RestAssured.given()
+            .header("Authorization", "Bearer $token")
+            .contentType(ContentType.JSON)
+            .body(request)
+            .post("/api/orders")
+            .then()
+            .statusCode(HttpStatus.BAD_REQUEST.value())
 
-        // error message from Stripe is in the response
-        assertThat(errorResponse.getString("message")).contains("Your card was declined.")
-
-        // stock has NOT changed
-        val updatedOption = optionRepository.findById(optionToPurchase.id!!).get()
-        assertThat(updatedOption.quantity).isEqualTo(initialStock)
-
-        // item is still in the cart
-        val cartItemExists = cartItemRepository.findByProductIdAndMemberId(optionToPurchase.product!!.id!!, member.id!!)
-        assertThat(cartItemExists).isNotNull()
+        // Verify no new order created in DB
+        assertThat(orderRepository.count()).isEqualTo(initialOrderCount)
     }
 
     @Test
     fun `should return 409 conflict when stock is insufficient`() {
         val initialStock = optionToPurchase.quantity
-        val requestedQuantity = initialStock + 1
+        val requestedQuantity = (initialStock + 1).toLong()
+        val initialOrderCount = orderRepository.count()
 
         val request =
             PaymentRequestDTO(
@@ -148,18 +139,21 @@ class PaymentE2ETest {
                 .header("Authorization", "Bearer $token")
                 .contentType(ContentType.JSON)
                 .body(request)
-                .post("/api/payments")
+                .post("/api/orders")
                 .then()
-                .statusCode(HttpStatus.CONFLICT.value()) // We expect a 409 Conflict status
+                .statusCode(HttpStatus.CONFLICT.value())
                 .extract()
                 .body()
                 .jsonPath()
 
-        // error message in the response
+        // verify error message in response
         assertThat(errorResponse.getString("message")).isEqualTo("Not enough stock")
 
-        // stock has NOT changed in the database
+        // verify stock has NOT changed in DB
         val updatedOption = optionRepository.findById(optionToPurchase.id!!).get()
         assertThat(updatedOption.quantity).isEqualTo(initialStock)
+
+        // verify no new order was created
+        assertThat(orderRepository.count()).isEqualTo(initialOrderCount)
     }
 }

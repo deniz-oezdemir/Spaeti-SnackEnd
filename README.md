@@ -28,13 +28,13 @@
   - [x] Provide a clear error message to the user that explains the reason for the payment failure.
 
 ### Step 2.2 (Order Management)
-- [ ] Design and create database tables to store order and payment information. 
-- [ ] After a successful payment, create and save a new order record. Saved order must contain the following details:
-  - [ ] Order date and time 
-  - [ ] Order status (e.g., COMPLETED, PENDING, FAILED)
-  - [ ] A list of purchased items and their options 
-  - [ ] The final payment amount 
-  - [ ] The transaction ID from Stripe
+- [x] Design and create database tables to store order and payment information. 
+- [x] After a successful payment, create and save a new order record. Saved order must contain the following details:
+  - [x] Order date and time 
+  - [x] Order status (e.g., COMPLETED, PENDING, FAILED)
+  - [x] A list of purchased items and their options 
+  - [x] The final payment amount 
+  - [x] The transaction ID from Stripe
 - [ ] Implement an API endpoint for users to view their past orders.
 
 ### Future work (maybe?)

@@ -108,19 +108,6 @@ class ProductServiceTest(
         assertThat(all).hasSize(27)
     }
 
-    // TODO: Replace with the new pagination behaviour
-//    @Test
-//    fun `should return paginated products`() {
-//        repeat(10) {
-//            productService.save(product.copy(name = "Product $it"))
-//        }
-//
-//        val (items, total) = productService.findAllPaginated(page = 1, size = 4)
-//
-//        assertThat(items).hasSize(4)
-//        assertThat(total).isEqualTo(35)
-//    }
-
     @Test
     fun `should delete product by id`() {
         val saved = productService.save(product)
