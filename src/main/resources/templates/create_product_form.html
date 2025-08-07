@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{main}"
+      lang="en"
+>
+<body>
+<div layout:fragment="content">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">Create New Product</h2>
+
+    <form onsubmit="return addProduct(event)" class="space-y-4">
+        <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">
+                Name
+                <input type="text" name="name"
+                       class="px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </label>
+        </div>
+
+        <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">
+                Price
+                <input type="number" name="price" step="0.01"
+                       class="px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </label>
+        </div>
+
+        <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">
+                Image URL
+                <input type="text" name="imageUrl"
+                       class="px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </label>
+        </div>
+
+        <button type="submit"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">
+            Submit
+        </button>
+    </form>
+
+    <button onclick="goBack()"
+            class="mt-5 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded">
+        Go Back
+    </button>
+
+    <script>
+        function goBack() {
+            window.location.href = "/products"
+        }
+        async function addProduct(event) {
+            event.preventDefault(); // Prevent form from refreshing page
+
+            const form = event.target;
+            const formData = new FormData(form);
+
+            const product = {
+                name: formData.get("name"),
+                price: parseFloat(formData.get("price")),
+                imageUrl: formData.get("imageUrl")
+            };
+
+            try {
+                const response = await fetch(
+                    "http://localhost:8080/products", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(product)
+                });
+
+                if (!response.ok) {
+                    alert("Failed to create product");
+                }
+
+                alert("Product created!");
+                window.location.href = "/products";
+                form.reset();
+            } catch (error) {
+                console.error(error);
+                alert("Error creating product");
+            }
+        }
+    </script>
+</div>
+</body>
+</html>

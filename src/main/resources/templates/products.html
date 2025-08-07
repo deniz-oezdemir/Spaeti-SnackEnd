@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{main}"
+      lang="en"
+>
+<body>
+<div layout:fragment="content">
+    <h2 class="text-2xl font-bold mb-4">Product List</h2>
+
+    <script>
+        async function deleteProduct(id) {
+            response = await fetch(
+                `http://localhost:8080/products/${id}`
+                , {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(response => {
+                if (response.ok) {
+                    alert("Product Deleted")
+                    window.location.reload()
+                } else {
+                    alert("Failed to delete product");
+                }
+            }).catch(() => {
+                alert("Error deleting product");
+            });
+        }
+
+        function editProduct(id) {
+            window.location.href = `products/edit/${id}`
+        }
+    </script>
+
+
+    <table class="table-auto w-full border border-gray-300 text-left">
+        <thead>
+        <tr class="bg-gray-200">
+            <th class="px-4 py-2 border-b">ID</th>
+            <th class="px-4 py-2 border-b">Name</th>
+            <th class="px-4 py-2 border-b">Price</th>
+            <th class="px-4 py-2 border-b">Image</th>
+            <th class="px-4 py-2 border-b flex ">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product : ${products}" class="hover:bg-gray-100">
+            <td class="px-4 py-2 border-b" th:text="${product.id}"></td>
+            <td class="px-4 py-2 border-b" th:text="${product.name}"></td>
+            <td class="px-4 py-2 border-b" th:text="${product.price}"></td>
+            <td class="px-4 py-2 border-b" >
+                <img
+                        th:src="${product.imageUrl}"
+                        alt="Image"
+                        class="h-16 w-16 object-cover"
+                />
+            </td>
+            <td class="px-4 py-2 border-b">
+                <div class="flex gap-3 items-center">
+                    <button
+                            type="button"
+                            class="delete-btn text-red-600"
+                            th:onclick="'editProduct(' + ${product.id} + ')'"
+                    >
+                        <i class="fa-solid fa-pen-to-square cursor-pointer text-blue-600"></i>
+                    </button>
+                    <button type="button"
+                            class="delete-btn text-red-600"
+                            th:onclick="'deleteProduct(' + ${product.id} + ')'"
+                    >
+                        <i class="fa-solid fa-trash cursor-pointer"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
