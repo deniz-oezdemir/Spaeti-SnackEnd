@@ -18,34 +18,29 @@ import java.time.LocalDateTime
 
 @Entity
 @Table(name = "`order`")
-class Order (
+class Order(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     val member: Member,
-
     @OneToMany(mappedBy = "order", cascade = [CascadeType.ALL], orphanRemoval = true)
     val items: MutableList<OrderItem> = mutableListOf(),
-
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "payment_id", referencedColumnName = "id")
     val payment: Payment,
-
     @Column(nullable = false)
     val orderDate: LocalDateTime,
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     var status: OrderStatus,
 ) {
-    enum class  OrderStatus {
+    enum class OrderStatus {
         PENDING,
         COMPLETED,
         FAILED,
-        CANCELLED
+        CANCELLED,
     }
 
     fun addOrderItem(orderItem: OrderItem) {

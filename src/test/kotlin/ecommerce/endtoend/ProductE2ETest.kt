@@ -411,11 +411,12 @@ class ProductE2ETest {
     fun `getProductOptions returns all options for a specific product`() {
         val productId = 1L
 
-        val options = RestAssured.given()
-            .get("/api/products/$productId/options")
-            .then()
-            .statusCode(HttpStatus.OK.value())
-            .extract().body().jsonPath().getList("", OptionDTO::class.java)
+        val options =
+            RestAssured.given()
+                .get("/api/products/$productId/options")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().body().jsonPath().getList("", OptionDTO::class.java)
 
         assertThat(options).hasSize(5)
         assertThat(options.map { it.name }).contains("Red Color", "Blue Color", "Black Color")

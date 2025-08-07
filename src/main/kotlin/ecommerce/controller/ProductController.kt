@@ -48,7 +48,9 @@ class ProductController(private val productService: ProductService) {
 
     @IgnoreCheckLogin
     @GetMapping("$PRODUCT_PATH/{productId}/options")
-    fun getProductOptions(@PathVariable productId: Long): ResponseEntity<List<OptionDTO>> {
+    fun getProductOptions(
+        @PathVariable productId: Long,
+    ): ResponseEntity<List<OptionDTO>> {
         val options = productService.findOptionsByProductId(productId)
         return ResponseEntity.ok(options)
     }

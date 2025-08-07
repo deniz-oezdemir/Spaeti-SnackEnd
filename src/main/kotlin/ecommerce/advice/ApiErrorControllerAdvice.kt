@@ -144,10 +144,11 @@ class ApiErrorControllerAdvice {
     fun handlePaymentFailedException(e: PaymentFailedException): ResponseEntity<ApiError> {
         val errorMessage = e.message ?: "Payment processing failed."
         log.warn("PaymentFailedException: $errorMessage", e)
-        val apiError = ApiError.badRequest(
-            error = "Payment failed",
-            message = errorMessage
-        )
+        val apiError =
+            ApiError.badRequest(
+                error = "Payment failed",
+                message = errorMessage,
+            )
         return buildResponse(apiError)
     }
 

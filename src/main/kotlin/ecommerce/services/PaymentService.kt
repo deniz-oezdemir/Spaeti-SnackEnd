@@ -15,20 +15,28 @@ import org.springframework.stereotype.Service
 class PaymentService(
     private val optionRepository: OptionRepository,
     private val cartItemRepository: CartItemRepository,
-    private val stripeClient: StripeClient
+    private val stripeClient: StripeClient,
 ) {
-
     @Transactional
-    fun processPayment(req: PaymentRequestDTO, member: MemberDTO) {
-        val option = optionRepository.findByIdWithLock(req.optionId).orElseThrow { NotFoundException("Product option with id=${req.optionId} not found") }
+    fun processPayment(
+        req: PaymentRequestDTO,
+        member: MemberDTO,
+    ) {
+        val option =
+            optionRepository.findByIdWithLock(req.optionId).orElseThrow {
+                NotFoundException("Product option with id=${req.optionId} not found")
+            }
 
         // Check stock to not charge customer in case of insufficient stock
         option.subtract(req.quantity)
 
         val amountInCents = (option.product!!.price * req.quantity * 100).toLong()
-        val stripeRequest = StripePaymentRequest(
-            amountInCents, "eur", req.paymentMethod
-        )
+        val stripeRequest =
+            StripePaymentRequest(
+                amountInCents,
+                "eur",
+                req.paymentMethod,
+            )
 
         try {
             stripeClient.createPaymentIntent(stripeRequest)
@@ -40,6 +48,4 @@ class PaymentService(
         optionRepository.save(option)
         cartItemRepository.deleteByProductIdAndMemberId(option.product!!.id!!, member.id!!)
     }
-
-
 }

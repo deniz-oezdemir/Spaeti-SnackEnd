@@ -12,27 +12,19 @@ import jakarta.persistence.Table
 
 @Entity
 @Table(name = "order_item")
-class OrderItem (
+class OrderItem(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
-    var order: Order?  = null,
-
+    var order: Order? = null,
     @Column(nullable = false)
     val productName: String,
-
     @Column(nullable = false)
     val optionName: String,
-
     @Column(nullable = false)
     val price: Double,
-
     @Column(nullable = false)
     val quantity: Long,
-
-    )
-
-
+)

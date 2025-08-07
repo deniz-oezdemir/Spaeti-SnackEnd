@@ -9,28 +9,30 @@ import org.springframework.web.client.RestClient
 
 @Component
 class StripeClient(
-    private val stripeProperties: StripeProperties
+    private val stripeProperties: StripeProperties,
 ) {
     private val restClient = RestClient.create()
 
     fun createPaymentIntent(req: StripePaymentRequest): String? {
-        val body = listOf(
-            "amount=${req.amount}",
-            "currency=${req.currency}",
-            "payment_method=${req.paymentMethod}",
-            "confirm=true", // tells Stripe to immediately attempt the charge
-            "automatic_payment_methods[enabled]=true",
-            "automatic_payment_methods[allow_redirects]=never" // we handle the response directly
-        ).joinToString("&")
+        val body =
+            listOf(
+                "amount=${req.amount}",
+                "currency=${req.currency}",
+                "payment_method=${req.paymentMethod}",
+                "confirm=true",
+                "automatic_payment_methods[enabled]=true",
+                "automatic_payment_methods[allow_redirects]=never",
+            ).joinToString("&")
 
         try {
-            val response = restClient.post()
-                .uri("https://api.stripe.com/v1/payment_intents")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer ${stripeProperties.secretKey}")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .body(body)
-                .retrieve()
-                .toEntity(String::class.java)
+            val response =
+                restClient.post()
+                    .uri("https://api.stripe.com/v1/payment_intents")
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer ${stripeProperties.secretKey}")
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                    .body(body)
+                    .retrieve()
+                    .toEntity(String::class.java)
 
             return response.body
         } catch (e: Exception) {

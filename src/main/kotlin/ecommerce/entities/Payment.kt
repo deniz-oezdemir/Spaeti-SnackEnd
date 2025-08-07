@@ -9,14 +9,12 @@ import jakarta.persistence.Table
 
 @Entity
 @Table(name = "payment")
-class Payment (
+class Payment(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-
     @Column(nullable = false)
     val amount: Long,
-
     @Column(nullable = false)
     val stripePaymentId: String,
-    )
+)

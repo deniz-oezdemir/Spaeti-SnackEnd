@@ -40,8 +40,9 @@ class ProductServiceImpl(
 
     @Transactional(readOnly = true)
     override fun findOptionsByProductId(productId: Long): List<OptionDTO> {
-        val product = productRepository.findById(productId)
-            .orElseThrow { NotFoundException("Product with id=$productId not found") }
+        val product =
+            productRepository.findById(productId)
+                .orElseThrow { NotFoundException("Product with id=$productId not found") }
 
         return product.options.map { it.toDTO() }
     }

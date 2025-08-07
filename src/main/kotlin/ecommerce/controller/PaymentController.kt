@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/payments")
 class PaymentController(
-    private val paymentService: PaymentService
+    private val paymentService: PaymentService,
 ) {
     @PostMapping
     fun createPayment(
         @Valid @RequestBody paymentRequestDTO: PaymentRequestDTO,
-        @LoginMember member: MemberDTO
+        @LoginMember member: MemberDTO,
     ): ResponseEntity<Unit> {
         paymentService.processPayment(paymentRequestDTO, member)
         return ResponseEntity.ok().build()

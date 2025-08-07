@@ -21,13 +21,15 @@ import java.time.LocalDateTime
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class PaymentE2ETest {
-
     @Autowired
     private lateinit var databaseSeeder: DatabaseSeeder
+
     @Autowired
     private lateinit var optionRepository: OptionRepository
+
     @Autowired
     private lateinit var cartItemRepository: CartItemRepository
+
     @Autowired
     private lateinit var memberRepository: MemberRepository
 
@@ -44,11 +46,12 @@ class PaymentE2ETest {
     @BeforeEach
     fun setup() {
         val loginPayload = mapOf("email" to "user1@example.com", "password" to "pass")
-        val response = RestAssured.given()
-            .contentType(ContentType.JSON)
-            .body(loginPayload)
-            .post("/api/members/login")
-            .then().extract()
+        val response =
+            RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(loginPayload)
+                .post("/api/members/login")
+                .then().extract()
 
         token = response.body().jsonPath().getString("accessToken")
 
@@ -61,19 +64,20 @@ class PaymentE2ETest {
                 member = member,
                 product = optionToPurchase.product!!,
                 quantity = 2,
-                addedAt = LocalDateTime.now()
-            )
+                addedAt = LocalDateTime.now(),
+            ),
         )
     }
 
     @Test
     fun `should complete payment, decrease stock, and remove cart item on success`() {
         val initialStock = optionToPurchase.quantity
-        val request = PaymentRequestDTO(
-            optionId = optionToPurchase.id!!,
-            quantity = 1,
-            paymentMethod = "pm_card_visa"
-        )
+        val request =
+            PaymentRequestDTO(
+                optionId = optionToPurchase.id!!,
+                quantity = 1,
+                paymentMethod = "pm_card_visa",
+            )
 
         RestAssured.given()
             .header("Authorization", "Bearer $token")
@@ -96,22 +100,24 @@ class PaymentE2ETest {
     fun `should return error and not change database state when payment fails`() {
         // Arrange
         val initialStock = optionToPurchase.quantity
-        val request = PaymentRequestDTO(
-            optionId = optionToPurchase.id!!,
-            quantity = 1,
-            paymentMethod = "pm_card_visa_chargeDeclined" // Stripe's test ID for a failed payment
-        )
+        val request =
+            PaymentRequestDTO(
+                optionId = optionToPurchase.id!!,
+                quantity = 1,
+                paymentMethod = "pm_card_visa_chargeDeclined",
+            )
 
-        val errorResponse = RestAssured.given()
-            .header("Authorization", "Bearer $token")
-            .contentType(ContentType.JSON)
-            .body(request)
-            .post("/api/payments")
-            .then()
-            .statusCode(HttpStatus.BAD_REQUEST.value())
-            .extract()
-            .body()
-            .jsonPath()
+        val errorResponse =
+            RestAssured.given()
+                .header("Authorization", "Bearer $token")
+                .contentType(ContentType.JSON)
+                .body(request)
+                .post("/api/payments")
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .extract()
+                .body()
+                .jsonPath()
 
         // error message from Stripe is in the response
         assertThat(errorResponse.getString("message")).contains("Your card was declined.")
@@ -130,22 +136,24 @@ class PaymentE2ETest {
         val initialStock = optionToPurchase.quantity
         val requestedQuantity = initialStock + 1
 
-        val request = PaymentRequestDTO(
-            optionId = optionToPurchase.id!!,
-            quantity = requestedQuantity,
-            paymentMethod = "pm_card_visa"
-        )
+        val request =
+            PaymentRequestDTO(
+                optionId = optionToPurchase.id!!,
+                quantity = requestedQuantity,
+                paymentMethod = "pm_card_visa",
+            )
 
-        val errorResponse = RestAssured.given()
-            .header("Authorization", "Bearer $token")
-            .contentType(ContentType.JSON)
-            .body(request)
-            .post("/api/payments")
-            .then()
-            .statusCode(HttpStatus.CONFLICT.value()) // We expect a 409 Conflict status
-            .extract()
-            .body()
-            .jsonPath()
+        val errorResponse =
+            RestAssured.given()
+                .header("Authorization", "Bearer $token")
+                .contentType(ContentType.JSON)
+                .body(request)
+                .post("/api/payments")
+                .then()
+                .statusCode(HttpStatus.CONFLICT.value()) // We expect a 409 Conflict status
+                .extract()
+                .body()
+                .jsonPath()
 
         // error message in the response
         assertThat(errorResponse.getString("message")).isEqualTo("Not enough stock")
