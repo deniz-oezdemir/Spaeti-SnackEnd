@@ -35,7 +35,7 @@
   - [x] A list of purchased items and their options 
   - [x] The final payment amount 
   - [x] The transaction ID from Stripe
-- [ ] Implement an API endpoint for users to view their past orders.
+- [x] Implement an API endpoint for users to view their past orders
 
 ### Future work (maybe?)
 - [ ] Subtract the user option choice from stock for a product option

@@ -6,15 +6,17 @@ import ecommerce.entities.Payment
 import ecommerce.exception.NotFoundException
 import ecommerce.exception.PaymentFailedException
 import ecommerce.infrastructure.StripeClient
+import ecommerce.mappers.toDTO
 import ecommerce.mappers.toEntity
 import ecommerce.model.MemberDTO
+import ecommerce.model.OrderResponseDTO
 import ecommerce.model.PaymentRequestDTO
 import ecommerce.model.StripePaymentRequest
 import ecommerce.repositories.CartItemRepository
 import ecommerce.repositories.OptionRepository
 import ecommerce.repositories.OrderRepository
-import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
 @Service
@@ -82,5 +84,11 @@ class OrderService(
         cartItemRepository.deleteByProductIdAndMemberId(option.product!!.id!!, member.id!!)
 
         return savedOrder
+    }
+
+    @Transactional(readOnly = true)
+    fun findOrdersByMemberId(memberId: Long): List<OrderResponseDTO> {
+        val orders = orderRepository.findByMemberId(memberId)
+        return orders.map { it.toDTO() }
     }
 }

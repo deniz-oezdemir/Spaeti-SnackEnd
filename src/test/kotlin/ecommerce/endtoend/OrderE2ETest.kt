@@ -10,6 +10,7 @@ import ecommerce.repositories.MemberRepository
 import ecommerce.repositories.OptionRepository
 import ecommerce.repositories.OrderRepository
 import io.restassured.RestAssured
+import io.restassured.common.mapper.TypeRef
 import io.restassured.http.ContentType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -155,5 +156,38 @@ class OrderE2ETest {
 
         // verify no new order was created
         assertThat(orderRepository.count()).isEqualTo(initialOrderCount)
+    }
+
+    @Test
+    fun `should return all orders for the authenticated user`() {
+        val creationRequest =
+            PaymentRequestDTO(
+                optionId = optionToPurchase.id!!,
+                quantity = 1,
+                paymentMethod = "pm_card_visa",
+            )
+        RestAssured.given()
+            .header("Authorization", "Bearer $token")
+            .contentType(ContentType.JSON)
+            .body(creationRequest)
+            .post("/api/orders")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+
+        val orders =
+            RestAssured.given()
+                .header("Authorization", "Bearer $token")
+                .get("/api/orders")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().body().`as`(object : TypeRef<List<OrderResponseDTO>>() {})
+
+        // verify list contains order we just created
+        assertThat(orders).hasSize(1)
+
+        // verify  details of order in the list
+        val fetchedOrder = orders[0]
+        assertThat(fetchedOrder.totalAmount).isEqualTo(optionToPurchase.product!!.price)
+        assertThat(fetchedOrder.items[0].productName).isEqualTo("Car")
     }
 }
