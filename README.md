@@ -37,8 +37,10 @@
   - [x] The transaction ID from Stripe
 - [x] Implement an API endpoint for users to view their past orders
 
-### Future work (maybe?)
-- [ ] Subtract the user option choice from stock for a product option
+### Step 2.3 (Deployment)
+- [ ] Configure Cross-Origin Resource Sharing (CORS) to allow a web client to interact with the API
+- [ ] Create an automated deployment script to manage starting and stopping the application on a server
+- [ ] Prepare application for deployment to a live environment
 
 ## References
 - [REST API URI Naming Conventions and Best Practices](https://restfulapi.net/resource-naming/)
