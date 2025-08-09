@@ -8,7 +8,7 @@ import ecommerce.repositories.CartItemRepository
 import ecommerce.repositories.MemberRepository
 import ecommerce.repositories.ProductRepository
 import ecommerce.services.AdminService
-import ecommerce.services.CartItemServiceImpl
+import ecommerce.services.CartItemService
 import jakarta.transaction.Transactional
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -23,7 +23,7 @@ class AdminServiceTest {
     private lateinit var adminService: AdminService
 
     @Autowired
-    private lateinit var cartItemService: CartItemServiceImpl
+    private lateinit var cartItemService: CartItemService
 
     @Autowired
     private lateinit var memberRepository: MemberRepository

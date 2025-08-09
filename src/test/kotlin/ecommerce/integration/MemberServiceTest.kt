@@ -4,7 +4,7 @@ import ecommerce.entities.Member
 import ecommerce.exception.OperationFailedException
 import ecommerce.model.MemberDTO
 import ecommerce.repositories.MemberRepository
-import ecommerce.services.MemberServiceImpl
+import ecommerce.services.MemberService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional
 @SpringBootTest
 class MemberServiceTest {
     @Autowired
-    private lateinit var memberService: MemberServiceImpl
+    private lateinit var memberService: MemberService
 
     @Autowired
     private lateinit var memberRepository: MemberRepository
