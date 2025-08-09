@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 
-data class TokenRequestDTO(
+class TokenRequestDTO(
     @field:NotBlank(message = ValidationMessages.EMAIL_BLANK)
     @field:NotNull(message = ValidationMessages.EMAIL_BLANK)
     @field:Email(message = ValidationMessages.EMAIL_INVALID)

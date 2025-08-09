@@ -8,7 +8,7 @@ import ecommerce.util.ValidationMessages.PASSWORD_BLANK
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 
-data class MemberDTO(
+class MemberDTO(
     var id: Long? = null,
     @field:NotBlank(message = MEMBER_NAME_REQUIRED)
     var name: String,

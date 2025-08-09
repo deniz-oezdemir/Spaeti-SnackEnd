@@ -2,7 +2,7 @@ package ecommerce.model
 
 import java.time.LocalDateTime
 
-data class CartItemResponseDTO(
+class CartItemResponseDTO(
     val id: Long,
     val memberId: Long,
     val product: ProductResponseDTO,

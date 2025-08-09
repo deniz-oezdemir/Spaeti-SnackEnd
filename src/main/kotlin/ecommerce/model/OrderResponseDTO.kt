@@ -3,7 +3,7 @@ package ecommerce.model
 import ecommerce.entities.Order
 import java.time.LocalDateTime
 
-data class OrderResponseDTO(
+class OrderResponseDTO(
     val orderId: Long,
     val orderDate: LocalDateTime,
     val orderStatus: Order.OrderStatus,
@@ -12,7 +12,7 @@ data class OrderResponseDTO(
     val items: List<OrderItemDTO>,
 )
 
-data class OrderItemDTO(
+class OrderItemDTO(
     val productName: String,
     val optionName: String,
     val price: Double,

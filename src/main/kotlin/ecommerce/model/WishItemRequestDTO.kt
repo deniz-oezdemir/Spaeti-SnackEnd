@@ -1,5 +1,5 @@
 package ecommerce.model
 
-data class WishItemRequestDTO(
+class WishItemRequestDTO(
     val productId: Long,
 )

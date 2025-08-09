@@ -14,7 +14,7 @@ data class PageResponseDTO<T>(
     val empty: Boolean,
 )
 
-data class PageableDTO(
+class PageableDTO(
     val sort: SortDTO,
     val offset: Long,
     val pageNumber: Int,
@@ -23,7 +23,7 @@ data class PageableDTO(
     val unpaged: Boolean,
 )
 
-data class SortDTO(
+class SortDTO(
     val empty: Boolean,
     val sorted: Boolean,
     val unsorted: Boolean,

@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 
-data class OptionDTO(
+class OptionDTO(
     val id: Long?,
     @field:NotBlank(message = OPTION_NAME_REQUIRED)
     @field:Size(min = 1, max = 50, message = OPTION_NAME_SIZE)

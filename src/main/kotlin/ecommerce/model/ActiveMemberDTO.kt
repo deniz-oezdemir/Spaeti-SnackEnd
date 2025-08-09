@@ -5,7 +5,7 @@ import ecommerce.util.ValidationMessages.MEMBER_NAME_REQUIRED
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 
-data class ActiveMemberDTO(
+class ActiveMemberDTO(
     val id: Long,
     @field:NotBlank(message = MEMBER_NAME_REQUIRED)
     val name: String,
