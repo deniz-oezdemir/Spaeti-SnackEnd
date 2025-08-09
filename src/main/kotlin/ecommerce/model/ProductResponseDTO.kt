@@ -28,4 +28,16 @@ data class ProductResponseDTO(
     val imageUrl: String,
     @field:NotEmpty
     val options: List<OptionDTO> = emptyList(),
-)
+) {
+    companion object {
+        fun empty(): ProductResponseDTO {
+            return ProductResponseDTO(
+                id = null,
+                name = "",
+                price = 0.0,
+                imageUrl = "",
+                options = emptyList()
+            )
+        }
+    }
+}
