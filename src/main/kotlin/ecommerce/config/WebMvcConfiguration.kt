@@ -4,6 +4,7 @@ import ecommerce.config.interceptor.CheckLoginInterceptor
 import ecommerce.config.interceptor.CheckRoleInterceptor
 import ecommerce.config.resolvers.LoginMemberArgumentResolver
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpHeaders
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
@@ -30,6 +31,7 @@ class WebMvcConfiguration(
             .allowedOrigins("*") // TODO: replace with specific domain of my frontend for production
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
             .allowedHeaders("*")
+            .exposedHeaders(HttpHeaders.LOCATION)
             .maxAge(3600)
     }
 }
