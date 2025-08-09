@@ -14,7 +14,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 @SpringBootTest
 @AutoConfigureMockMvc
 class CorsIntegrationTest {
-
     @Autowired
     private lateinit var mockMvc: MockMvc
 
@@ -23,7 +22,7 @@ class CorsIntegrationTest {
         mockMvc.perform(
             options("/api/products")
                 .header(HttpHeaders.ORIGIN, "http://localhost:3000")
-                .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "GET")
+                .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "GET"),
         )
             .andExpect(status().isOk)
             .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*"))
@@ -34,6 +33,5 @@ class CorsIntegrationTest {
 
     companion object {
         private const val ALLOWED_METHOD_NAMES = "GET,POST,PUT,DELETE,OPTIONS"
-
     }
 }

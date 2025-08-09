@@ -28,15 +28,17 @@ class ProductService(
 
     @Transactional(readOnly = true)
     fun findById(id: Long): ProductResponseDTO {
-        val product = productRepository.findById(id)
-            .orElseThrow { NotFoundException("Product with id=$id not found") }
+        val product =
+            productRepository.findById(id)
+                .orElseThrow { NotFoundException("Product with id=$id not found") }
         return product.toDTO()
     }
 
     @Transactional(readOnly = true)
     fun findOptionsByProductId(productId: Long): List<OptionDTO> {
-        val product = productRepository.findById(productId)
-            .orElseThrow { NotFoundException("Product with id=$productId not found") }
+        val product =
+            productRepository.findById(productId)
+                .orElseThrow { NotFoundException("Product with id=$productId not found") }
         return product.options.map { it.toDTO() }
     }
 
@@ -54,25 +56,27 @@ class ProductService(
         id: Long,
         productDTO: ProductRequestDTO,
     ): ProductResponseDTO {
-        val existing = productRepository.findById(id)
-            .orElseThrow { NotFoundException("Product with id=$id not found") }
+        val existing =
+            productRepository.findById(id)
+                .orElseThrow { NotFoundException("Product with id=$id not found") }
 
         if (existing.name != productDTO.name) {
             validateProductNameUniqueness(productDTO.name)
         }
 
-        val options = productDTO.options.map { dto ->
-            existing.options.find { it.id == dto.id }?.apply {
-                updateName(dto.name)
-                updateQuantity(dto.quantity)
-            } ?: dto.toEntity(existing)
-        }
+        val options =
+            productDTO.options.map { dto ->
+                existing.options.find { it.id == dto.id }?.apply {
+                    updateName(dto.name)
+                    updateQuantity(dto.quantity)
+                } ?: dto.toEntity(existing)
+            }
 
         existing.applyUpdate(
             productDTO.name,
             productDTO.price,
             productDTO.imageUrl,
-            options
+            options,
         )
 
         return productRepository.save(existing).toDTO()
@@ -83,8 +87,9 @@ class ProductService(
         id: Long,
         productPatchDTO: ProductPatchDTO,
     ): ProductResponseDTO {
-        val existing = productRepository.findById(id)
-            .orElseThrow { NotFoundException("Product with id=$id not found") }
+        val existing =
+            productRepository.findById(id)
+                .orElseThrow { NotFoundException("Product with id=$id not found") }
         if (productPatchDTO.name != null && existing.name != productPatchDTO.name) {
             validateProductNameUniqueness(productPatchDTO.name!!)
         }

@@ -36,7 +36,7 @@ data class ProductResponseDTO(
                 name = "",
                 price = 0.0,
                 imageUrl = "",
-                options = emptyList()
+                options = emptyList(),
             )
         }
     }

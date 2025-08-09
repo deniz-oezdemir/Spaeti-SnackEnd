@@ -14,6 +14,7 @@ CURRENT_PID=$(pgrep -f $JAR_NAME)
 
 if [ -z $CURRENT_PID ]
 then
+  sleep 1
   echo "> No running application found."
 else
   echo "> Stopping running application. PID: $CURRENT_PID"
