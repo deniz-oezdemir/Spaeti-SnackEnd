@@ -17,6 +17,10 @@ class CheckLoginInterceptor(private val jwtTokenProvider: JwtTokenProvider) : Ha
         response: HttpServletResponse,
         handler: Any,
     ): Boolean {
+        if (request.method == "OPTIONS") {
+            return true
+        }
+
         if (handler is HandlerMethod) {
             if (handler.hasMethodAnnotation(IgnoreCheckLogin::class.java) ||
                 handler.beanType.isAnnotationPresent(IgnoreCheckLogin::class.java)
