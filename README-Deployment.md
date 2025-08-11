@@ -41,7 +41,7 @@ Run it with sudo to bind to port 80.
 
 ```bash
 chmod +x ~/app/start.sh
-~/app/start.sh
+sudo ~/app/start.sh
 ```
 
 
