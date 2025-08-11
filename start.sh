@@ -1,6 +1,6 @@
 #!/bin/bash
 
-JAR_NAME="ecommerce-0.0.1-SNAPSHOT.jar"
+JAR_NAME="spring-ecommerce-0.0.1-SNAPSHOT.jar"
 DEPLOY_PATH="/home/ubuntu/app/"
 
 echo "> Checking for a currently running application..."
@@ -16,4 +16,4 @@ else
 fi
 
 echo "> Starting application..."
-nohup java -jar $DEPLOY_PATH$JAR_NAME > /dev/null 2>&1 &
+nohup java -jar $DEPLOY_PATH$JAR_NAME > ./application.log 2>&1 &

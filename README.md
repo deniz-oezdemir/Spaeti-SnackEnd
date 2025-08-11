@@ -41,7 +41,7 @@
 - [x] Configure Cross-Origin Resource Sharing (CORS) to allow a web client to interact with the API
 - [x] Create an automated deployment script to manage starting and stopping the application on a server
 - [x] Prepare application for deployment to a live environment
-- [ ] Deploy on AWS EC2 
+- [x] Deploy on AWS EC2 
 
 ## References
 - [REST API URI Naming Conventions and Best Practices](https://restfulapi.net/resource-naming/)
