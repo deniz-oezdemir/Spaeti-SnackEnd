@@ -4,10 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import ecommerce.dto.MemberResponse
 import ecommerce.dto.TokenRequest
 import ecommerce.dto.TokenResponse
+import ecommerce.enums.UserRole
 import ecommerce.handler.AuthorizationException
 import ecommerce.handler.ValidationException
 import ecommerce.infrastructure.JWTProvider
-import ecommerce.model.UserRole
 import ecommerce.service.AuthService
 import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.`when`

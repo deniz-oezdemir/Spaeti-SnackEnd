@@ -1,6 +1,6 @@
 package ecommerce.interceptor
 
-import ecommerce.model.UserRole
+import ecommerce.enums.UserRole
 import ecommerce.service.AuthService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse

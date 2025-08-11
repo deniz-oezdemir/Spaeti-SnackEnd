@@ -2,8 +2,8 @@ package ecommerce.controller
 
 import ecommerce.dto.MemberResponse
 import ecommerce.dto.TopProductStatResponse
+import ecommerce.enums.UserRole
 import ecommerce.infrastructure.JWTProvider
-import ecommerce.model.UserRole
 import ecommerce.service.AuthService
 import ecommerce.service.CartService
 import org.hamcrest.Matchers.hasItem

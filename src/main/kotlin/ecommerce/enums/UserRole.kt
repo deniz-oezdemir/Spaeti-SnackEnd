@@ -1,4 +1,4 @@
-package ecommerce.model
+package ecommerce.enums
 
 enum class UserRole {
     USER,

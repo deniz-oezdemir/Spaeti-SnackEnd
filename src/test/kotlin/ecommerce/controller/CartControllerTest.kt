@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import ecommerce.dto.CartRequest
 import ecommerce.dto.MemberResponse
 import ecommerce.entity.Cart
+import ecommerce.enums.UserRole
 import ecommerce.infrastructure.JWTProvider
-import ecommerce.model.UserRole
 import ecommerce.resolver.LoginMemberArgumentResolver
 import ecommerce.service.AuthService
 import ecommerce.service.CartService
