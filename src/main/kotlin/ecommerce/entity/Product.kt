@@ -7,10 +7,11 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
+import jakarta.persistence.PrePersist
 import jakarta.persistence.Table
 
 @Entity
-@Table(name = "product")
+@Table(name = "products")
 class Product(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
@@ -21,10 +22,10 @@ class Product(
     @Column(nullable = false, name = "image_url")
     var imageUrl: String,
     @OneToMany(
+        mappedBy = "product",
         cascade = [CascadeType.MERGE, CascadeType.PERSIST],
         orphanRemoval = true,
     )
-    @Column(nullable = false, name = "option")
     val options: MutableList<Option> = mutableListOf(),
 ) {
     init {
@@ -33,6 +34,17 @@ class Product(
         require(imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
             "Image URL must start with http:// or https://"
         }
+    }
+
+    fun addOption(
+        name: String,
+        quantity: Long,
+    ) {
+        options.add(Option(product = this, name = name, quantity = quantity))
+    }
+
+    @PrePersist
+    fun validateOptionsNotEmpty() {
         require(options.isNotEmpty()) { "A product must have at least one option" }
     }
 

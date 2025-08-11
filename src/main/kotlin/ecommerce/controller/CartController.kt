@@ -31,7 +31,7 @@ class CartController(
         @RequestBody request: CartRequest,
         @LoginMember member: MemberResponse,
     ): ResponseEntity<Void> {
-        cartService.addToCart(member.id, request.productId)
+        cartService.addToCart(member.id, request.productOptionId, 1)
         return ResponseEntity.created(
             URI.create("/created"),
         ).build()
@@ -68,7 +68,7 @@ class CartController(
 
     @GetMapping("/quantity")
     fun getByQuantity(
-        @RequestParam quantity: Int,
+        @RequestParam quantity: Long,
         @RequestParam page: Int,
         @RequestParam size: Int,
     ): Page<CartItem> {

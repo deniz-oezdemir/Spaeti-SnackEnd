@@ -1,7 +1,6 @@
 package ecommerce.repository
 
 import ecommerce.dto.TopProductStatResponse
-import ecommerce.entity.Cart
 import ecommerce.entity.CartItem
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -9,13 +8,13 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 
 interface CartItemRepositoryJpa : JpaRepository<CartItem, Long> {
-    fun findByCartAndProductId(
-        cart: Cart,
+    fun findByCartIdAndProductOptionId(
+        cartId: Long,
         productId: Long,
     ): CartItem?
 
     fun findAllByQuantity(
-        quantity: Int,
+        quantity: Long,
         pageable: Pageable,
     ): Page<CartItem>
 
@@ -28,14 +27,15 @@ interface CartItemRepositoryJpa : JpaRepository<CartItem, Long> {
 
     @Query(
         value = """
-            SELECT 
-                p.product_name AS productName,
+               SELECT 
+                p.name AS productName,
                 COUNT(*) AS timesAdded,
                 MAX(ci.created_at) AS mostRecentAddedTime
             FROM cart_item ci
-            JOIN product p ON ci.product_id = p.id
-            WHERE ci.created_at >= CURRENT_DATE - INTERVAL '30 days'
-            GROUP BY ci.product_id, p.product_name
+            JOIN product_option po ON ci.product_option_id = po.id
+            JOIN product p ON po.product_id = p.id
+            WHERE ci.created_at >= CURRENT_TIMESTAMP - INTERVAL '30 days'
+            GROUP BY p.name
             ORDER BY timesAdded DESC, mostRecentAddedTime DESC
             LIMIT 5
         """,

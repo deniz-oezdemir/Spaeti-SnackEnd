@@ -8,7 +8,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 
 @Entity
-@Table(name = "cart")
+@Table(name = "carts")
 class Cart(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,

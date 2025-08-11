@@ -3,12 +3,13 @@ package ecommerce.repository
 import ecommerce.entity.Option
 import ecommerce.entity.Product
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 
 @DataJpaTest
-internal class ProductRepositoryJpaTest
+class ProductRepositoryJpaTest
     @Autowired
     constructor(
         private val repo: ProductRepositoryJpa,
@@ -77,19 +78,27 @@ internal class ProductRepositoryJpaTest
             assertThat(repo.existsById(saved.id!!)).isFalse()
         }
 
+        @Test
+        fun `saving product without options should fail`() {
+            val p = Product(name = "NoOpts", price = 1.0, imageUrl = "https://x")
+
+            assertThatThrownBy { repo.saveAndFlush(p) }
+                .hasRootCauseInstanceOf(IllegalArgumentException::class.java)
+                .hasRootCauseMessage("A product must have at least one option")
+        }
+
         private fun sampleProduct(
             name: String = "Test Product",
             price: Double = 9.99,
             imageUrl: String = "https://example.com/img.jpg",
-            options: MutableList<Option> =
-                mutableListOf(
-                    Option(name = "Blue XL", quantity = 99),
-                    Option(name = "Red Large", quantity = 42),
+        ): Product {
+            val product = Product(name = name, price = price, imageUrl = imageUrl)
+            product.options.addAll(
+                listOf(
+                    Option(product = product, name = "Blue XL", quantity = 99),
+                    Option(product = product, name = "Red Large", quantity = 42),
                 ),
-        ) = Product(
-            name = name,
-            price = price,
-            imageUrl = imageUrl,
-            options = options,
-        )
+            )
+            return product
+        }
     }

@@ -6,8 +6,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
 class ProductTest {
-    private fun sampleOption() = Option(name = "Size M", quantity = 2)
-
     @Test
     fun `should create ProductEntity with valid data`() {
         val options = mutableListOf(sampleOption())
@@ -69,26 +67,14 @@ class ProductTest {
     }
 
     @Test
-    fun `should throw error when options list is empty`() {
-        val exception =
-            assertThrows<IllegalArgumentException> {
-                Product(
-                    name = "T-Shirt",
-                    price = 19.99,
-                    imageUrl = "https://example.com/image.png",
-                    options = mutableListOf(),
-                )
-            }
-        assertEquals("A product must have at least one option", exception.message)
-    }
-
-    @Test
     fun `should consider two ProductEntity objects equal if IDs are equal`() {
         val id = 1L
         val options = mutableListOf(sampleOption())
 
-        val product1 = Product(id = id, name = "Product A", price = 10.0, imageUrl = "https://img.com", options = options)
-        val product2 = Product(id = id, name = "Product B", price = 20.0, imageUrl = "https://img.com", options = options)
+        val product1 =
+            Product(id = id, name = "Product A", price = 10.0, imageUrl = "https://img.com", options = options)
+        val product2 =
+            Product(id = id, name = "Product B", price = 20.0, imageUrl = "https://img.com", options = options)
 
         assertEquals(product1, product2)
         assertEquals(product1.hashCode(), product2.hashCode())
@@ -98,9 +84,23 @@ class ProductTest {
     fun `should not consider two ProductEntity objects equal if IDs are different`() {
         val options = mutableListOf(sampleOption())
 
-        val product1 = Product(id = 1L, name = "Product A", price = 10.0, imageUrl = "https://img.com", options = options)
-        val product2 = Product(id = 2L, name = "Product B", price = 20.0, imageUrl = "https://img.com", options = options)
+        val product1 =
+            Product(id = 1L, name = "Product A", price = 10.0, imageUrl = "https://img.com", options = options)
+        val product2 =
+            Product(id = 2L, name = "Product B", price = 20.0, imageUrl = "https://img.com", options = options)
 
         assertNotEquals(product1, product2)
     }
+
+    private fun createSampleProduct(): Product {
+        val product =
+            Product(
+                name = "Product",
+                price = 10.0,
+                imageUrl = "https://image/image.jpg",
+            )
+        return product
+    }
+
+    private fun sampleOption() = Option(product = createSampleProduct(), name = "Size M", quantity = 2)
 }

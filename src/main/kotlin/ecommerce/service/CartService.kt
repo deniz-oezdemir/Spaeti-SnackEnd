@@ -6,7 +6,7 @@ import ecommerce.entity.Cart
 import ecommerce.entity.CartItem
 import ecommerce.repository.CartItemRepositoryJpa
 import ecommerce.repository.CartRepositoryJpa
-import ecommerce.repository.ProductRepositoryJpa
+import ecommerce.repository.OptionRepositoryJpa
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -14,27 +14,37 @@ import org.springframework.stereotype.Service
 
 @Service
 class CartService(
-    private val productRepositoryJpa: ProductRepositoryJpa,
     private val cartItemRepositoryJpa: CartItemRepositoryJpa,
     private val cartRepositoryJpa: CartRepositoryJpa,
+    private val optionRepositoryJpa: OptionRepositoryJpa,
 ) {
     fun addToCart(
         memberId: Long,
-        productId: Long,
+        productOptionId: Long,
+        quantity: Long,
     ) {
         val cart = cartRepositoryJpa.findCartByMemberId(memberId) ?: throw NoSuchElementException("Cart not found")
-        val product =
-            productRepositoryJpa.findById(productId).orElse(null)
-                ?: throw NoSuchElementException("Product not found")
+        val cartId = cart.id
+        val option =
+            optionRepositoryJpa.findById(productOptionId).orElse(null)
+                ?: throw NoSuchElementException("Product Option not found")
 
-        val carItemEntity =
-            CartItem(
-                product = product,
-                cart = cart,
-                quantity = 1,
-            )
+        val existing =
+            cartItemRepositoryJpa
+                .findByCartIdAndProductOptionId(cartId!!, option.id!!)
 
-        cartItemRepositoryJpa.save(carItemEntity)
+        if (existing != null) {
+            existing.quantity += quantity
+            cartItemRepositoryJpa.save(existing)
+        } else {
+            val item =
+                CartItem(
+                    cart = cart,
+                    productOption = option,
+                    quantity = quantity,
+                )
+            cartItemRepositoryJpa.save(item)
+        }
     }
 
     fun removeFromCart(cartItemId: Long) {
@@ -66,7 +76,7 @@ class CartService(
     }
 
     fun getItemsByQuantity(
-        quantity: Int,
+        quantity: Long,
         page: Int,
         size: Int,
     ): Page<CartItem> {

@@ -1,6 +1,7 @@
 package ecommerce.service
 
 import ecommerce.dto.ProductRequest
+import ecommerce.entity.Option
 import ecommerce.entity.Product
 import ecommerce.repository.ProductRepositoryJpa
 import org.springframework.data.domain.Page
@@ -21,8 +22,13 @@ class ProductService(
                 name = productRequest.name,
                 price = productRequest.price,
                 imageUrl = productRequest.imageUrl,
-                options = productRequest.options,
             )
+        product.options.addAll(
+            productRequest.options.map { dto ->
+                Option(product = product, name = dto.name, quantity = dto.quantity)
+            },
+        )
+
         return productRepositoryJpa.save(product)
     }
 
