@@ -1,0 +1,104 @@
+package ecommerce.controller
+
+import ecommerce.annotation.CheckAdminOnly
+import ecommerce.annotation.IgnoreCheckLogin
+import ecommerce.model.OptionDTO
+import ecommerce.model.ProductPatchDTO
+import ecommerce.model.ProductRequestDTO
+import ecommerce.model.ProductResponseDTO
+import ecommerce.services.ProductService
+import jakarta.validation.Valid
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RestController
+import java.net.URI
+
+@RestController
+class ProductController(private val productService: ProductService) {
+    @IgnoreCheckLogin
+    @GetMapping(PRODUCT_PATH)
+    fun getProducts(
+        @PageableDefault(size = 10, sort = [DEFAULT_SORT_FIELD], direction = Sort.Direction.ASC)
+        pageable: Pageable,
+    ): Page<ProductResponseDTO> = productService.findAll(validateSort(pageable))
+
+    private fun validateSort(pageable: Pageable): Pageable {
+        val invalid = pageable.sort.any { it.property !in ALLOWED_SORT_FIELDS }
+        if (invalid) {
+            throw IllegalArgumentException("Invalid sort field; allowed fields are: $ALLOWED_SORT_FIELDS")
+        }
+        return pageable
+    }
+
+    @IgnoreCheckLogin
+    @GetMapping(PRODUCT_PATH_ID)
+    fun getProductById(
+        @PathVariable id: Long,
+    ): ResponseEntity<ProductResponseDTO> = ResponseEntity.ok(productService.findById(id))
+
+    @IgnoreCheckLogin
+    @GetMapping("$PRODUCT_PATH/{productId}/options")
+    fun getProductOptions(
+        @PathVariable productId: Long,
+    ): ResponseEntity<List<OptionDTO>> {
+        val options = productService.findOptionsByProductId(productId)
+        return ResponseEntity.ok(options)
+    }
+
+    @CheckAdminOnly
+    @PostMapping(PRODUCT_PATH)
+    fun createProduct(
+        @Valid @RequestBody productRequestDTO: ProductRequestDTO,
+    ): ResponseEntity<ProductResponseDTO> {
+        val saved = productService.save(productRequestDTO)
+        return ResponseEntity.created(URI.create("$PRODUCT_PATH/${saved.id}")).body(saved)
+    }
+
+    @CheckAdminOnly
+    @PutMapping(PRODUCT_PATH_ID)
+    fun updateProductById(
+        @Valid @RequestBody productDTO: ProductRequestDTO,
+        @PathVariable id: Long,
+    ): ResponseEntity<ProductResponseDTO> = ResponseEntity.ok(productService.updateById(id, productDTO))
+
+    @CheckAdminOnly
+    @PatchMapping(PRODUCT_PATH_ID)
+    fun patchProductById(
+        @Valid @RequestBody productPatchDTO: ProductPatchDTO,
+        @PathVariable id: Long,
+    ): ResponseEntity<ProductResponseDTO> = ResponseEntity.ok(productService.patchById(id, productPatchDTO))
+
+    @CheckAdminOnly
+    @DeleteMapping(PRODUCT_PATH_ID)
+    fun deleteProductById(
+        @PathVariable id: Long,
+    ): ResponseEntity<Unit> {
+        productService.deleteById(id)
+        return ResponseEntity.noContent().build()
+    }
+
+    @CheckAdminOnly
+    @DeleteMapping(PRODUCT_PATH)
+    fun deleteAllProducts(): ResponseEntity<String> {
+        productService.deleteAll()
+        return ResponseEntity.noContent().build()
+    }
+
+    companion object {
+        const val PRODUCT_PATH = "/api/products"
+        const val PRODUCT_PATH_ID = "$PRODUCT_PATH/{id}"
+
+        const val DEFAULT_SORT_FIELD = "name"
+        val ALLOWED_SORT_FIELDS = setOf("name", "price")
+    }
+}

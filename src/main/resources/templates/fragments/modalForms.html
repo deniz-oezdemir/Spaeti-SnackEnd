@@ -1,0 +1,69 @@
+<div th:fragment="addProductModal(productDTO, fields, hasErrors)" class="modal fade" id="addProductModal" tabindex="-1"
+     aria-labelledby="addProductModalLabel"
+     aria-hidden="true" th:data-has-errors="${hasErrors}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form th:action="@{/products}" th:object="${productDTO}" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addProductModalLabel">Add New Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="productName" class="form-label">Name</label>
+                        <input type="text" th:field="*{name}" class="form-control" id="productName" required>
+                        <div th:if="${fields.hasErrors('name')}" th:errors="*{name}" class="text-danger small"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="productPrice" class="form-label">Price</label>
+                        <input type="number" step="any" th:field="*{price}" class="form-control" id="productPrice" name="price" required>
+                        <div th:if="${fields.hasErrors('price')}" th:errors="*{price}" class="text-danger small"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="productImage" class="form-label">Image URL</label>
+                        <input type="text" th:field="*{imageUrl}" class="form-control" id="productImage" name="imageUrl" required>
+                        <div th:if="${fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}" class="text-danger small"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save Product</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="editProductModal" class="modal fade" id="editProductModal" tabindex="-1"
+     aria-labelledby="editProductModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editProductForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editProductId">
+                    <div class="mb-3">
+                        <label for="editProductName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="editProductName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editProductPrice" class="form-label">Price</label>
+                        <input type="number" class="form-control" id="editProductPrice" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editProductImageUrl" class="form-label">Image URL</label>
+                        <input type="text" class="form-control" id="editProductImageUrl" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Update Product</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
