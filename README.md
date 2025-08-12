@@ -1,4 +1,4 @@
-# spring-ecommerce-order
+# spring-ecommerce-order - TO BE: Spaeti-SnackEnd
 
 ## Features
 ### Step 1.1
