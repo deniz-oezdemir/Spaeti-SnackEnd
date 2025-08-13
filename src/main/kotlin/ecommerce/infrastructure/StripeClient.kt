@@ -30,7 +30,7 @@ class StripeClient(
         return try {
             restClient.post()
                 .uri("https://api.stripe.com/v1/payment_intents")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer ${stripeProperties.secretKey}")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer ${stripeProperties.secret}")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(body)
                 .retrieve()
