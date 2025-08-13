@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 
 interface CartRepositoryJpa : JpaRepository<Cart, Long> {
-    fun findCartByMemberId(memberId: Long): Cart?
+    fun findByMemberId(memberId: Long): Cart?
 
     @Query(
         """
