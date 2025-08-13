@@ -23,7 +23,7 @@ class CartService(
         productOptionId: Long,
         quantity: Long,
     ) {
-        val cart = cartRepositoryJpa.findCartByMemberId(memberId) ?: throw NoSuchElementException("Cart not found")
+        val cart = cartRepositoryJpa.findByMemberId(memberId) ?: throw NoSuchElementException("Cart not found")
         val cartId = cart.id
         val option =
             optionRepositoryJpa.findById(productOptionId).orElse(null)
@@ -52,7 +52,7 @@ class CartService(
     }
 
     fun getCart(memberId: Long): Cart {
-        return cartRepositoryJpa.findCartByMemberId(memberId) ?: throw NoSuchElementException("Cart not found")
+        return cartRepositoryJpa.findByMemberId(memberId) ?: throw NoSuchElementException("Cart not found")
     }
 
     fun findTop5ProductsInLast30Days(): List<TopProductStatResponse> {
@@ -70,7 +70,7 @@ class CartService(
         sortBy: String = "created_at",
         direction: Sort.Direction = Sort.Direction.ASC,
     ): Page<CartItem> {
-        val cart = cartRepositoryJpa.findCartByMemberId(memberId) ?: throw NoSuchElementException("Cart not found")
+        val cart = cartRepositoryJpa.findByMemberId(memberId) ?: throw NoSuchElementException("Cart not found")
         val pageable = PageRequest.of(page, size, Sort.by(direction, sortBy))
         return cartItemRepositoryJpa.findAllByCartId(cartId = cart.id!!, pageable)
     }
