@@ -26,7 +26,7 @@ class Payment(
     @Column(nullable = false)
     val status: String,
     @Column(nullable = true)
-    val paymentMethod: String?,
+    val paymentMethod: String? = null,
     @Column(nullable = true)
-    val failureReason: String?,
+    val failureReason: String? = null,
 )
