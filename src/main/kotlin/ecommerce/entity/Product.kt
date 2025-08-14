@@ -36,13 +36,6 @@ class Product(
         }
     }
 
-    fun addOption(
-        name: String,
-        quantity: Long,
-    ) {
-        options.add(Option(product = this, name = name, quantity = quantity))
-    }
-
     @PrePersist
     fun validateOptionsNotEmpty() {
         require(options.isNotEmpty()) { "A product must have at least one option" }
@@ -50,11 +43,15 @@ class Product(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
+
         if (other !is Product) return false
-        return id == other.id
+
+        if (this.id != null && other.id != null) {
+            return this.id == other.id
+        }
+
+        return false
     }
 
-    override fun hashCode(): Int {
-        return id?.hashCode() ?: 0
-    }
+    override fun hashCode(): Int = id?.hashCode() ?: 31
 }
