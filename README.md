@@ -1,143 +1,121 @@
-# spring-ecommerce-order (New Features Implemented)
+# spring-ecommerce-order
 
-## Project Setup -> `Step 1-0`
+## Step 2 Implementation (Latest)
 
-- [x] Set up local development environment based on mission guide
-- [x] Update README with structured development plan
+### Place Order Feature -> `Step 2-1`
+- [x] Integrate Stripe Payment Create API (sandbox key)
+- [x] Place order with the selected product option and quantity
+- [x] Decrease stock of the selected option after a successful order
+- [x] Remove ordered product from user's cart if present
+- [x] Handle payment approval API failure safely
+- [x] Display clear error messages for payment failures:
+  - [x] Expired session
+  - [x] Invalid payment method
+  - [x] Insufficient balance
+  - [x] Other Stripe failure reasons
 
-## Refactor JDBC to Spring Data JPA -> `Step 1-1`
+### Orders Feature -> `Step 2-2`
+- [x] Implement "Orders" API endpoint to retrieve order details
+- [x] Display the following order information:
+  - [x] Order date and time
+  - [x] Order status
+  - [x] Purchased items
+  - [x] Checkout session ID (issued by Stripe)
+  - [x] Payment amount
+- [x] Store optional payment-related fields in the database
 
-- [x] Convert all existing models into JPA entities
-- [x] Create a new Option JPA entity
-- [x] Implement JPA relationships between all entities (e.g., @OneToMany, @ManyToOne, etc.)
-- [x] Replace JdbcTemplate repositories with Spring Data JPA repositories (JpaRepository)
-- [x] Write learning tests using @DataJpaTest to validate entity mappings and repository functionality
+### Deployment -> `Step 2-3`
+- [x] Deploy order service to AWS server
+- [x] Ensure the deployed service interacts with the client successfully
+- [x] Write deployment script to automate deployment process
+- [x] Handle security issues when interacting with client API (e.g., CORS issues)
 
-## Pagination Support -> `Step 1-2`
+---
 
-- [x] Product List Pagination
-- [x] Implement pageable API for product listing
-- [x] Page size and number as request parameters
-- [x] Support sorting by name and price
-- [x] Cart-items View Pagination
-- [x] Implement pagination for cart item list
-- [x] Support page size, number, and sort parameters
+## Step 1 Implementation (spring-ecommerce-order)
 
-## Product Options Validation and Logic -> `Step 1-3`
-- [x] Validation Rules for Options
-- [x] Each Product must have at least one Option
-- [x] Validation for Option name
-  - [x] Max 50 characters (incl. spaces)
-  - [x] Allowed special characters: ( ) [ ] + - & / _
-  - [x] All other special characters are not allowed
-- [x] Must be unique per Product
-- [x] Option quantity
+### Project Setup -> `Step 1-0`
+- [x] Set up local development environment
+- [x] Update README with structured plan
+
+### Refactor JDBC to Spring Data JPA -> `Step 1-1`
+- [x] Convert all models to JPA entities
+- [x] Create Option entity
+- [x] Implement entity relationships (`@OneToMany`, `@ManyToOne`, etc.)
+- [x] Replace `JdbcTemplate` with `JpaRepository`
+- [x] Add `@DataJpaTest` learning tests
+
+### Pagination Support -> `Step 1-2`
+- [x] Product list pagination (page, size, sort)
+- [x] Cart items pagination (page, size, sort)
+
+### Product Options Validation and Logic -> `Step 1-3`
+- [x] Option must exist for each product
+- [x] Name validation:
+  - [x] Max 50 chars (incl. spaces)
+  - [x] Allowed special characters: `( ) [ ] + - & / _`
+  - [x] Must be unique per product
+- [x] Quantity validation:
   - [x] Must be ≥ 1
   - [x] Must be < 100,000,000
-- [x] Logic for Quantity Decrease
-    - [x] Method to decrease quantity of an Option
-- [x] Implement in Service/Entity class (not API)
+- [x] Quantity decrease logic in Service/Entity (not API)
 
-# spring-ecommerce-product (Previously Merged PR)
+---
 
-## CRUD Operations for `Product` -> `Step 1-1`
-### Model
+## spring-ecommerce-product (Previously Merged PR)
+
+### CRUD Operations for `Product` -> `Step 1-1`
+#### Model
 - [x] Product
-    - [x] id: long?
-    - [x] name: String
-    - [x] price: Double
-    - [x] imageUrl: String
+  - [x] id: long?
+  - [x] name: String
+  - [x] price: Double
+  - [x] imageUrl: String
 
-### Controller
-- [x] Create
-    - [x] Create and returns the new Product
-- [x] Read All
-    - [x] Returns the products
-- [x] Update
-    - [x] Returns the Updated Product
-    - [x] Throws NotFoundException if Product not found
-- [x] Delete
-    - [x] Returns ok status if deleted
-    - [x] Throws NotFoundException if Product not found
-- private fun findProduct
-    - [x] finds the product
-    - [x] Throws notFoundException
+#### Controller
+- [x] Create: returns the new Product
+- [x] Read All: returns the products
+- [x] Update: returns updated Product or throws `NotFoundException`
+- [x] Delete: deletes the Product or throws `NotFoundException`
+- [x] `findProduct` helper method for lookup with error handling
 
-### Exceptions
-- [x] NotFoundException
-    - [x] Handled using ControllerAdvice
+#### Exceptions
+- [x] `NotFoundException` handled via `ControllerAdvice`
 
-## Admin Interface Implementation for `Product` -> `Step 1-2`
+### Admin Interface -> `Step 1-2`
+- [x] View all products (`products.html`)
+- [x] Add product (form + JS request)
+- [x] Update product (form + JS request)
+- [x] Delete product (JS request)
+- [x] Template for header and footer
 
-### Views
-- [x] View all products
-- [x] added new page for `products.html`
-- [x] Changed Read All for ThymeLeaf returns the page as String
-- [x] Add a new product
-    - [x] `products/new` method for showing the new product form
-    - [x] create request handled by JS
-- [x] Update a product
-    - [x] `products/edit/${id}` method for showing the product form to edit
-    - [x] update request handled by JS
-- [x] Delete a product
-    - [x] Send delete request using JS
-- [x] Template for styling Footer and Header
+### Integrate DB -> `Step 1-3`
+- [x] Install DB dependency
+- [x] Create `schema.sql` and `data.sql`
+- [x] Configure `application.properties`
+- [x] Create Product Repository
+- [x] Update Controller for DB usage
 
-## Integrate DB in Project `Product` -> `Step 1-3`
-- [x] install db dependency
-- [x] create schema.sql
-- [x] create data.sql
-- [x] add rules in application.properties
-- [x] create table
-- [x] Convert Controller for db usage
-- [x] Create Product Repository to handle DB logic
+### Product Validation -> `Step 2-1`
+- [x] Product Name:
+  - [x] Max 15 chars (incl. spaces)
+  - [x] Allowed: `( ) [ ] + - & / _`
+  - [x] Must be unique
+- [x] Product Price > 0
+- [x] Image URL starts with `http://` or `https://`
+- [x] Invalid data returns errors via validation annotations + `ControllerAdvice`
 
-## Product Validation -> `Step 2-1`
+### User Authentication -> `Step 2-2`
+- [x] Register with email/password
+- [x] Login + token issuance
+- [x] Token required for member-only features
 
-### Validation Rules
-- [x] Product Name
-    - [x] Max 15 characters (including spaces)
-    - [x] Allowed special characters: ( ), [ ], +, -, &, /, _
-    - [x] No other special characters allowed
-    - [x] Must be unique
-- [x] Product Price
-    - [x] Must be greater than 0
-- [x] Product Image URL
-    - [x] Must start with `http://` or `https://`
+### Cart Functionality -> `Step 2-3`
+- [x] Add to cart (authenticated)
+- [x] View cart (authenticated)
+- [x] Remove from cart (authenticated)
 
-### Error Handling
-- [x] Invalid data returns appropriate error messages
-- [x] Handled using validation annotations and ControllerAdvice
-
-## User Authentication -> `Step 2-2`
-
-### Member Registration and Login
-- [x] Register
-    - [x] User can register with email and password
-- [x] Login
-    - [x] Validates credentials
-    - [x] Issues token upon successful login
-- [x] Access Token
-    - [x] Token is required for accessing member-only features in future
-
-## Cart Functionality for Members -> `Step 2-3`
-
-### Member Cart Features
-- [x] Add Product to Cart
-    - [x] Authenticated user can add products to their cart using token
-- [x] View Cart
-    - [x] Authenticated user can retrieve list of products in their cart
-- [x] Remove from Cart
-    - [x] Authenticated user can remove products from their cart
-
-## Admin Analytics Features -> `Step 2-4`
-
-### Analytics for Admin
-- [x] Top 5 Most Added Products in Last 30 Days
-    - [x] Returns product name, add count, and most recent added time
-    - [x] If counts are equal, most recently added appears first
-- [x] Members Who Added Items in Last 7 Days
-    - [x] Returns member ID, name, and email
-    - [x] Each member appears only once even if multiple adds
-- [x] Role-Based Access
-    - [x] (Optional) Restrict stat APIs to `ADMIN` role only
+### Admin Analytics -> `Step 2-4`
+- [x] Top 5 most added products in the last 30 days
+- [x] Members who added items in the last 7 days
+- [x] Role-based access for analytics endpoints
