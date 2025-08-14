@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.PrePersist
+import jakarta.persistence.PreUpdate
 import jakarta.persistence.Table
 
 @Entity
@@ -37,6 +38,7 @@ class Product(
     }
 
     @PrePersist
+    @PreUpdate
     fun validateOptionsNotEmpty() {
         require(options.isNotEmpty()) { "A product must have at least one option" }
     }
