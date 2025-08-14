@@ -5,7 +5,7 @@ Please include relevant motivation and context, and list any dependencies requir
 
 Fixes # (issue)
 
-## Type of change
+# Type of change
 
 Please select the type of change by marking [x] in the relevant box.
 Please delete options that are not relevant.
@@ -18,16 +18,17 @@ Please delete options that are not relevant.
 # How Has This Been Tested?
 
 Please describe the tests that you ran to verify your changes.  
-Provide instructions so we can reproduce the results.  
+Please provide instructions so we can reproduce the results.  
 Please also list any relevant details for your test configuration.
+Please mark [x] in the relevant box.
 
 - [ ] Unit tests
 - [ ] Integration tests
 - [ ] Manual testing
 
-# Checklist:
+# Checklist
 
-Go through each item and mark [x] when complete.
+Please go through each item and mark [x] when complete.
 
 - [ ] My code follows the style guidelines of this project
 - [ ] I have performed a self-review of my code
@@ -39,4 +40,4 @@ Go through each item and mark [x] when complete.
 
 # Reference
 
-Add any useful references, such as links to documentation, articles, or discussions related to this PR.
+Please add any useful references, such as links to documentation, articles, or discussions related to this PR.
