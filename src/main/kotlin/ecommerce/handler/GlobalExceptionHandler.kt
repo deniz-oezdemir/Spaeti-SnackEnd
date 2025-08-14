@@ -7,10 +7,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
-data class ValidationError(val field: String, val message: String)
-
-data class ValidationErrorResponse(val errors: List<ValidationError>)
-
 @RestControllerAdvice
 class GlobalExceptionHandler {
     private val logger = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)
@@ -51,9 +47,13 @@ class GlobalExceptionHandler {
         val error = ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.message ?: "Something went wrong")
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error)
     }
-
-    data class ErrorResponse(
-        val status: Int,
-        val message: String,
-    )
 }
+
+class ValidationError(val field: String, val message: String)
+
+class ValidationErrorResponse(val errors: List<ValidationError>)
+
+class ErrorResponse(
+    val status: Int,
+    val message: String,
+)
