@@ -38,8 +38,8 @@ We use a **trunk-based branching** approach with `main` always in a deployable s
     - `fix/<short-description>` – bug fixes
     - `chore/<short-description>` – maintenance work  
       Example: `feat/add-user-login`, `fix/incorrect-pricing-bug`
-3. Commit changes regularly (see commit format below).
-4. Push branch and open a **Pull Request (PR)**  following [SoundCloud's PR template](https://developers.soundcloud.com/blog/pr-templates-for-effective-pull-requests) to `main`.
+3. Commit changes regularly (see the commit format below).
+4. Push the branch and open a Pull Request (PR) using our custom standardized PR template (.github/pull_request_template.md) to `main`.
 5. PR must pass:
     - Code review
     - Automated tests
