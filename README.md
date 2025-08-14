@@ -10,6 +10,15 @@ We aim to implement an online Späti Shop where users can buy and gift snacks an
 
 Instead of the physical delivery of said products we will send the details and images of the products to the user via a chosen channel.
 
+##  Documentation Index
+Below you’ll find quick links to all our App README files: 
+
+- [Development Documentation README](README-Development-Documentation.md) — Code Conventions,Branching Strategy, Commit Message Format.
+- [E-commerce-Order README](README-Order.md) — Base project Features from previous mission already applied.
+- [API's README](README-APIs.md) — API Documentation. 
+- [Architecture README](README-Architecture.md) — Documentation of the tech stack and system architecture.
+
+
 ## Product Categories
 
 Currently we plan on not selling any of the age restricted products. So we will only sell snacks and soft drinks.
@@ -43,4 +52,4 @@ Implement if there is enough time:
 
 ## Kanban Board
 
-The board for coordinating of working items can be found [here](https://github.com/users/deniz-oezdemir/projects/2/views/1).
+The board for coordination of working items can be found [here](https://github.com/users/deniz-oezdemir/projects/2/views/1).
