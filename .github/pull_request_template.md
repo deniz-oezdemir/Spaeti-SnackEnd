@@ -1,63 +1,42 @@
-<!--
+# Description
 
-Please use the content below as a template for your pull request.
-Feel free to remove sections which do not make sense.
+Please include a summary of the change and which issue is fixed.  
+Please include relevant motivation and context, and list any dependencies required for this change.
 
--->
+Fixes # (issue)
 
-## Scope
+## Type of change
 
-<!-- Brief description of WHAT you’re doing and WHY. -->
+Please select the type of change by marking [x] in the relevant box.
+Please delete options that are not relevant.
 
-[closes TICKET-###](https://link-to-your-ticket)
+- [ ] Bug fix (non-breaking change which fixes an issue)
+- [ ] New feature (non-breaking change which adds functionality)
+- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] Documentation update
 
-## Implementation
+# How Has This Been Tested?
 
-With @pair
+Please describe the tests that you ran to verify your changes.  
+Provide instructions so we can reproduce the results.  
+Please also list any relevant details for your test configuration.
 
-<!--
+- [ ] Unit tests
+- [ ] Integration tests
+- [ ] Manual testing
 
-Some description of HOW you achieved it. Perhaps give a high level description of the program flow. Did you need to refactor something? What tradeoffs did you take? Are there things in here which you’d particularly like people to pay close attention to?
+# Checklist:
 
--->
+Go through each item and mark [x] when complete.
 
-## Screenshots
+- [ ] My code follows the style guidelines of this project
+- [ ] I have performed a self-review of my code
+- [ ] I have added comments to my code, especially in hard-to-understand areas
+- [ ] I have updated the documentation as needed
+- [ ] My changes generate no new warnings
+- [ ] I have added tests that prove my fix/feature works
+- [ ] New and existing tests pass locally with my changes
 
-|         | before | after |
-| ------- | ------ | ----- |
-| desktop |        |       |
-| mobile  |        |       |
+# Reference
 
-## How to Test
-
-<!--
-
-A straightforward scenario of how to test your changes could help colleagues that are not familiar with the part of the code that you are changing but want to see it in action. This section can include a description or step-by-step instructions of how to get to the state of v2 that your change affects.
-
-A "How To Test" section can look something like this:
-
-- Sign in with a user with tracks
-- Activate `show_awesome_cat_gifs` feature (add `?feature.show_awesome_cat_gifs=1` to your URL)
-- You should see a GIF with cats dancing
-
--->
-
-## Emoji Guide
-
-**For reviewers: Emojis can be added to comments to call out blocking versus non-blocking feedback.**
-
-E.g: Praise, minor suggestions, or clarifying questions that don’t block merging the PR.
-
-> 🟢 Nice refactor!
-
-> 🟡 Why was the default value removed?
-
-E.g: Blocking feedback must be addressed before merging.
-
-> 🔴 This change will break something important
-
-| | | |
-| --- | --- | --- |
-| Blocking | 🔴 ❌ 🚨 | RED |
-| Non-blocking | 🟡 💡 🤔 💭 | Yellow, thinking, etc |
-| Praise | 🟢 💚 😍 👍 🙌 | Green, hearts, positive emojis, etc |
+Add any useful references, such as links to documentation, articles, or discussions related to this PR.
