@@ -1,3 +1,5 @@
+#!/bin/bash
+
 set -euo pipefail
 
 EC2_USER=ubuntu
