@@ -30,6 +30,64 @@
 - [x] Write deployment script to automate deployment process
 - [x] Handle security issues when interacting with client API (e.g., CORS issues)
 
+#### Run as a systemd service
+
+1. Create a new service file:
+
+```
+
+sudo nano /etc/systemd/system/ecommerce.service
+
+```
+
+2. Add the following content (adjust paths as needed):
+
+```
+
+[Unit]
+Description=Ecommerce Spring Boot Application
+After=network.target
+
+[Service]
+User=ubuntu
+ExecStart=/usr/bin/java -jar /home/ubuntu/app/app.jar
+SuccessExitStatus=143
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+
+```
+
+3. Reload and enable the service:
+
+```
+
+sudo systemctl daemon-reload
+sudo systemctl enable ecommerce
+sudo systemctl start ecommerce
+
+```
+
+4. Check status:
+
+```
+
+sudo systemctl status ecommerce
+
+```
+
+5. Once registered, the deploy.sh script will automatically restart the service via:
+
+```
+
+sudo systemctl restart ecommerce
+
+```
+
+If the service is not registered, the script falls back to running the app with nohup.
+
 ---
 
 ## Step 1 Implementation (spring-ecommerce-order)
