@@ -1,6 +1,7 @@
 package ecommerce.controller
 
 import ecommerce.annotations.LoginMember
+import ecommerce.dto.CartCheckoutRequest
 import ecommerce.dto.LoggedInMember
 import ecommerce.dto.PlaceOrderRequest
 import ecommerce.dto.PlaceOrderResponse
@@ -36,5 +37,20 @@ class OrderController(
                 .created(URI.create("/orders/${res.orderId}"))
                 .body(res)
         }
+    }
+
+    @PostMapping("/checkout")
+    fun checkoutCart(
+        @LoginMember member: LoggedInMember,
+        @Valid @RequestBody req: CartCheckoutRequest,
+    ): ResponseEntity<PlaceOrderResponse> {
+        val memberEntity =
+            memberRepository.findById(member.id)
+                .orElseThrow { NoSuchElementException("Member not found for ID: ${member.id}") }
+
+        val res = orderService.checkoutCart(memberEntity, req)
+        return ResponseEntity
+            .created(URI.create("/orders/${res.orderId}"))
+            .body(res)
     }
 }

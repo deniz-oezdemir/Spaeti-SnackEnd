@@ -34,7 +34,7 @@ class LoginMemberArgumentResolver(
             id = memberResponse.id,
             email = memberResponse.email,
             name = memberResponse.name,
-            role = memberResponse.role
+            role = memberResponse.role,
         )
     }
 }

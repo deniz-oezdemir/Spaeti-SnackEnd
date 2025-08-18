@@ -1,9 +1,11 @@
 package ecommerce.service
 
+import ecommerce.dto.CartCheckoutRequest
 import ecommerce.dto.PaymentRequest
 import ecommerce.dto.PlaceOrderRequest
 import ecommerce.dto.PlaceOrderResponse
 import ecommerce.dto.StripeIntentResponse
+import ecommerce.entity.CartItem
 import ecommerce.entity.Member
 import ecommerce.entity.Order
 import ecommerce.entity.OrderItem
@@ -17,8 +19,9 @@ import ecommerce.repository.OrderItemRepositoryJpa
 import ecommerce.repository.OrderRepositoryJpa
 import ecommerce.repository.PaymentRepositoryJpa
 import jakarta.transaction.Transactional
-import org.springframework.stereotype.Service
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.Pageable
+import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDateTime
@@ -32,9 +35,104 @@ class OrderService(
     private val cartItemRepository: CartItemRepositoryJpa,
     private val cartRepository: CartRepositoryJpa,
     private val stripeClient: StripeClient,
-    private val emailService: EmailService
+    private val emailService: EmailService,
 ) {
     private val logger = LoggerFactory.getLogger(OrderService::class.java)
+
+    @Transactional
+    fun checkoutCart(
+        member: Member,
+        req: CartCheckoutRequest,
+    ): PlaceOrderResponse {
+        val cart =
+            cartRepository.findByMemberId(member.id!!)
+                ?: throw IllegalStateException("User does not have a cart.")
+
+        // We need to fetch the full CartItem objects to get quantities and options
+        val cartItems = cartItemRepository.findAllByCartId(cart.id!!, Pageable.unpaged()).content
+        if (cartItems.isEmpty()) {
+            throw IllegalStateException("Cannot checkout an empty cart.")
+        }
+
+        try {
+            // 1. Calculate the grand total from all cart items
+            val grandTotal = cartItems.sumOf { it.productOption.product.price * it.quantity }
+            val amountMinor = toMinorUnits(grandTotal, 1) // Use quantity 1 since it's the total
+
+            // 2. Create a single Stripe payment for the grand total
+            val stripeRes =
+                stripeClient.createAndConfirmPayment(
+                    PaymentRequest(amountMinor, req.currency, req.paymentMethod),
+                )
+            if (stripeRes.status != "succeeded") {
+                throw IllegalArgumentException("Payment not approved (status=${stripeRes.status}).")
+            }
+
+            // 3. Persist the multi-item order and clear the cart
+            val order = persistCartOrderAfterStripeSuccess(member, cartItems, amountMinor, req.currency, stripeRes)
+            handleSuccessfulOrderNotification(member, order)
+
+            return PlaceOrderResponse(order.id, stripeRes.status, "Cart checkout successful.")
+        } catch (e: Exception) {
+            handleFailedOrderNotification(member, e)
+            throw e
+        }
+    }
+
+    @Transactional
+    protected fun persistCartOrderAfterStripeSuccess(
+        member: Member,
+        cartItems: List<CartItem>,
+        amountMinor: Long,
+        currency: String,
+        stripeRes: StripeIntentResponse,
+    ): Order {
+        // Create one order
+        val order =
+            orderRepository.save(
+                Order(memberId = member.id!!, status = OrderStatus.PAID),
+            )
+
+        // Create an OrderItem for each CartItem
+        val orderItems =
+            cartItems.map { cartItem ->
+                OrderItem(
+                    order = order,
+                    productOption = cartItem.productOption,
+                    quantity = cartItem.quantity.toInt(),
+                    price = cartItem.productOption.product.price,
+                )
+            }
+        orderItemRepository.saveAll(orderItems)
+
+        order.items.addAll(orderItems)
+
+        // Decrease stock for each item
+        cartItems.forEach { cartItem ->
+            val option =
+                optionRepository.findWithLockById(cartItem.productOption.id!!)
+                    ?: throw NoSuchElementException("Option not found during stock update")
+            option.decreaseQuantity(cartItem.quantity)
+            optionRepository.save(option)
+        }
+
+        // Save the payment record
+        paymentRepository.save(
+            Payment(
+                order = order,
+                amount = amountMinor,
+                currency = currency,
+                status = "PAID",
+                stripeSessionId = stripeRes.id,
+                paymentMethod = "stripe",
+            ),
+        )
+
+        // Clear the user's cart
+        cartItemRepository.deleteAll(cartItems)
+
+        return order
+    }
 
     fun place(
         member: Member,
@@ -73,7 +171,10 @@ class OrderService(
         }
     }
 
-    private fun handleSuccessfulOrderNotification(member: Member, order: Order) {
+    private fun handleSuccessfulOrderNotification(
+        member: Member,
+        order: Order,
+    ) {
         try {
             emailService.sendOrderConfirmation(member, order)
         } catch (e: Exception) {
@@ -81,7 +182,10 @@ class OrderService(
         }
     }
 
-    private fun handleFailedOrderNotification(member: Member, exception: Exception) {
+    private fun handleFailedOrderNotification(
+        member: Member,
+        exception: Exception,
+    ) {
         try {
             emailService.sendOrderFailureNotification(member, exception.message ?: "An unknown error occurred.")
         } catch (emailEx: Exception) {

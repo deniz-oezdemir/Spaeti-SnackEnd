@@ -2,6 +2,7 @@ package ecommerce.controller
 
 import ecommerce.annotations.LoginMember
 import ecommerce.dto.CartRequest
+import ecommerce.dto.LoggedInMember
 import ecommerce.dto.MemberResponse
 import ecommerce.entity.Cart
 import ecommerce.entity.CartItem
@@ -29,7 +30,7 @@ class CartController(
     @PostMapping("/created")
     fun addToCart(
         @RequestBody request: CartRequest,
-        @LoginMember member: MemberResponse,
+        @LoginMember member: LoggedInMember,
     ): ResponseEntity<Void> {
         cartService.addToCart(member.id, request.productOptionId, 1)
         return ResponseEntity.created(

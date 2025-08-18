@@ -4,6 +4,13 @@ import ecommerce.entity.Member
 import ecommerce.entity.Order
 
 interface EmailService {
-    fun sendOrderConfirmation(member: Member, order: Order)
-    fun sendOrderFailureNotification(member: Member, reason: String)
+    fun sendOrderConfirmation(
+        member: Member,
+        order: Order,
+    )
+
+    fun sendOrderFailureNotification(
+        member: Member,
+        reason: String,
+    )
 }
