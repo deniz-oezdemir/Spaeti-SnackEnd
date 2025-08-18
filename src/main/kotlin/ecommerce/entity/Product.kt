@@ -32,9 +32,7 @@ class Product(
     init {
         require(name.isNotBlank()) { "Product name must not be blank" }
         require(price >= 0.01) { "Price must be positive" }
-        require(imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
-            "Image URL must start with http:// or https://"
-        }
+        require(imageUrl.isNotBlank()) { "Image URL (or key) must not be blank" }
     }
 
     @PrePersist
