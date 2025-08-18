@@ -18,6 +18,7 @@ import ecommerce.repository.OrderRepositoryJpa
 import ecommerce.repository.PaymentRepositoryJpa
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
+import org.slf4j.LoggerFactory
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDateTime
@@ -31,31 +32,61 @@ class OrderService(
     private val cartItemRepository: CartItemRepositoryJpa,
     private val cartRepository: CartRepositoryJpa,
     private val stripeClient: StripeClient,
+    private val emailService: EmailService
 ) {
+    private val logger = LoggerFactory.getLogger(OrderService::class.java)
+
     fun place(
         member: Member,
         req: PlaceOrderRequest,
     ): PlaceOrderResponse {
-        val option =
-            optionRepository.findById(req.optionId)
-                .orElseThrow { IllegalArgumentException("Option not found: ${req.optionId}") }
-        require(req.quantity > 0) { "Quantity must be positive" }
-        require(option.quantity >= req.quantity) {
-            "Insufficient stock. Available=${option.quantity}, requested=${req.quantity}"
+        try {
+            val option =
+                optionRepository.findById(req.optionId)
+                    .orElseThrow { IllegalArgumentException("Option not found: ${req.optionId}") }
+            require(req.quantity > 0) { "Quantity must be positive" }
+            require(option.quantity >= req.quantity) {
+                "Insufficient stock. Available=${option.quantity}, requested=${req.quantity}"
+            }
+
+            val amountMinor = toMinorUnits(option.product.price, req.quantity)
+
+            val stripeRes =
+                stripeClient.createAndConfirmPayment(
+                    PaymentRequest(amountMinor, req.currency, req.paymentMethod),
+                )
+            if (stripeRes.status != "succeeded") {
+                throw IllegalArgumentException("Payment not approved (status=${stripeRes.status}).")
+            }
+
+            val order = persistAfterStripeSuccess(member, option.id!!, req.quantity, amountMinor, req.currency, stripeRes)
+
+            handleSuccessfulOrderNotification(member, order)
+
+            return PlaceOrderResponse(order.id, stripeRes.status, "Order placed and paid successfully.")
+        } catch (e: Exception) {
+            logger.error("Order processing failed for member ${member.id}: ${e.message}", e)
+
+            handleFailedOrderNotification(member, e)
+
+            throw e // TODO: create custom exception
         }
+    }
 
-        val amountMinor = toMinorUnits(option.product.price, req.quantity)
-
-        val stripeRes =
-            stripeClient.createAndConfirmPayment(
-                PaymentRequest(amountMinor, req.currency, req.paymentMethod),
-            )
-        if (stripeRes.status != "succeeded") {
-            throw IllegalArgumentException("Payment not approved (status=${stripeRes.status}).")
+    private fun handleSuccessfulOrderNotification(member: Member, order: Order) {
+        try {
+            emailService.sendOrderConfirmation(member, order)
+        } catch (e: Exception) {
+            logger.error("Failed to send confirmation email for order ${order.id}", e)
         }
+    }
 
-        val orderId = persistAfterStripeSuccess(member, option.id!!, req.quantity, amountMinor, req.currency, stripeRes)
-        return PlaceOrderResponse(orderId, stripeRes.status, "Order placed and paid successfully.")
+    private fun handleFailedOrderNotification(member: Member, exception: Exception) {
+        try {
+            emailService.sendOrderFailureNotification(member, exception.message ?: "An unknown error occurred.")
+        } catch (emailEx: Exception) {
+            logger.error("Failed to send failure notification email for member ${member.id}", emailEx)
+        }
     }
 
     @Transactional
@@ -66,7 +97,7 @@ class OrderService(
         amountMinor: Long,
         currency: String,
         stripeRes: StripeIntentResponse,
-    ): Long {
+    ): Order {
         val option =
             optionRepository.findById(optionId)
                 .orElseThrow { IllegalArgumentException("Option not found during persist: $optionId") }
@@ -111,7 +142,7 @@ class OrderService(
             }
         }
 
-        return order.id!!
+        return order
     }
 
     private fun toMinorUnits(
