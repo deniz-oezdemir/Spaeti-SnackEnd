@@ -1,7 +1,7 @@
 package ecommerce.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import ecommerce.dto.MemberResponse
+import ecommerce.dto.LoggedInMember
 import ecommerce.dto.PlaceOrderRequest
 import ecommerce.dto.PlaceOrderResponse
 import ecommerce.entity.Member
@@ -53,8 +53,8 @@ class OrderControllerTest
         @MockitoBean(name = "loginMemberArgumentResolver")
         private lateinit var loginMemberArgumentResolver: LoginMemberArgumentResolver
 
-        private val memberResponse =
-            MemberResponse(id = 42L, name = "Jane", email = "jane@example.com", role = UserRole.USER.name)
+        private val member =
+            LoggedInMember(id = 42L, name = "Jane", email = "jane@example.com", role = UserRole.USER.name)
 
         @BeforeEach
         fun stubLoginResolver() {
@@ -66,7 +66,7 @@ class OrderControllerTest
                     ktAny(),
                     ktAny(),
                 ),
-            ).thenReturn(memberResponse)
+            ).thenReturn(member)
         }
 
         @Test

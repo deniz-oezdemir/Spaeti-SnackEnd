@@ -1,7 +1,7 @@
 package ecommerce.controller
 
 import ecommerce.annotations.LoginMember
-import ecommerce.dto.MemberResponse
+import ecommerce.dto.LoggedInMember
 import ecommerce.dto.PlaceOrderRequest
 import ecommerce.dto.PlaceOrderResponse
 import ecommerce.repository.MemberRepositoryJpa
@@ -22,7 +22,7 @@ class OrderController(
 ) {
     @PostMapping
     fun placeOrder(
-        @LoginMember member: MemberResponse,
+        @LoginMember member: LoggedInMember,
         @Valid @RequestBody req: PlaceOrderRequest,
     ): ResponseEntity<PlaceOrderResponse> {
         val member =
