@@ -3,10 +3,12 @@ package ecommerce.service
 import ecommerce.dto.MemberResponse
 import ecommerce.dto.TokenRequest
 import ecommerce.dto.TokenResponse
+import ecommerce.entity.Cart
 import ecommerce.entity.Member
 import ecommerce.handler.AuthorizationException
 import ecommerce.handler.ValidationException
 import ecommerce.infrastructure.JWTProvider
+import ecommerce.repository.CartRepositoryJpa
 import ecommerce.repository.MemberRepositoryJpa
 import org.springframework.stereotype.Service
 
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service
 class AuthService(
     private val jwtTokenProvider: JWTProvider,
     private val memberRepository: MemberRepositoryJpa,
+    private val cartRepository: CartRepositoryJpa,
 ) {
     fun createToken(tokenRequest: TokenRequest): TokenResponse {
         val member =
@@ -44,6 +47,9 @@ class AuthService(
                     role = role,
                 ),
             )
+
+        val newCart = Cart(memberId = member.id!!)
+        cartRepository.save(newCart)
 
         val accessToken = jwtTokenProvider.createToken(member.email)
         return TokenResponse(accessToken)
