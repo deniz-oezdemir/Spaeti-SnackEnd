@@ -53,17 +53,17 @@ class ProductTest {
     }
 
     @Test
-    fun `should throw error when imageUrl does not start with http`() {
+    fun `should throw error when imageUrl is blank`() {
         val exception =
             assertThrows<IllegalArgumentException> {
                 Product(
                     name = "T-Shirt",
                     price = 19.99,
-                    imageUrl = "ftp://example.com/image.png",
+                    imageUrl = "   ",
                     options = mutableListOf(sampleOption()),
                 )
             }
-        assertEquals("Image URL must start with http:// or https://", exception.message)
+        assertEquals("Image URL (or key) must not be blank", exception.message)
     }
 
     @Test

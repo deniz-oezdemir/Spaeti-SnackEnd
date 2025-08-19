@@ -1,5 +1,5 @@
 -- ========== PRODUCTS ==========
-INSERT IGNORE INTO products (name, price, image_url) VALUES
+INSERT  INTO products (name, price, image_url) VALUES
   ('Coca-Cola',       1.49, 'spaeti-demo-products/product-images/cocacola-original.png'),
   ('Fanta',           1.49, 'spaeti-demo-products/product-images/fanta-orange.png'),
   ('Apfelschorle',    1.59, 'spaeti-demo-products/product-images/apfelschorle-bio.png'),
