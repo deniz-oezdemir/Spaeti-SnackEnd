@@ -15,11 +15,8 @@ class WebConfig(
     private val adminRoleCheckInterceptor: AdminRoleCheckInterceptor,
 ) : WebMvcConfigurer {
     override fun addInterceptors(registry: InterceptorRegistry) {
-        // TODO: fix
-//        registry.addInterceptor(jwtAuthenticationInterceptor)
-//            .addPathPatterns("/api/protected/**")
         registry.addInterceptor(jwtAuthenticationInterceptor)
-            .addPathPatterns("/auth/find-member")
+            .addPathPatterns("/api/protected/**", "/auth/find-member", "/orders/**")
         registry.addInterceptor(adminRoleCheckInterceptor)
             .addPathPatterns("/api/protected/admin/**")
     }
