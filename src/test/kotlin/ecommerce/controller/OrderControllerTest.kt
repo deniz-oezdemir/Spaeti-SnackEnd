@@ -20,11 +20,11 @@ import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.test.context.bean.override.mockito.MockitoBean
@@ -34,8 +34,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import org.mockito.kotlin.eq
-
 
 @WebMvcTest(OrderController::class)
 @AutoConfigureMockMvc
@@ -85,29 +83,29 @@ class OrderControllerTest
             given(bearerAuthorizationExtractor.extract(any())).willReturn("mock-token")
         }
 
-    @Test
-    fun `placeOrder - returns 201 with Location and response body`() {
-        val persistedMember =
-            Member(id = principal.id, name = "Jane", email = "jane@example.com", password = "pw", role = "USER")
-        given(memberService.getByIdOrThrow(principal.id)).willReturn(persistedMember)
+        @Test
+        fun `placeOrder - returns 201 with Location and response body`() {
+            val persistedMember =
+                Member(id = principal.id, name = "Jane", email = "jane@example.com", password = "pw", role = "USER")
+            given(memberService.getByIdOrThrow(principal.id)).willReturn(persistedMember)
 
-        val req = PlaceOrderRequest(optionId = 1001L, quantity = 2L, currency = "usd", paymentMethod = PaymentMethod.PM_CARD_VISA)
-        val expected = PlaceOrderResponse(orderId = 555L, paymentStatus = "succeeded", message = "ok")
+            val req = PlaceOrderRequest(optionId = 1001L, quantity = 2L, currency = "usd", paymentMethod = PaymentMethod.PM_CARD_VISA)
+            val expected = PlaceOrderResponse(orderId = 555L, paymentStatus = "succeeded", message = "ok")
 
-        given(orderService.place(any(), eq(req))).willReturn(expected)
+            given(orderService.place(any(), eq(req))).willReturn(expected)
 
-        mockMvc.perform(
-            post("/orders")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(req)),
-        )
-            .andExpect(status().isCreated)
-            .andExpect(header().string("Location", "/orders/${expected.orderId}"))
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.orderId").value(expected.orderId))
-            .andExpect(jsonPath("$.paymentStatus").value("succeeded"))
-            .andExpect(jsonPath("$.message").value("ok"))
-    }
+            mockMvc.perform(
+                post("/orders")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(req)),
+            )
+                .andExpect(status().isCreated)
+                .andExpect(header().string("Location", "/orders/${expected.orderId}"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.orderId").value(expected.orderId))
+                .andExpect(jsonPath("$.paymentStatus").value("succeeded"))
+                .andExpect(jsonPath("$.message").value("ok"))
+        }
 
         @Test
         fun `placeOrder - service error returns 5xx with message`() {
