@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component
 
 @Component
 class BearerAuthorizationExtractor : AuthorizationExtractor<String> {
-    //TODO: actually use the extractor so we can use the header with the keyword "Authentication: Bearer {key}" as currently it works only with "Authentication: {key}"
     override fun extract(request: HttpServletRequest): String {
         val headers = request.getHeaders(HttpHeaders.AUTHORIZATION)
 

@@ -5,8 +5,8 @@ import ecommerce.dto.CartCheckoutRequest
 import ecommerce.dto.LoggedInMember
 import ecommerce.dto.PlaceOrderRequest
 import ecommerce.dto.PlaceOrderResponse
-import ecommerce.service.MemberService
 import ecommerce.repository.MemberRepositoryJpa
+import ecommerce.service.MemberService
 import ecommerce.service.OrderService
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity

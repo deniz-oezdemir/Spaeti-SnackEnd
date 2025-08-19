@@ -1,6 +1,7 @@
 package ecommerce.service
 
 import ecommerce.dto.StripeIntentResponse
+import ecommerce.entity.CartItem
 import ecommerce.entity.Member
 import ecommerce.entity.Order
 import ecommerce.entity.OrderItem
@@ -16,6 +17,7 @@ import ecommerce.repository.PaymentRepositoryJpa
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
+import kotlin.collections.forEach
 
 @Service
 class OrderPersistenceService(
@@ -35,7 +37,7 @@ class OrderPersistenceService(
         currency: String,
         stripeRes: StripeIntentResponse,
         paymentMethod: PaymentMethod,
-    ): Long {
+    ): Order {
         val option =
             optionRepository.findById(optionId)
                 .orElseThrow { IllegalArgumentException("Option not found during persist: $optionId") }
@@ -82,6 +84,65 @@ class OrderPersistenceService(
             }
         }
 
-        return order.id!!
+        return order
+    }
+
+    @Transactional
+    fun persistCartOrderAfterStripeSuccess(
+        member: Member,
+        cartItems: List<CartItem>,
+        amountMinor: Long,
+        currency: String,
+        stripeRes: StripeIntentResponse,
+        paymentMethod: PaymentMethod,
+    ): Order {
+        // Create one order
+        val order =
+            orderRepository.save(
+                Order(memberId = member.id!!, status = OrderStatus.PAID),
+            )
+
+        // Create an OrderItem for each CartItem
+        val orderItems =
+            cartItems.map { cartItem ->
+                OrderItem(
+                    order = order,
+                    productOption = cartItem.productOption,
+                    quantity = cartItem.quantity.toInt(),
+                    price = cartItem.productOption.product.price,
+                    productName = cartItem.productOption.product.name,
+                    optionName = cartItem.productOption.name,
+                    productImageUrl = cartItem.productOption.product.imageUrl,
+                )
+            }
+        orderItemRepository.saveAll(orderItems)
+
+        order.items.addAll(orderItems)
+
+        // Decrease stock for each item
+        cartItems.forEach { cartItem ->
+            val option =
+                optionRepository.findWithLockById(cartItem.productOption.id!!)
+                    ?: throw NoSuchElementException("Option not found during stock update")
+            option.decreaseQuantity(cartItem.quantity)
+            optionRepository.save(option)
+        }
+
+        // Save the payment record
+        paymentRepository.save(
+            Payment(
+                order = order,
+                amount = amountMinor,
+                currency = currency,
+                status = "PAID",
+                stripeSessionId = stripeRes.id,
+                paymentMethod = paymentMethod,
+            ),
+        )
+
+        // Clear the user's cart
+        cartItemRepository.deleteAll(cartItems)
+
+        return order
     }
 }

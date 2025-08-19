@@ -11,7 +11,7 @@ import org.springframework.web.servlet.HandlerInterceptor
 @Component
 class JwtAuthenticationInterceptor(
     val jwtProvider: JWTProvider,
-    private val bearerAuthorizationExtractor: BearerAuthorizationExtractor
+    private val bearerAuthorizationExtractor: BearerAuthorizationExtractor,
 ) : HandlerInterceptor {
     override fun preHandle(
         request: HttpServletRequest,

@@ -48,7 +48,7 @@ class CartController(
 
     @GetMapping
     fun getCart(
-        @LoginMember member: MemberResponse,
+        @LoginMember member: LoggedInMember,
     ): Cart {
         return cartService.getCart(member.id)
     }

@@ -8,7 +8,9 @@ import ecommerce.entity.Member
 import ecommerce.enums.PaymentMethod
 import ecommerce.enums.UserRole
 import ecommerce.handler.GlobalExceptionHandler
+import ecommerce.infrastructure.BearerAuthorizationExtractor
 import ecommerce.infrastructure.JWTProvider
+import ecommerce.repository.MemberRepositoryJpa
 import ecommerce.resolver.LoginMemberArgumentResolver
 import ecommerce.service.AuthService
 import ecommerce.service.MemberService
@@ -22,6 +24,7 @@ import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.test.context.bean.override.mockito.MockitoBean
@@ -31,6 +34,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.mockito.kotlin.eq
+
 
 @WebMvcTest(OrderController::class)
 @AutoConfigureMockMvc
@@ -53,6 +58,12 @@ class OrderControllerTest
         @MockitoBean
         private lateinit var memberService: MemberService
 
+        @MockitoBean
+        private lateinit var memberRepository: MemberRepositoryJpa
+
+        @MockitoBean
+        private lateinit var bearerAuthorizationExtractor: BearerAuthorizationExtractor
+
         @MockitoBean(name = "loginMemberArgumentResolver")
         private lateinit var loginMemberArgumentResolver: LoginMemberArgumentResolver
 
@@ -70,30 +81,33 @@ class OrderControllerTest
                     any(),
                 ),
             ).thenReturn(principal)
+
+            given(bearerAuthorizationExtractor.extract(any())).willReturn("mock-token")
         }
 
-        @Test
-        fun `placeOrder - returns 201 with Location and response body`() {
-            val persistedMember =
-                Member(id = principal.id, name = "Jane", email = "jane@example.com", password = "pw", role = "USER")
-            given(memberService.getByIdOrThrow(principal.id)).willReturn(persistedMember)
+    @Test
+    fun `placeOrder - returns 201 with Location and response body`() {
+        val persistedMember =
+            Member(id = principal.id, name = "Jane", email = "jane@example.com", password = "pw", role = "USER")
+        given(memberService.getByIdOrThrow(principal.id)).willReturn(persistedMember)
 
-            val req = PlaceOrderRequest(optionId = 1001L, quantity = 2L, currency = "usd", paymentMethod = PaymentMethod.PM_CARD_VISA)
-            val expected = PlaceOrderResponse(orderId = 555L, paymentStatus = "succeeded", message = "ok")
-            given(orderService.place(persistedMember, req)).willReturn(expected)
+        val req = PlaceOrderRequest(optionId = 1001L, quantity = 2L, currency = "usd", paymentMethod = PaymentMethod.PM_CARD_VISA)
+        val expected = PlaceOrderResponse(orderId = 555L, paymentStatus = "succeeded", message = "ok")
 
-            mockMvc.perform(
-                post("/orders")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsBytes(req)),
-            )
-                .andExpect(status().isCreated)
-                .andExpect(header().string("Location", "/orders/${expected.orderId}"))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.orderId").value(expected.orderId))
-                .andExpect(jsonPath("$.paymentStatus").value("succeeded"))
-                .andExpect(jsonPath("$.message").value("ok"))
-        }
+        given(orderService.place(any(), eq(req))).willReturn(expected)
+
+        mockMvc.perform(
+            post("/orders")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(req)),
+        )
+            .andExpect(status().isCreated)
+            .andExpect(header().string("Location", "/orders/${expected.orderId}"))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.orderId").value(expected.orderId))
+            .andExpect(jsonPath("$.paymentStatus").value("succeeded"))
+            .andExpect(jsonPath("$.message").value("ok"))
+    }
 
         @Test
         fun `placeOrder - service error returns 5xx with message`() {
@@ -108,7 +122,7 @@ class OrderControllerTest
                     currency = "usd",
                     paymentMethod = PaymentMethod.PM_CARD_CHARGE_DECLINED,
                 )
-            given(orderService.place(persistedMember, req)).willThrow(IllegalArgumentException("Payment not approved"))
+            given(orderService.place(any(), eq(req))).willThrow(IllegalArgumentException("Payment not approved"))
 
             mockMvc.perform(
                 post("/orders")

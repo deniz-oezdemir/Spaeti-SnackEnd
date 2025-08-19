@@ -112,7 +112,7 @@ class AuthControllerTest {
 
     @Test
     fun `shouldn't get member if token does not exist or invalid`() {
-        `when`(jwtProvider.validateToken("Bearer invalid-token")).thenThrow(
+        `when`(jwtProvider.validateToken("invalid-token")).thenThrow(
             AuthorizationException(
                 "Invalid or expired JWT token",
             ),

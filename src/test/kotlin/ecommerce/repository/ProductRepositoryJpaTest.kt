@@ -7,6 +7,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.test.annotation.DirtiesContext
 
 @DataJpaTest
 class ProductRepositoryJpaTest
@@ -20,12 +21,13 @@ class ProductRepositoryJpaTest
             assertThat(saved.id).isNotNull()
         }
 
-       //TODO make this test pass according to the actual stock number
         @Test
         fun `count returns correct number of products`() {
+            val count = repo.count()
             repo.save(sampleProduct(name = "One"))
             repo.save(sampleProduct(name = "Two"))
-            assertThat(repo.count()).isEqualTo(2)
+            val diff = repo.count() - count
+            assertThat(diff).isEqualTo(2)
         }
 
         @Test
