@@ -20,6 +20,7 @@ class ProductRepositoryJpaTest
             assertThat(saved.id).isNotNull()
         }
 
+       //TODO make this test pass according to the actual stock number
         @Test
         fun `count returns correct number of products`() {
             repo.save(sampleProduct(name = "One"))
