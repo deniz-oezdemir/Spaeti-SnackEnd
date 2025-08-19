@@ -1,10 +1,10 @@
 plugins {
     kotlin("jvm") version "1.9.25"
     kotlin("plugin.spring") version "1.9.25"
-    kotlin("plugin.jpa") version "1.9.25"
     id("org.springframework.boot") version "3.5.3"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
+    kotlin("plugin.jpa") version "1.9.25"
 }
 
 group = "camp.nextstep.edu"
@@ -16,30 +16,33 @@ java {
     }
 }
 
+allOpen {
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.MappedSuperclass")
+    annotation("jakarta.persistence.Embeddable")
+}
+
 repositories {
     mavenCentral()
 }
 
-val assureVersion = "5.5.5"
-val h2Version = "2.2.224"
-val jwtVersion = "0.12.6"
 dependencies {
-//    implementation("org.springframework.boot:spring-boot-starter-jdbc")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.2.0")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("io.jsonwebtoken:jjwt-api:$jwtVersion")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:$jwtVersion")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jwtVersion")
-    runtimeOnly("com.h2database:h2:$h2Version")
+    implementation("io.jsonwebtoken:jjwt:0.9.1")
+    runtimeOnly("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-    testImplementation("io.rest-assured:rest-assured:$assureVersion")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    testImplementation("com.h2database:h2")
+    testImplementation("io.rest-assured:rest-assured")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
 }
 
 kotlin {

@@ -1,38 +1,32 @@
 package ecommerce.controller
 
-import ecommerce.annotation.LoginMember
-import ecommerce.mappers.toDTO
-import ecommerce.model.MemberDTO
-import ecommerce.model.OrderResponseDTO
-import ecommerce.model.PaymentRequestDTO
-import ecommerce.services.OrderService
+import ecommerce.annotations.LoginMember
+import ecommerce.dto.LoggedInMember
+import ecommerce.dto.PlaceOrderRequest
+import ecommerce.dto.PlaceOrderResponse
+import ecommerce.service.MemberService
+import ecommerce.service.OrderService
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.net.URI
 
 @RestController
-@RequestMapping("/api/orders")
+@RequestMapping("/orders")
 class OrderController(
     private val orderService: OrderService,
+    private val memberService: MemberService,
 ) {
     @PostMapping
-    fun createOrder(
-        @Valid @RequestBody paymentRequestDTO: PaymentRequestDTO,
-        @LoginMember member: MemberDTO,
-    ): ResponseEntity<OrderResponseDTO> {
-        val savedOrder = orderService.placeOrder(paymentRequestDTO, member)
-        return ResponseEntity.ok(savedOrder.toDTO())
-    }
-
-    @GetMapping
-    fun getUserOrders(
-        @LoginMember member: MemberDTO,
-    ): ResponseEntity<List<OrderResponseDTO>> {
-        val orders = orderService.findOrdersByMemberId(member.id!!)
-        return ResponseEntity.ok(orders)
+    fun placeOrder(
+        @LoginMember principal: LoggedInMember,
+        @Valid @RequestBody req: PlaceOrderRequest,
+    ): ResponseEntity<PlaceOrderResponse> {
+        val member = memberService.getByIdOrThrow(principal.id)
+        val res = orderService.place(member, req)
+        return ResponseEntity.created(URI.create("/orders/${res.orderId}")).body(res)
     }
 }

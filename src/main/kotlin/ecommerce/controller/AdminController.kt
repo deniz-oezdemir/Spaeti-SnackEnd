@@ -1,32 +1,27 @@
 package ecommerce.controller
 
-import ecommerce.annotation.CheckAdminOnly
-import ecommerce.model.ActiveMemberDTO
-import ecommerce.model.OptionDTO
-import ecommerce.model.TopProductDTO
-import ecommerce.services.AdminService
+import ecommerce.dto.MemberResponse
+import ecommerce.dto.TopProductStatResponse
+import ecommerce.service.CartService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/admin")
-@CheckAdminOnly
-class AdminController(private val adminService: AdminService) {
+@RequestMapping("/api/protected/admin")
+class AdminController(
+    private val cartService: CartService,
+) {
     @GetMapping("/top-products")
-    fun getTopProducts(): List<TopProductDTO> = adminService.findTopProductsAddedInList30Days()
+    fun findTop5ProductsInLast30Days(): ResponseEntity<List<TopProductStatResponse>> {
+        val topProducts = cartService.findTop5ProductsInLast30Days()
+        return ResponseEntity.ok(topProducts)
+    }
 
-    @GetMapping("/active-members")
-    fun getActiveMembers(): List<ActiveMemberDTO> = adminService.findMembersWithRecentCartActivity()
-
-    @PostMapping("/options")
-    fun createOption(
-        @RequestBody optionDTO: OptionDTO,
-    ): ResponseEntity<Unit> {
-        adminService.createOption(optionDTO)
-        return ResponseEntity.ok().build()
+    @GetMapping("/cart-activity")
+    fun findMembersWithCartActivityInLast7Days(): ResponseEntity<List<MemberResponse>> {
+        val activeMembers = cartService.findMembersWithCartActivityInLast7Days()
+        return ResponseEntity.ok(activeMembers)
     }
 }
