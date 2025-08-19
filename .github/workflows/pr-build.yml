@@ -1,0 +1,41 @@
+name: PR Build - Spaeti-SnackEnd
+
+# Run this workflow automatically whenever a Pull Request is opened.
+# updated, or synchronized, targeting any branch.
+on:
+  pull_request:
+    branches:
+      - "*"
+
+# Use the latest Ubuntu VM provided by GitHub to run the job.
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+        # Download the repository code into the runner's workspace.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Install Java 21 on the runner.
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      # Cache Gradle wrapper distributions between workflow runs.
+      # Speeds up builds by avoiding repeated downloads of the Gradle binaries.
+      # The cache key is tied to gradle-wrapper.properties, so if Gradle version changes, cache is refreshed.
+      - name: Cache Gradle Wrapper
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/wrapper/dists
+          key: gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: gradle-wrapper-
+
+      # Build the project using Gradle.
+      # "clean build" removes old build outputs, compiles the project, and runs all tests.
+      # If any test fails, the workflow will fail, blocking the PR.
+      - name: Build Application
+        run: ./gradlew clean build
