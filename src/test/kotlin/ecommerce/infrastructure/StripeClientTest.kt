@@ -70,7 +70,7 @@ class StripeClientTest {
             PaymentRequest(
                 amount = 999,
                 currency = "usd",
-                paymentMethod = PaymentMethod.PM_CARD_VISA,
+                paymentMethod = PaymentMethod.PM_CARD_VISA.id,
             )
 
         val resp: StripeIntentResponse = client.createAndConfirmPayment(req)
@@ -105,7 +105,7 @@ class StripeClientTest {
             PaymentRequest(
                 amount = 5000,
                 currency = "usd",
-                paymentMethod = PaymentMethod.PM_CARD_CHARGE_CUSTOMER_FAIL,
+                paymentMethod = PaymentMethod.PM_CARD_CHARGE_CUSTOMER_FAIL.id,
             )
 
         val ex =

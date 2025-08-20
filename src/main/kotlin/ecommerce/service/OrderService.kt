@@ -56,7 +56,7 @@ class OrderService(
             // 2. Create a single Stripe payment for the grand total
             val stripeRes =
                 stripeClient.createAndConfirmPayment(
-                    PaymentRequest(amountMinor, req.currency, req.paymentMethod),
+                    PaymentRequest(amountMinor, req.currency, req.paymentMethod.id),
                 )
             if (stripeRes.status != "succeeded") {
                 throw IllegalArgumentException("Payment not approved (status=${stripeRes.status}).")
@@ -98,7 +98,7 @@ class OrderService(
 
             val stripeRes =
                 stripeClient.createAndConfirmPayment(
-                    PaymentRequest(amountMinor, req.currency, req.paymentMethod),
+                    PaymentRequest(amountMinor, req.currency, req.paymentMethod.id),
                 )
             if (stripeRes.status != "succeeded") {
                 throw IllegalArgumentException("Payment not approved (status=${stripeRes.status}).")
