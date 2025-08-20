@@ -89,7 +89,7 @@ class OrderControllerTest
                 Member(id = principal.id, name = "Jane", email = "jane@example.com", password = "pw", role = "USER")
             given(memberService.getByIdOrThrow(principal.id)).willReturn(persistedMember)
 
-            val req = PlaceOrderRequest(optionId = 1001L, quantity = 2L, currency = "usd", paymentMethod = PaymentMethod.PM_CARD_VISA)
+            val req = PlaceOrderRequest(optionId = 1001L, quantity = 2L, currency = "eur", paymentMethod = PaymentMethod.PM_CARD_VISA)
             val expected = PlaceOrderResponse(orderId = 555L, paymentStatus = "succeeded", message = "ok")
 
             given(orderService.place(any(), eq(req))).willReturn(expected)
@@ -117,7 +117,7 @@ class OrderControllerTest
                 PlaceOrderRequest(
                     optionId = 1001L,
                     quantity = 3L,
-                    currency = "usd",
+                    currency = "eur",
                     paymentMethod = PaymentMethod.PM_CARD_CHARGE_DECLINED,
                 )
             given(orderService.place(any(), eq(req))).willThrow(IllegalArgumentException("Payment not approved"))
@@ -157,7 +157,7 @@ class OrderControllerTest
                 PlaceOrderRequest(
                     optionId = 1L,
                     quantity = 1L,
-                    currency = "usd",
+                    currency = "eur",
                     paymentMethod = PaymentMethod.PM_CARD_VISA,
                 )
 

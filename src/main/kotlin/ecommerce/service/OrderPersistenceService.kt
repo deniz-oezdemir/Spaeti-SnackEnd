@@ -16,6 +16,7 @@ import ecommerce.repository.OrderRepositoryJpa
 import ecommerce.repository.PaymentRepositoryJpa
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
 import java.time.LocalDateTime
 import kotlin.collections.forEach
 
@@ -98,9 +99,10 @@ class OrderPersistenceService(
         paymentMethod: PaymentMethod,
     ): Order {
         // Create one order
+        val totalAmount = BigDecimal.valueOf(amountMinor, 2)
         val order =
             orderRepository.save(
-                Order(memberId = member.id!!, status = OrderStatus.PAID),
+                Order(memberId = member.id!!, status = OrderStatus.PAID, totalAmount = totalAmount),
             )
 
         // Create an OrderItem for each CartItem
@@ -166,6 +168,7 @@ class OrderPersistenceService(
                 isGift = true,
                 giftRecipientEmail = recipientEmail,
                 giftMessage = message,
+                totalAmount =  BigDecimal.valueOf(amountMinor, 2)
             )
         val saved = orderRepository.save(order)
 

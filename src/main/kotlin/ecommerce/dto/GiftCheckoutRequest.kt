@@ -8,6 +8,6 @@ data class GiftCheckoutRequest(
     @field:Email @field:NotBlank
     val recipientEmail: String,
     val message: String? = null,
-    val currency: String = "usd",
+    val currency: String = "eur",
     val paymentMethod: PaymentMethod,
 )
