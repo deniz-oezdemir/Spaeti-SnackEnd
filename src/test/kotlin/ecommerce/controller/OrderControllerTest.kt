@@ -208,7 +208,7 @@ class OrderControllerTest
                 ecommerce.dto.GiftCheckoutRequest(
                     recipientEmail = "not-an-email",
                     message = null,
-                    currency = "usd",
+                    currency = "eur",
                     paymentMethod = ecommerce.enums.PaymentMethod.PM_CARD_VISA,
                 )
 
