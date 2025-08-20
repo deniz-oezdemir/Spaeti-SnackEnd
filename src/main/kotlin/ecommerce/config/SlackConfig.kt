@@ -1,3 +1,5 @@
+package ecommerce.config
+
 import com.slack.api.Slack
 import com.slack.api.methods.MethodsClient
 import org.springframework.beans.factory.annotation.Value

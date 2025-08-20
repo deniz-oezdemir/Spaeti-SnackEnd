@@ -27,7 +27,6 @@ class OrderPersistenceService(
     private val paymentRepository: PaymentRepositoryJpa,
     private val cartItemRepository: CartItemRepositoryJpa,
     private val cartRepository: CartRepositoryJpa,
-    private val slackService: SlackService
 ) {
     @Transactional
     fun persistAfterStripeSuccess(
@@ -66,7 +65,7 @@ class OrderPersistenceService(
         orderItemRepository.save(orderItem)
         order.items.add(orderItem)
 
-        val payment = paymentRepository.save(
+        paymentRepository.save(
             Payment(
                 order = order,
                 amount = amountMinor,
@@ -76,9 +75,6 @@ class OrderPersistenceService(
                 paymentMethod = paymentMethod,
             ),
         )
-
-        //TODO: think about refactoring that email and slack are called similar place
-        slackService.slackCheckoutMessage(member, option, payment)
 
         option.decreaseQuantity(requestedQty)
         optionRepository.save(option)
