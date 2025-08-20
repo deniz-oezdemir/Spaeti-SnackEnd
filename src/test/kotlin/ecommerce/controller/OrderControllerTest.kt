@@ -251,7 +251,7 @@ class OrderControllerTest
                 ecommerce.dto.GiftCheckoutRequest(
                     recipientEmail = "friend@example.com",
                     message = null,
-                    currency = "usd",
+                    currency = "eur",
                     paymentMethod = PaymentMethod.PM_CARD_CHARGE_DECLINED,
                 )
 
