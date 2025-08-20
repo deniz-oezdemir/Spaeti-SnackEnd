@@ -168,7 +168,7 @@ class OrderPersistenceService(
                 isGift = true,
                 giftRecipientEmail = recipientEmail,
                 giftMessage = message,
-                totalAmount =  BigDecimal.valueOf(amountMinor, 2)
+                totalAmount = BigDecimal.valueOf(amountMinor, 2),
             )
         val saved = orderRepository.save(order)
 

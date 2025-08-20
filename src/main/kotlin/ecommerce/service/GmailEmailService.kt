@@ -46,7 +46,7 @@ class GmailEmailService(
     |
     |Thanks,
     |Spaeti-SnackEnd
-                    """.trimMargin(),
+                        """.trimMargin(),
                     )
                 }
         } else {
@@ -70,7 +70,7 @@ class GmailEmailService(
     |
     |Thanks,
     |Spaeti-SnackEnd
-                    """.trimMargin(),
+                        """.trimMargin(),
                     )
                 }
         }
