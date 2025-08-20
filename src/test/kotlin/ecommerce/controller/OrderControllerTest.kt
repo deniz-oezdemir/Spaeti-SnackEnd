@@ -182,7 +182,7 @@ class OrderControllerTest
                 ecommerce.dto.GiftCheckoutRequest(
                     recipientEmail = "friend@example.com",
                     message = "Happy Birthday! 🎉",
-                    currency = "usd",
+                    currency = "eur",
                     paymentMethod = PaymentMethod.PM_CARD_VISA,
                 )
             val expected =
