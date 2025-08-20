@@ -52,17 +52,17 @@ class OrderPersistenceService(
                 ),
             )
 
-        orderItemRepository.save(
-            OrderItem(
-                order = order,
-                productOption = option,
-                quantity = requestedQty.toInt(),
-                price = option.product.price,
-                productName = option.product.name,
-                optionName = option.name,
-                productImageUrl = option.product.imageUrl,
-            ),
+        val orderItem = OrderItem(
+            order = order,
+            productOption = option,
+            quantity = requestedQty.toInt(),
+            price = option.product.price,
+            productName = option.product.name,
+            optionName = option.name,
+            productImageUrl = option.product.imageUrl,
         )
+        orderItemRepository.save(orderItem)
+        order.items.add(orderItem)
 
         paymentRepository.save(
             Payment(
