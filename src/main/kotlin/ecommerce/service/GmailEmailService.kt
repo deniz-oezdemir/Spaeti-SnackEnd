@@ -76,4 +76,42 @@ class GmailEmailService(
 
         mailSender.send(message)
     }
+    override fun sendGiftNotification(
+        buyer: Member,
+        recipientEmail: String,
+        order: Order,
+        message: String?
+    ) {
+        val itemsListString =
+            order.items.joinToString("\n") { item ->
+                val productName = item.productOption.product.name
+                val optionName = item.productOption.name
+                val quantity = item.quantity
+                "- $quantity x $productName ($optionName)"
+            }
+
+        val mail = SimpleMailMessage().apply {
+            setTo(recipientEmail)
+            setSubject("🎁 You’ve received a gift from ${buyer.name}!")
+            setText(
+                """
+            |Hi there,
+            |
+            |${buyer.name} (${buyer.email}) sent you a gift!
+            |
+            |Order Date: ${order.orderDateTime}
+            |
+            |Items:
+            |$itemsListString
+            |
+            |${if (!message.isNullOrBlank()) "Message: $message\n\n" else ""}
+            |Enjoy! 🍫🥤
+            |
+            |— Spaeti-SnackEnd
+            """.trimMargin()
+            )
+        }
+        mailSender.send(mail)
+    }
+
 }
