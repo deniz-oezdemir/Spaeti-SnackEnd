@@ -13,4 +13,11 @@ interface EmailService {
         member: Member,
         reason: String,
     )
+
+    fun sendGiftNotification(
+        buyer: Member,
+        recipientEmail: String,
+        order: Order,
+        message: String?
+    )
 }
