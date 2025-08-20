@@ -7,5 +7,5 @@ data class GiftOrderResponse(
     val status: String,
     val recipientEmail: String,
     val totalAmount: BigDecimal,
-    val itemCount: Int
+    val itemCount: Int,
 )

@@ -76,11 +76,12 @@ class GmailEmailService(
 
         mailSender.send(message)
     }
+
     override fun sendGiftNotification(
         buyer: Member,
         recipientEmail: String,
         order: Order,
-        message: String?
+        message: String?,
     ) {
         val itemsListString =
             order.items.joinToString("\n") { item ->
@@ -90,11 +91,12 @@ class GmailEmailService(
                 "- $quantity x $productName ($optionName)"
             }
 
-        val mail = SimpleMailMessage().apply {
-            setTo(recipientEmail)
-            setSubject("🎁 You’ve received a gift from ${buyer.name}!")
-            setText(
-                """
+        val mail =
+            SimpleMailMessage().apply {
+                setTo(recipientEmail)
+                setSubject("🎁 You’ve received a gift from ${buyer.name}!")
+                setText(
+                    """
             |Hi there,
             |
             |${buyer.name} (${buyer.email}) sent you a gift!
@@ -108,10 +110,9 @@ class GmailEmailService(
             |Enjoy! 🍫🥤
             |
             |— Spaeti-SnackEnd
-            """.trimMargin()
-            )
-        }
+                    """.trimMargin(),
+                )
+            }
         mailSender.send(mail)
     }
-
 }

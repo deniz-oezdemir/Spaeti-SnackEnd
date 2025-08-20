@@ -146,4 +146,70 @@ class OrderPersistenceService(
 
         return order
     }
+
+    @Transactional
+    fun persistGiftOrderAfterStripeSuccess(
+        buyer: Member,
+        cartItems: List<CartItem>,
+        recipientEmail: String,
+        message: String?,
+        amountMinor: Long,
+        currency: String,
+        stripeRes: StripeIntentResponse,
+        paymentMethod: PaymentMethod,
+    ): Order {
+        // Order with gift metadata
+        val order =
+            Order(
+                memberId = buyer.id!!,
+                status = OrderStatus.PAID,
+                isGift = true,
+                giftRecipientEmail = recipientEmail,
+                giftMessage = message,
+            )
+        val saved = orderRepository.save(order)
+
+        // One item per option (qty = 1)
+        val items =
+            cartItems.map { cartItem ->
+                OrderItem(
+                    order = saved,
+                    productOption = cartItem.productOption,
+                    quantity = cartItem.quantity.toInt(),
+                    price = cartItem.productOption.product.price,
+                    productName = cartItem.productOption.product.name,
+                    optionName = cartItem.productOption.name,
+                    productImageUrl = cartItem.productOption.product.imageUrl,
+                )
+            }
+        orderItemRepository.saveAll(items)
+
+        saved.items.addAll(items)
+
+        // Decrease stock for each item
+        cartItems.forEach { cartItem ->
+            val option =
+                optionRepository.findWithLockById(cartItem.productOption.id!!)
+                    ?: throw NoSuchElementException("Option not found during stock update")
+            option.decreaseQuantity(cartItem.quantity)
+            optionRepository.save(option)
+        }
+
+        // Save the payment record
+        paymentRepository.save(
+            Payment(
+                order = order,
+                amount = amountMinor,
+                currency = currency,
+                status = "PAID",
+                stripeSessionId = stripeRes.id,
+                paymentMethod = paymentMethod,
+            ),
+        )
+
+        // Clear the user's cart
+        cartItemRepository.deleteAll(cartItems)
+
+        return saved
+    }
 }

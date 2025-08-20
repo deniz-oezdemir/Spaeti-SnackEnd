@@ -18,6 +18,6 @@ interface EmailService {
         buyer: Member,
         recipientEmail: String,
         order: Order,
-        message: String?
+        message: String?,
     )
 }
