@@ -8,7 +8,9 @@ import ecommerce.entity.Member
 import ecommerce.enums.PaymentMethod
 import ecommerce.enums.UserRole
 import ecommerce.handler.GlobalExceptionHandler
+import ecommerce.infrastructure.BearerAuthorizationExtractor
 import ecommerce.infrastructure.JWTProvider
+import ecommerce.repository.MemberRepositoryJpa
 import ecommerce.resolver.LoginMemberArgumentResolver
 import ecommerce.service.AuthService
 import ecommerce.service.MemberService
@@ -18,6 +20,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -53,6 +56,12 @@ class OrderControllerTest
         @MockitoBean
         private lateinit var memberService: MemberService
 
+        @MockitoBean
+        private lateinit var memberRepository: MemberRepositoryJpa
+
+        @MockitoBean
+        private lateinit var bearerAuthorizationExtractor: BearerAuthorizationExtractor
+
         @MockitoBean(name = "loginMemberArgumentResolver")
         private lateinit var loginMemberArgumentResolver: LoginMemberArgumentResolver
 
@@ -70,6 +79,8 @@ class OrderControllerTest
                     any(),
                 ),
             ).thenReturn(principal)
+
+            given(bearerAuthorizationExtractor.extract(any())).willReturn("mock-token")
         }
 
         @Test
@@ -80,7 +91,8 @@ class OrderControllerTest
 
             val req = PlaceOrderRequest(optionId = 1001L, quantity = 2L, currency = "usd", paymentMethod = PaymentMethod.PM_CARD_VISA)
             val expected = PlaceOrderResponse(orderId = 555L, paymentStatus = "succeeded", message = "ok")
-            given(orderService.place(persistedMember, req)).willReturn(expected)
+
+            given(orderService.place(any(), eq(req))).willReturn(expected)
 
             mockMvc.perform(
                 post("/orders")
@@ -108,7 +120,7 @@ class OrderControllerTest
                     currency = "usd",
                     paymentMethod = PaymentMethod.PM_CARD_CHARGE_DECLINED,
                 )
-            given(orderService.place(persistedMember, req)).willThrow(IllegalArgumentException("Payment not approved"))
+            given(orderService.place(any(), eq(req))).willThrow(IllegalArgumentException("Payment not approved"))
 
             mockMvc.perform(
                 post("/orders")

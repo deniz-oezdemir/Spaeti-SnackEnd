@@ -2,6 +2,7 @@ package ecommerce.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import ecommerce.dto.CartRequest
+import ecommerce.dto.LoggedInMember
 import ecommerce.dto.MemberResponse
 import ecommerce.entity.Cart
 import ecommerce.enums.UserRole
@@ -17,7 +18,7 @@ import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
@@ -29,7 +30,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.mockito.kotlin.any as ktAny
 
-@WebMvcTest(CartController::class)
+@SpringBootTest
 @AutoConfigureMockMvc
 class CartControllerTest {
     @Autowired
@@ -53,6 +54,8 @@ class CartControllerTest {
     private val token = "mocked-jwt-token"
     private val memberResponse =
         MemberResponse(id = 1L, email = "user@example.com", name = "John Doe", role = UserRole.USER.name)
+    private val loggedInMember =
+        LoggedInMember(id = 1L, email = "user@example.com", name = "John Doe", role = UserRole.USER.name)
     private val cartRequest = CartRequest(productOptionId = 100L)
 
     @BeforeEach
@@ -68,7 +71,7 @@ class CartControllerTest {
                 ktAny(),
                 ktAny(),
             ),
-        ).thenReturn(memberResponse)
+        ).thenReturn(loggedInMember)
 
         val cartController = CartController(cartService)
 
@@ -90,7 +93,7 @@ class CartControllerTest {
         )
             .andExpect(status().isCreated)
 
-        verify(cartService).addToCart(memberResponse.id, cartRequest.productOptionId, quantity = 1)
+        verify(cartService).addToCart(loggedInMember.id, cartRequest.productOptionId, quantity = 1)
     }
 
     @Test
@@ -109,10 +112,10 @@ class CartControllerTest {
     @Test
     fun `should return cart for authenticated member`() {
         // Given
-        val cart = Cart(id = 100L, memberId = memberResponse.id)
+        val cart = Cart(id = 100L, memberId = loggedInMember.id)
 
         // Mock service
-        `when`(cartService.getCart(memberResponse.id)).thenReturn(cart)
+        `when`(cartService.getCart(loggedInMember.id)).thenReturn(cart)
 
         // When & Then
         mockMvc.perform(
@@ -124,6 +127,6 @@ class CartControllerTest {
             .andExpect(jsonPath("$.id").value(cart.id))
             .andExpect(jsonPath("$.memberId").value(cart.memberId))
 
-        verify(cartService, times(1)).getCart(memberResponse.id)
+        verify(cartService, times(1)).getCart(loggedInMember.id)
     }
 }

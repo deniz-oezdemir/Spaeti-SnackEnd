@@ -1,6 +1,7 @@
 package ecommerce.resolver
 
 import ecommerce.annotations.LoginMember
+import ecommerce.dto.LoggedInMember
 import ecommerce.handler.AuthorizationException
 import ecommerce.service.AuthService
 import org.springframework.core.MethodParameter
@@ -29,6 +30,11 @@ class LoginMemberArgumentResolver(
                 ?: throw AuthorizationException("Missing Authorization token")
 
         val memberResponse = authService.findMemberByToken(token)
-        return memberResponse
+        return LoggedInMember(
+            id = memberResponse.id,
+            email = memberResponse.email,
+            name = memberResponse.name,
+            role = memberResponse.role,
+        )
     }
 }

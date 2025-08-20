@@ -71,37 +71,37 @@
         primary key (id)
     );
 
-    alter table if exists cart_items 
-       add constraint FKpcttvuq4mxppo8sxggjtn5i2c 
-       foreign key (cart_id) 
+    alter table if exists cart_items
+       add constraint FKpcttvuq4mxppo8sxggjtn5i2c
+       foreign key (cart_id)
        references carts;
 
-    alter table if exists cart_items 
-       add constraint FK3n7mse6kxcpyr5nc586k8lkm3 
-       foreign key (product_option_id) 
+    alter table if exists cart_items
+       add constraint FK3n7mse6kxcpyr5nc586k8lkm3
+       foreign key (product_option_id)
        references options;
 
-    alter table if exists options 
-       add constraint FK2m37jcoh1yt06dsivrphak718 
-       foreign key (product_id) 
+    alter table if exists options
+       add constraint FK2m37jcoh1yt06dsivrphak718
+       foreign key (product_id)
        references products;
 
-    alter table if exists order_items 
-       add constraint FKbioxgbv59vetrxe0ejfubep1w 
-       foreign key (order_id) 
+    alter table if exists order_items
+       add constraint FKbioxgbv59vetrxe0ejfubep1w
+       foreign key (order_id)
        references orders;
 
-    alter table if exists order_items 
-       add constraint FK4xadyroqpvg8ebvhdcdv28nac 
-       foreign key (product_option_id) 
+    alter table if exists order_items
+       add constraint FK4xadyroqpvg8ebvhdcdv28nac
+       foreign key (product_option_id)
        references options;
 
-    alter table if exists payments 
-       add constraint FK81gagumt0r8y3rmudcgpbk42l 
-       foreign key (order_id) 
+    alter table if exists payments
+       add constraint FK81gagumt0r8y3rmudcgpbk42l
+       foreign key (order_id)
        references orders;
 
-    alter table if exists products 
-       add constraint FK5syljt40nomyb29umdshbvul5 
-       foreign key (product_id) 
+    alter table if exists products
+       add constraint FK5syljt40nomyb29umdshbvul5
+       foreign key (product_id)
        references members;

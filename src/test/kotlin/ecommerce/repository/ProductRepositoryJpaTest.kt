@@ -22,9 +22,11 @@ class ProductRepositoryJpaTest
 
         @Test
         fun `count returns correct number of products`() {
+            val count = repo.count()
             repo.save(sampleProduct(name = "One"))
             repo.save(sampleProduct(name = "Two"))
-            assertThat(repo.count()).isEqualTo(2)
+            val diff = repo.count() - count
+            assertThat(diff).isEqualTo(2)
         }
 
         @Test

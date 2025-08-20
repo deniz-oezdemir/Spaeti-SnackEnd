@@ -2,7 +2,9 @@ package ecommerce.infrastructure
 
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpHeaders
+import org.springframework.stereotype.Component
 
+@Component
 class BearerAuthorizationExtractor : AuthorizationExtractor<String> {
     override fun extract(request: HttpServletRequest): String {
         val headers = request.getHeaders(HttpHeaders.AUTHORIZATION)

@@ -16,9 +16,7 @@ class WebConfig(
 ) : WebMvcConfigurer {
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(jwtAuthenticationInterceptor)
-            .addPathPatterns("/api/protected/**")
-        registry.addInterceptor(jwtAuthenticationInterceptor)
-            .addPathPatterns("/auth/find-member")
+            .addPathPatterns("/api/protected/**", "/auth/find-member", "/orders/**")
         registry.addInterceptor(adminRoleCheckInterceptor)
             .addPathPatterns("/api/protected/admin/**")
     }
