@@ -98,7 +98,7 @@ class AuthControllerTest {
     fun `should get member if token exists`() {
         val token = "mocked-jwt-token"
         doNothing().`when`(jwtProvider).validateToken("Bearer $token")
-        val memberResponse = MemberResponse(1L, "user@example.com", role = "user", name = "John Doe")
+        val memberResponse = MemberResponse(1L, "user@example.com", role = "user", name = "John Doe", slackUserId = token)
         `when`(authService.findMemberByToken(token)).thenReturn(memberResponse)
 
         mockMvc.perform(

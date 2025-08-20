@@ -59,7 +59,8 @@ class AdminControllerTest {
 
     @Test
     fun `should return top 5 most added products from last 30 days when User role is Admin`() {
-        val memberResponse = MemberResponse(1L, "user@example.com", name = "John Doe", role = UserRole.ADMIN.toString())
+        val memberResponse =
+            MemberResponse(1L, "user@example.com", name = "John Doe", role = UserRole.ADMIN.toString(), slackUserId = token)
         `when`(authService.findMemberByToken(token)).thenReturn(memberResponse)
 
         mockMvc.perform(
@@ -82,7 +83,7 @@ class AdminControllerTest {
 
     @Test
     fun `should return status code 401 when User role is not Admin`() {
-        val memberResponse = MemberResponse(1L, "user@example.com", name = "John Doe", role = UserRole.USER.toString())
+        val memberResponse = MemberResponse(1L, "user@example.com", name = "John Doe", role = UserRole.USER.toString(), slackUserId = token)
         `when`(authService.findMemberByToken(token)).thenReturn(memberResponse)
 
         mockMvc.perform(
@@ -95,13 +96,13 @@ class AdminControllerTest {
 
     @Test
     fun `should return members who added items to cart in last 7 days when User role is Admin`() {
-        val memberResponse = MemberResponse(1L, "user@example.com", name = "Admin", role = UserRole.ADMIN.toString())
+        val memberResponse = MemberResponse(1L, "user@example.com", name = "Admin", role = UserRole.ADMIN.toString(), slackUserId = token)
         `when`(authService.findMemberByToken(token)).thenReturn(memberResponse)
 
         val activeMembers =
             listOf(
-                MemberResponse(2L, "jane@example.com", name = "Jane Smith", role = UserRole.USER.toString()),
-                MemberResponse(3L, "bob@example.com", name = "Bob Johnson", role = UserRole.USER.toString()),
+                MemberResponse(2L, "jane@example.com", name = "Jane Smith", role = UserRole.USER.toString(), slackUserId = token),
+                MemberResponse(3L, "bob@example.com", name = "Bob Johnson", role = UserRole.USER.toString(), slackUserId = token),
             )
 
         `when`(cartService.findMembersWithCartActivityInLast7Days()).thenReturn(activeMembers)
@@ -123,7 +124,7 @@ class AdminControllerTest {
 
     @Test
     fun `should return status code 401 for cartactivity endpoint when User role is not Admin`() {
-        val memberResponse = MemberResponse(1L, "user@example.com", name = "John Doe", role = UserRole.USER.toString())
+        val memberResponse = MemberResponse(1L, "user@example.com", name = "John Doe", role = UserRole.USER.toString(), slackUserId = token)
         `when`(authService.findMemberByToken(token)).thenReturn(memberResponse)
 
         mockMvc.perform(

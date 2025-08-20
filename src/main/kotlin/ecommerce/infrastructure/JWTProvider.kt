@@ -28,6 +28,7 @@ class JWTProvider(
             .compact()
     }
 
+
     fun getPayload(token: String): String =
         Jwts.parser()
             .setSigningKey(secretKey)
