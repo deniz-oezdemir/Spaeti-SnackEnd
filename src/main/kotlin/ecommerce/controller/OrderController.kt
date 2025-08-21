@@ -9,6 +9,9 @@ import ecommerce.dto.PlaceOrderResponse
 import ecommerce.repository.MemberRepositoryJpa
 import ecommerce.service.MemberService
 import ecommerce.service.OrderService
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -24,6 +27,14 @@ class OrderController(
     private val memberService: MemberService,
     private val memberRepository: MemberRepositoryJpa,
 ) {
+    @Operation(summary = "Place an order for a single item")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "201", description = "Order placed successfully"),
+            ApiResponse(responseCode = "400", description = "Invalid input or insufficient stock"),
+            ApiResponse(responseCode = "500", description = "Payment processing failed"),
+        ],
+    )
     @PostMapping
     fun placeOrder(
         @LoginMember principal: LoggedInMember,
@@ -34,6 +45,14 @@ class OrderController(
         return ResponseEntity.created(URI.create("/orders/${res.orderId}")).body(res)
     }
 
+    @Operation(summary = "Create an order from all items in the cart")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "201", description = "Checkout successful"),
+            ApiResponse(responseCode = "400", description = "Invalid input or empty cart"),
+            ApiResponse(responseCode = "500", description = "Payment processing failed"),
+        ],
+    )
     @PostMapping("/checkout")
     fun checkoutCart(
         @LoginMember member: LoggedInMember,
@@ -49,6 +68,14 @@ class OrderController(
             .body(res)
     }
 
+    @Operation(summary = "Create a gift order from all items in the cart")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "201", description = "Gift order placed successfully"),
+            ApiResponse(responseCode = "400", description = "Invalid input or empty cart"),
+            ApiResponse(responseCode = "500", description = "Payment processing failed"),
+        ],
+    )
     @PostMapping("/gift")
     fun placeGiftOrder(
         @LoginMember member: LoggedInMember,
