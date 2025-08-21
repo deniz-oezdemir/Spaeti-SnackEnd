@@ -5,4 +5,5 @@ data class TokenRequest(
     var email: String,
     var password: String,
     val role: String,
+    val slackUserId: String? = null,
 )
