@@ -35,4 +35,6 @@ class Member(
         updatable = false,
     )
     val cart: Cart? = null,
+    @Column(nullable = true)
+    var slackUserId: String? = null,
 )

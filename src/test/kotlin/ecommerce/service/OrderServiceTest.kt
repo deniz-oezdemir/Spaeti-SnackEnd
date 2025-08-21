@@ -65,7 +65,7 @@ class OrderServiceTest
                     optionId = optionId,
                     quantity = 2L,
                     paymentMethod = PaymentMethod.PM_CARD_VISA,
-                    currency = "usd",
+                    currency = "eur",
                 )
 
             orderService.place(member, req)

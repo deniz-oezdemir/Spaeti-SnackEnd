@@ -1,0 +1,4 @@
+slack:
+  bot:
+    token: 
+  order-channel-id: C09AH71BPFX   # replace with your real channel ID
