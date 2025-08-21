@@ -10,4 +10,5 @@ data class GiftCheckoutRequest(
     val message: String? = null,
     val currency: String = "eur",
     val paymentMethod: PaymentMethod,
+    val recipientSlackUserId: String? = null,
 )
