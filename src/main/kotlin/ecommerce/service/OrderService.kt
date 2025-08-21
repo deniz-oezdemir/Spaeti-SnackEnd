@@ -70,7 +70,7 @@ class OrderService(
                     stripeRes,
                     req.paymentMethod,
                 )
-            handleSuccessfulOrderNotification(member, order)
+            handleSuccessfulOrderNotificationEmail(member, order)
 
             return PlaceOrderResponse(order.id, stripeRes.status, "Cart checkout successful.")
         } catch (e: Exception) {
@@ -114,7 +114,7 @@ class OrderService(
                     req.paymentMethod,
                 )
 
-            handleSuccessfulOrderNotification(member, order)
+            handleSuccessfulOrderNotificationEmail(member, order)
 
             return PlaceOrderResponse(order.id, stripeRes.status, "Order placed and paid successfully.")
         } catch (e: Exception) {
@@ -169,13 +169,24 @@ class OrderService(
                 )
 
             // 4) Emails
-            handleSuccessfulOrderNotification(member, order) // buyer confirmation (can include totals)
+            handleSuccessfulOrderNotificationEmail(member, order) // buyer confirmation (can include totals)
             emailService.sendGiftNotification(
                 buyer = member,
                 recipientEmail = req.recipientEmail,
                 order = order,
                 message = req.message,
             )
+
+            // 5) Slack Messages
+            handleSuccessfulOrderNotificationSlack(member, order) // buyer confirmation (can include totals)
+            if (req.recipientSlackUserId != null) {
+                slackService.sendGiftAndOrderConfirmationSlack(
+                    member = member,
+                    order = order,
+                    recipientSlackUserId = req.recipientSlackUserId,
+                    message = req.message,
+                )
+            }
 
             return PlaceOrderResponse(order.id, stripeRes.status, "Gift order successful.")
         } catch (e: Exception) {
@@ -184,23 +195,29 @@ class OrderService(
         }
     }
 
-    private fun handleSuccessfulOrderNotification(
+    private fun handleSuccessfulOrderNotificationEmail(
         member: Member,
         order: Order,
     ) {
-        // Send Email
         try {
             emailService.sendOrderConfirmation(member, order)
         } catch (e: Exception) {
             logger.error("Failed to send confirmation email for order ${order.id}", e)
         }
-        // Send Slack
+    }
+
+    private fun handleSuccessfulOrderNotificationSlack(
+        member: Member,
+        order: Order,
+    ) {
         try {
             if (member.slackUserId != null) {
                 slackService.sendOrderConfirmationSlack(member, order)
             }
         } catch (e: Exception) {
-            logger.error("Failed to send Slack DM for order ${order.id}", e)
+            if (member.slackUserId != null) {
+                logger.error("Failed to send Slack DM for order ${order.id}", e)
+            }
         }
     }
 
@@ -218,7 +235,7 @@ class OrderService(
         // Send Slack Message
         if (member.slackUserId != null) {
             try {
-                slackService.sendOrderFailureSlack(member, reason)
+                slackService.sendOrderFailureSlack(member)
             } catch (slackEx: Exception) {
                 logger.error("Failed to send failure notification Slack DM for member ${member.id}", slackEx)
             }

@@ -9,6 +9,7 @@ import ecommerce.entity.Member
 import ecommerce.entity.Order
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.time.format.DateTimeFormatter
 
 @Service
 class SlackService(
@@ -30,17 +31,14 @@ class SlackService(
         sendDirectMessage(slackUserId, blocks, "Your order #${order.id} is confirmed!")
     }
 
-    fun sendOrderFailureSlack(
-        member: Member,
-        reason: String,
-    ) {
+    fun sendOrderFailureSlack(member: Member) {
         val slackUserId = member.slackUserId
         if (slackUserId.isNullOrBlank()) {
             logger.warn("Member ${member.id} has no Slack user ID, skipping DM notification")
             return
         }
 
-        val blocks = buildOrderFailureBlocks(member, reason)
+        val blocks = buildOrderFailureBlocks(member)
         sendDirectMessage(slackUserId, blocks, "There was an issue with your order")
     }
 
@@ -85,10 +83,7 @@ class SlackService(
         )
     }
 
-    private fun buildOrderFailureBlocks(
-        member: Member,
-        reason: String,
-    ): List<LayoutBlock> =
+    private fun buildOrderFailureBlocks(member: Member): List<LayoutBlock> =
         listOf(
             Blocks.section { section ->
                 section.text(
@@ -102,12 +97,14 @@ class SlackService(
                     MarkdownTextObject.builder()
                         .text(
                             """
-                            |Reason: $reason
-                            |
-                            |Please check your payment details and try again. If the problem persists, contact our support team.
-                            |
-                            |Thanks,
-                            |Spaeti-SnackEnd
+                 |Hi ${member.name},
+                 |
+                 |We're sorry, but we were unable to process your recent order.
+                 |
+                 |Please check your payment details and try again. If the problem persists, please contact our support team.
+                 |
+                 |Thanks,
+                 |Spaeti-SnackEnd
                             """.trimMargin(),
                         )
                         .build(),
@@ -115,7 +112,92 @@ class SlackService(
             },
         )
 
+    fun sendGiftAndOrderConfirmationSlack(
+        member: Member,
+        order: Order,
+        recipientSlackUserId: String,
+        message: String? = null,
+    ) {
+        val slackUserId = member.slackUserId
+        if (slackUserId.isNullOrBlank() || recipientSlackUserId.isBlank()) {
+            logger.warn("Member ${member.id} has no Slack user ID, skipping DM notification")
+            return
+        }
+
+        val blocks = buildGiftConfirmationBlocks(member, order, message)
+//        sendDirectMessage(slackUserId, blocks, "Your Gift Order #${order.id} is confirmed!")
+        sendDirectGiftMessage(recipientSlackUserId, blocks, "🎁 You’ve received a gift from ${member.name}!")
+    }
+
+    private fun buildGiftConfirmationBlocks(
+        member: Member,
+        order: Order,
+        message: String? = null,
+    ): List<LayoutBlock> {
+        val itemsListString =
+            order.items.joinToString("\n") { item ->
+                val productName = item.productOption.product.name
+                val optionName = item.productOption.name
+                val quantity = item.quantity
+                "- $quantity x $productName ($optionName)"
+            }
+
+        return listOf(
+            Blocks.section { section ->
+                section.text(
+                    MarkdownTextObject.builder()
+                        .text("*Hi there!*")
+                        .build(),
+                )
+            },
+            Blocks.section { section ->
+                section.text(
+                    MarkdownTextObject.builder()
+                        .text(
+                            """
+                            |🎁 ${member.name} (${member.email}) sent you a gift!
+                            |
+                            |Order Date: ${order.orderDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))}
+                            |
+                            |Items:
+                            |$itemsListString
+                            |
+                            |${if (!message.isNullOrBlank()) "Message: $message\n\n" else ""}
+                            |Enjoy! 🍫🥤
+                            |
+                            |— Spaeti-SnackEnd
+                            """.trimMargin(),
+                        )
+                        .build(),
+                )
+            },
+        )
+    }
+
     private fun sendDirectMessage(
+        slackUserId: String,
+        blocks: List<LayoutBlock>,
+        fallbackText: String,
+    ) {
+        try {
+            val channelId = openDirectMessageChannel(slackUserId)
+            if (channelId == null) {
+                logger.warn("Failed to open DM for Slack user $slackUserId")
+                return
+            }
+            val request =
+                ChatPostMessageRequest.builder()
+                    .channel(channelId)
+                    .blocks(blocks)
+                    .text(fallbackText)
+                    .build()
+            slackMethods.chatPostMessage(request)
+        } catch (e: Exception) {
+            logger.error("Error while sending Slack DM to user $slackUserId", e)
+        }
+    }
+
+    private fun sendDirectGiftMessage(
         slackUserId: String,
         blocks: List<LayoutBlock>,
         fallbackText: String,
