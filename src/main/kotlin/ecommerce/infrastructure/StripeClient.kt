@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestClientResponseException
 
+@Suppress("DEPRECATION")
 @Component
 class StripeClient(
     private val stripeProperties: StripeProperties,

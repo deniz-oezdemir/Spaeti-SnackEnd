@@ -77,3 +77,4 @@ To resolve the technical debt and improve our API design, we will refactor all o
 3.  **Update Services:** Adjust the `AuthService` layer to accept the new DTOs.
 
 This refactoring will not only fix the documentation but also lead to a more robust and self-documenting API.
+

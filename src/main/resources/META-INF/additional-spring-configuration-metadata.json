@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "logging.tracing.service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable service method tracing aspect.",
+      "defaultValue": false
+    }
+  ]
+}
