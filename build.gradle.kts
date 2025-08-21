@@ -48,9 +48,7 @@ dependencies {
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
     implementation("javax.xml.bind:jaxb-api:2.3.1")
     implementation("org.springframework.boot:spring-boot-starter-mail")
-
     implementation("org.springframework.boot:spring-boot-starter-aop")
-
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.10")
 }
 
