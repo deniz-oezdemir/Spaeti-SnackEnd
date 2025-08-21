@@ -57,33 +57,34 @@ class GmailEmailService(
         }
 
         // construct the full HTML body
-        val htmlBody = """
-        <html lang="en">
-        <body style="font-family: Arial, sans-serif; color: #333;">
-            <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 8px;">
-                <h2 style="color: #4CAF50;">$title</h2>
-                <p>Hi ${member.name},</p>
-                <p>$intro</p>
-                <hr>
-                <p><b>Order Date:</b> ${order.orderDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))}</p>
-                <p><b>Status:</b> ${order.status}</p>
-                
-                <h3 style="margin-top: 25px;">Items Purchased:</h3>
-                <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                    <tbody>
-                        $itemsHtml
-                    </tbody>
-                </table>
-                
-                <h3 style="text-align: right; margin-top: 20px;">
-                    Total Amount: EUR ${String.format("%.2f", order.totalAmount)}
-                </h3>
-                
-                <p style="margin-top: 30px;">Thanks,<br>Spaeti-SnackEnd</p>
-            </div>
-        </body>
-        </html>
-        """.trimIndent()
+        val htmlBody =
+            """
+            <html lang="en">
+            <body style="font-family: Arial, sans-serif; color: #333;">
+                <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 8px;">
+                    <h2 style="color: #4CAF50;">$title</h2>
+                    <p>Hi ${member.name},</p>
+                    <p>$intro</p>
+                    <hr>
+                    <p><b>Order Date:</b> ${order.orderDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))}</p>
+                    <p><b>Status:</b> ${order.status}</p>
+                    
+                    <h3 style="margin-top: 25px;">Items Purchased:</h3>
+                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <tbody>
+                            $itemsHtml
+                        </tbody>
+                    </table>
+                    
+                    <h3 style="text-align: right; margin-top: 20px;">
+                        Total Amount: EUR ${String.format("%.2f", order.totalAmount)}
+                    </h3>
+                    
+                    <p style="margin-top: 30px;">Thanks,<br>Spaeti-SnackEnd</p>
+                </div>
+            </body>
+            </html>
+            """.trimIndent()
 
         // set the details on the helper and send
         helper.setTo(member.email)
@@ -101,21 +102,22 @@ class GmailEmailService(
         val helper = MimeMessageHelper(mimeMessage, true, "UTF-8")
 
         // construct the HTML body for the failure notification
-        val htmlBody = """
-        <html lang="en">
-        <body style="font-family: Arial, sans-serif; color: #333;">
-            <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 8px;">
-                <h2 style="color: #D32F2F;">❌ Order Processing Issue</h2>
-                <p>Hi ${member.name},</p>
-                <p>We're sorry, but we were unable to process your recent order.</p>
-                
-                <p>Please check your payment details and try again. If the problem persists, don't hesitate to contact our support team.</p>
-                
-                <p style="margin-top: 30px;">Thanks,<br>Spaeti-SnackEnd</p>
-            </div>
-        </body>
-        </html>
-        """.trimIndent()
+        val htmlBody =
+            """
+            <html lang="en">
+            <body style="font-family: Arial, sans-serif; color: #333;">
+                <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 8px;">
+                    <h2 style="color: #D32F2F;">❌ Order Processing Issue</h2>
+                    <p>Hi ${member.name},</p>
+                    <p>We're sorry, but we were unable to process your recent order.</p>
+                    
+                    <p>Please check your payment details and try again. If the problem persists, don't hesitate to contact our support team.</p>
+                    
+                    <p style="margin-top: 30px;">Thanks,<br>Spaeti-SnackEnd</p>
+                </div>
+            </body>
+            </html>
+            """.trimIndent()
 
         helper.setTo(member.email)
         helper.setSubject("There was an issue with your order")
@@ -154,41 +156,43 @@ class GmailEmailService(
             }
 
         // conditionally create the message block
-        val messageHtml = if (!message.isNullOrBlank()) {
-            """
-            <h3 style="margin-top: 25px;">A message from ${buyer.name}:</h3>
-            <div style="background-color: #f1f8e9; border-left: 4px solid #7cb342; padding: 10px 15px; margin: 10px 0; font-style: italic;">
-                <p>"$message"</p>
-            </div>
-            """.trimIndent()
-        } else {
-            ""
-        }
+        val messageHtml =
+            if (!message.isNullOrBlank()) {
+                """
+                <h3 style="margin-top: 25px;">A message from ${buyer.name}:</h3>
+                <div style="background-color: #f1f8e9; border-left: 4px solid #7cb342; padding: 10px 15px; margin: 10px 0; font-style: italic;">
+                    <p>"$message"</p>
+                </div>
+                """.trimIndent()
+            } else {
+                ""
+            }
 
         // construct the full HTML body for the gift notification
-        val htmlBody = """
-        <html lang="en">
-        <body style="font-family: Arial, sans-serif; color: #333;">
-            <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 8px;">
-                <h2 style="color: #673AB7;">🎁 You've Received a Gift!</h2>
-                <p>Hi there,</p>
-                <p>You have a delicious surprise! <b>${buyer.name}</b> (${buyer.email}) has sent you a gift from Spaeti-SnackEnd.</p>
-                
-                <h3 style="margin-top: 25px;">Here's what you got:</h3>
-                <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                    <tbody>
-                        $itemsHtml
-                    </tbody>
-                </table>
-                
-                $messageHtml
-                
-                <p style="margin-top: 30px;">Enjoy,<br>Spaeti-SnackEnd</p>
+        val htmlBody =
+            """
+            <html lang="en">
+            <body style="font-family: Arial, sans-serif; color: #333;">
+                <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 8px;">
+                    <h2 style="color: #673AB7;">🎁 You've Received a Gift!</h2>
+                    <p>Hi there,</p>
+                    <p>You have a delicious surprise! <b>${buyer.name}</b> (${buyer.email}) has sent you a gift from Spaeti-SnackEnd.</p>
+                    
+                    <h3 style="margin-top: 25px;">Here's what you got:</h3>
+                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <tbody>
+                            $itemsHtml
+                        </tbody>
+                    </table>
+                    
+                    $messageHtml
+                    
+                    <p style="margin-top: 30px;">Enjoy,<br>Spaeti-SnackEnd</p>
 
-            </div>
-        </body>
-        </html>
-        """.trimIndent()
+                </div>
+            </body>
+            </html>
+            """.trimIndent()
 
         helper.setTo(recipientEmail)
         helper.setSubject("You’ve received a gift from ${buyer.name}!")

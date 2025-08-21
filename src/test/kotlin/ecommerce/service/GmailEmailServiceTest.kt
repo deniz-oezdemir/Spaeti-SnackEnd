@@ -25,7 +25,6 @@ import kotlin.test.assertTrue
 
 @ExtendWith(MockitoExtension::class)
 class GmailEmailServiceTest {
-
     @Mock
     private lateinit var mockMailSender: JavaMailSender
 
@@ -47,16 +46,17 @@ class GmailEmailServiceTest {
         val option = Option(id = 201, product = product, name = "Original", quantity = 10)
         product.options.add(option)
         testOrder = Order(id = 99, memberId = 1, totalAmount = BigDecimal("3.00"))
-        val orderItem = OrderItem(
-            id = 301,
-            order = testOrder,
-            productOption = option,
-            quantity = 2,
-            price = 1.50,
-            productName = "Club-Mate",
-            optionName = "Original",
-            productImageUrl = "https://example.com/mate.jpg",
-        )
+        val orderItem =
+            OrderItem(
+                id = 301,
+                order = testOrder,
+                productOption = option,
+                quantity = 2,
+                price = 1.50,
+                productName = "Club-Mate",
+                optionName = "Original",
+                productImageUrl = "https://example.com/mate.jpg",
+            )
         testOrder.items.add(orderItem)
     }
 
