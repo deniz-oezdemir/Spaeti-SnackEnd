@@ -52,7 +52,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-aop")
 
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.10")
-
 }
 
 kotlin {
