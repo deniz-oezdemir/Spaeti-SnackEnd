@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit
 @ConditionalOnProperty(prefix = "logging.tracing.service", name = ["enabled"], havingValue = "true")
 class ServiceLoggingAspect {
     private val log = LoggerFactory.getLogger(ServiceLoggingAspect::class.java)
+
     // Logs every public method in your service package
     @Around("within(ecommerce..service..*)")
     fun aroundService(pjp: ProceedingJoinPoint): Any? {
