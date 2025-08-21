@@ -102,13 +102,15 @@ class SlackService(
                     MarkdownTextObject.builder()
                         .text(
                             """
-                            |Reason: $reason
-                            |
-                            |Please check your payment details and try again. If the problem persists, contact our support team.
-                            |
-                            |Thanks,
-                            |Spaeti-SnackEnd
-                            """.trimMargin(),
+                 |Hi ${member.name},
+                 |
+                 |We're sorry, but we were unable to process your recent order.
+                 |
+                 |Please check your payment details and try again. If the problem persists, please contact our support team.
+                 |
+                 |Thanks,
+                 |Spaeti-SnackEnd
+             """.trimMargin(),
                         )
                         .build(),
                 )
