@@ -19,6 +19,7 @@ class MemberRepositoryJpaTest(
                 password = "secret",
                 role = "USER",
                 name = "Alice",
+                slackUserId = "sometoken",
             )
         val saved = repo.save(sampleMember)
         assertThat(saved.id).isNotNull()
@@ -32,6 +33,7 @@ class MemberRepositoryJpaTest(
                 password = "secret",
                 role = "USER",
                 name = "Alice",
+                slackUserId = "sometoken",
             )
         val saved = repo.save(sampleMember)
         val found = repo.findById(saved.id!!)
@@ -47,6 +49,7 @@ class MemberRepositoryJpaTest(
                 password = "secret",
                 role = "USER",
                 name = "Alice",
+                slackUserId = "sometoken",
             )
         val sampleMember2 =
             Member(
@@ -54,6 +57,7 @@ class MemberRepositoryJpaTest(
                 password = "secret2",
                 role = "USER2",
                 name = "John",
+                slackUserId = "sometoken",
             )
         repo.save(sampleMember1)
         repo.save(sampleMember2)
@@ -76,6 +80,7 @@ class MemberRepositoryJpaTest(
                 password = "secret",
                 role = "USER",
                 name = "Alice",
+                slackUserId = "sometoken",
             )
         repo.save(sampleMember)
 
@@ -98,6 +103,7 @@ class MemberRepositoryJpaTest(
                 password = "secret",
                 role = "USER",
                 name = "Alice",
+                slackUserId = "sometoken",
             )
         repo.save(sampleMember)
 
@@ -118,6 +124,7 @@ class MemberRepositoryJpaTest(
                     password = "secret",
                     role = "USER",
                     name = "Alice",
+                    slackUserId = "sometoken",
                 ),
             )
 
@@ -135,6 +142,7 @@ class MemberRepositoryJpaTest(
                     password = "secret",
                     role = "USER",
                     name = "Alice",
+                    slackUserId = "sometoken",
                 ),
             )
 

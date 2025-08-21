@@ -12,9 +12,6 @@ import ecommerce.repository.CartItemRepositoryJpa
 import ecommerce.repository.CartRepositoryJpa
 import ecommerce.repository.MemberRepositoryJpa
 import ecommerce.repository.OptionRepositoryJpa
-import ecommerce.repository.OrderItemRepositoryJpa
-import ecommerce.repository.OrderRepositoryJpa
-import ecommerce.repository.PaymentRepositoryJpa
 import ecommerce.util.MoneyUtil.toMinorUnits
 import jakarta.transaction.Transactional
 import org.slf4j.LoggerFactory
@@ -25,14 +22,12 @@ import org.springframework.stereotype.Service
 class OrderService(
     private val memberRepository: MemberRepositoryJpa,
     private val optionRepository: OptionRepositoryJpa,
-    private val orderRepository: OrderRepositoryJpa,
-    private val orderItemRepository: OrderItemRepositoryJpa,
-    private val paymentRepository: PaymentRepositoryJpa,
     private val cartItemRepository: CartItemRepositoryJpa,
     private val cartRepository: CartRepositoryJpa,
     private val stripeClient: StripeClient,
     private val emailService: EmailService,
     private val orderPersistenceService: OrderPersistenceService,
+    private val slackService: SlackService,
 ) {
     private val logger = LoggerFactory.getLogger(OrderService::class.java)
 
@@ -193,10 +188,19 @@ class OrderService(
         member: Member,
         order: Order,
     ) {
+        // Send Email
         try {
             emailService.sendOrderConfirmation(member, order)
         } catch (e: Exception) {
             logger.error("Failed to send confirmation email for order ${order.id}", e)
+        }
+        // Send Slack
+        try {
+            if (member.slackUserId != null) {
+                slackService.sendOrderConfirmationSlack(member, order)
+            }
+        } catch (e: Exception) {
+            logger.error("Failed to send Slack DM for order ${order.id}", e)
         }
     }
 
@@ -204,10 +208,20 @@ class OrderService(
         member: Member,
         exception: Exception,
     ) {
+        val reason = exception.message ?: "An unknown error occurred."
+        // Send Email
         try {
-            emailService.sendOrderFailureNotification(member, exception.message ?: "An unknown error occurred.")
+            emailService.sendOrderFailureNotification(member, reason)
         } catch (emailEx: Exception) {
             logger.error("Failed to send failure notification email for member ${member.id}", emailEx)
+        }
+        // Send Slack Message
+        if (member.slackUserId != null) {
+            try {
+                slackService.sendOrderFailureSlack(member, reason)
+            } catch (slackEx: Exception) {
+                logger.error("Failed to send failure notification Slack DM for member ${member.id}", slackEx)
+            }
         }
     }
 }
