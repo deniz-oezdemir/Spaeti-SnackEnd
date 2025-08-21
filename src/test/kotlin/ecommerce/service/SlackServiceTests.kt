@@ -139,7 +139,7 @@ class SlackServiceTests {
     fun `should not send message if slackUserId is empty`() {
         val member = memberRepositoryJpa.findAll().first { it.slackUserId == "" }
         assertDoesNotThrow {
-            slackService.sendOrderFailureSlack(member, "Payment failed")
+            slackService.sendOrderFailureSlack(member)
         }
         Mockito.verifyNoInteractions(slackMethods)
     }
