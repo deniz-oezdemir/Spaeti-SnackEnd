@@ -1,4 +1,4 @@
-package ecommerce.infrastructure
+package ecommerce.infrastructure.logging
 
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
