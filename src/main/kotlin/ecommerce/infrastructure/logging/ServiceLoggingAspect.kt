@@ -1,6 +1,5 @@
 package ecommerce.infrastructure.logging
 
-import jakarta.annotation.PostConstruct
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
@@ -13,9 +12,7 @@ import java.util.concurrent.TimeUnit
 @Component
 @ConditionalOnProperty(prefix = "logging.tracing.service", name = ["enabled"], havingValue = "true")
 class ServiceLoggingAspect {
-
     private val log = LoggerFactory.getLogger(ServiceLoggingAspect::class.java)
-
     // Logs every public method in your service package
     @Around("within(ecommerce..service..*)")
     fun aroundService(pjp: ProceedingJoinPoint): Any? {
@@ -39,7 +36,7 @@ class ServiceLoggingAspect {
         args.joinToString(",") { a ->
             when (a) {
                 null -> "null"
-                is String -> a.replace(Regex("(^.).*(@.*$)"), "$1***$2") // mask emails
+                is String -> a.replace(Regex("(^.).*(@.*$)"), "$1***$2")
                 else -> a.toString().let { if (it.length > 200) it.take(200) + "…" else it }
             }
         }
