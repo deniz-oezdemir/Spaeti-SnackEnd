@@ -63,8 +63,8 @@ class ProductController(
         value = [
             ApiResponse(responseCode = "200", description = "Product updated successfully"),
             ApiResponse(responseCode = "400", description = "Invalid input data"),
-            ApiResponse(responseCode = "404", description = "Product not found")
-        ]
+            ApiResponse(responseCode = "404", description = "Product not found"),
+        ],
     )
     @PutMapping("/{id}")
     @ResponseBody
@@ -80,8 +80,8 @@ class ProductController(
     @ApiResponses(
         value = [
             ApiResponse(responseCode = "204", description = "Product deleted successfully"),
-            ApiResponse(responseCode = "404", description = "Product not found")
-        ]
+            ApiResponse(responseCode = "404", description = "Product not found"),
+        ],
     )
     @DeleteMapping("/{id}")
     @ResponseBody
@@ -94,7 +94,7 @@ class ProductController(
 
     @Operation(
         summary = "Get all products (paginated)",
-        description = "Provides a paginated list of products. Supports sorting by fields like 'name' and 'price'."
+        description = "Provides a paginated list of products. Supports sorting by fields like 'name' and 'price'.",
     )
     @GetMapping("/paged")
     fun getAllProducts(

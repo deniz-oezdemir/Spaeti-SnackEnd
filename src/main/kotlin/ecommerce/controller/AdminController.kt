@@ -21,8 +21,8 @@ class AdminController(
         value = [
             ApiResponse(responseCode = "200", description = "Successfully retrieved top products"),
             ApiResponse(responseCode = "401", description = "Unauthorized"),
-            ApiResponse(responseCode = "403", description = "Forbidden (user is not an admin)")
-        ]
+            ApiResponse(responseCode = "403", description = "Forbidden (user is not an admin)"),
+        ],
     )
     @GetMapping("/top-products")
     fun findTop5ProductsInLast30Days(): ResponseEntity<List<TopProductStatResponse>> {
@@ -35,10 +35,11 @@ class AdminController(
         value = [
             ApiResponse(responseCode = "200", description = "Successfully retrieved active members"),
             ApiResponse(responseCode = "401", description = "Unauthorized"),
-            ApiResponse(responseCode = "403", description = "Forbidden (user is not an admin)")
-        ]
+            ApiResponse(responseCode = "403", description = "Forbidden (user is not an admin)"),
+        ],
     )
-    @GetMapping("/cart-activity")    fun findMembersWithCartActivityInLast7Days(): ResponseEntity<List<MemberResponse>> {
+    @GetMapping("/cart-activity")
+    fun findMembersWithCartActivityInLast7Days(): ResponseEntity<List<MemberResponse>> {
         val activeMembers = cartService.findMembersWithCartActivityInLast7Days()
         return ResponseEntity.ok(activeMembers)
     }

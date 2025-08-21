@@ -32,10 +32,11 @@ class OrderController(
         value = [
             ApiResponse(responseCode = "201", description = "Order placed successfully"),
             ApiResponse(responseCode = "400", description = "Invalid input or insufficient stock"),
-            ApiResponse(responseCode = "500", description = "Payment processing failed")
-        ]
+            ApiResponse(responseCode = "500", description = "Payment processing failed"),
+        ],
     )
-    @PostMapping    fun placeOrder(
+    @PostMapping
+    fun placeOrder(
         @LoginMember principal: LoggedInMember,
         @Valid @RequestBody req: PlaceOrderRequest,
     ): ResponseEntity<PlaceOrderResponse> {
@@ -49,8 +50,8 @@ class OrderController(
         value = [
             ApiResponse(responseCode = "201", description = "Checkout successful"),
             ApiResponse(responseCode = "400", description = "Invalid input or empty cart"),
-            ApiResponse(responseCode = "500", description = "Payment processing failed")
-        ]
+            ApiResponse(responseCode = "500", description = "Payment processing failed"),
+        ],
     )
     @PostMapping("/checkout")
     fun checkoutCart(
@@ -72,8 +73,8 @@ class OrderController(
         value = [
             ApiResponse(responseCode = "201", description = "Gift order placed successfully"),
             ApiResponse(responseCode = "400", description = "Invalid input or empty cart"),
-            ApiResponse(responseCode = "500", description = "Payment processing failed")
-        ]
+            ApiResponse(responseCode = "500", description = "Payment processing failed"),
+        ],
     )
     @PostMapping("/gift")
     fun placeGiftOrder(

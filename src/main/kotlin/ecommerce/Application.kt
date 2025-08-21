@@ -21,7 +21,7 @@ import org.springframework.boot.runApplication
     name = "bearerAuth",
     type = SecuritySchemeType.HTTP,
     bearerFormat = "JWT",
-    scheme = "bearer"
+    scheme = "bearer",
 )
 @EnableConfigurationProperties(StripeProperties::class)
 @SpringBootApplication

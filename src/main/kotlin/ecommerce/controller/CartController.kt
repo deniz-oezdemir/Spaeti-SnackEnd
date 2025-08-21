@@ -35,7 +35,7 @@ class CartController(
 ) {
     @Operation(
         summary = "Add an item to the cart",
-        description = "Adds a product option to the current user's cart. If the item already exists, its quantity is increased."
+        description = "Adds a product option to the current user's cart. If the item already exists, its quantity is increased.",
     )
     @ApiResponse(responseCode = "201", description = "Item added successfully")
     @PostMapping("/created")

@@ -27,8 +27,8 @@ class AuthController(
     @ApiResponses(
         value = [
             ApiResponse(responseCode = "200", description = "User registered successfully"),
-            ApiResponse(responseCode = "400", description = "Validation error, e.g., email already exists")
-        ]
+            ApiResponse(responseCode = "400", description = "Validation error, e.g., email already exists"),
+        ],
     )
     @PostMapping("/register")
     fun register(
@@ -42,8 +42,8 @@ class AuthController(
     @ApiResponses(
         value = [
             ApiResponse(responseCode = "200", description = "Login successful"),
-            ApiResponse(responseCode = "401", description = "Invalid email or password")
-        ]
+            ApiResponse(responseCode = "401", description = "Invalid email or password"),
+        ],
     )
     @PostMapping("/login")
     fun login(
@@ -58,8 +58,8 @@ class AuthController(
     @ApiResponses(
         value = [
             ApiResponse(responseCode = "200", description = "User details found"),
-            ApiResponse(responseCode = "401", description = "Invalid or expired token")
-        ]
+            ApiResponse(responseCode = "401", description = "Invalid or expired token"),
+        ],
     )
     @GetMapping("/find-member")
     fun findMember(
