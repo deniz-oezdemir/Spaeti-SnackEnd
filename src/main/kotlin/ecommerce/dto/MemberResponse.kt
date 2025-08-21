@@ -8,4 +8,5 @@ class MemberResponse(
     val email: String,
     val name: String,
     val role: String,
+    val slackUserId: String? = null,
 )

@@ -6,5 +6,5 @@ import jakarta.validation.constraints.NotNull
 data class CartCheckoutRequest(
     @field:NotNull
     val paymentMethod: PaymentMethod,
-    val currency: String = "usd",
+    val currency: String = "eur",
 )
