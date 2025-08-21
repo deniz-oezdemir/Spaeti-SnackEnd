@@ -19,6 +19,7 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleValidationException(ex: MethodArgumentNotValidException): ResponseEntity<ValidationErrorResponse> {
+        logger.warn("Validation error: ${ex.message}")
         val errors =
             ex.bindingResult.fieldErrors.map { fieldError ->
                 ValidationError(
@@ -32,18 +33,21 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(AuthorizationException::class)
     fun handleAuthorization(ex: AuthorizationException): ResponseEntity<ErrorResponse> {
+        logger.warn("Authorization error: ${ex.message}")
         val error = ErrorResponse(HttpStatus.UNAUTHORIZED.value(), ex.message ?: "Unauthorized")
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error)
     }
 
     @ExceptionHandler(ValidationException::class)
     fun handleValidation(ex: ValidationException): ResponseEntity<ErrorResponse> {
+        logger.warn("Bad request: ${ex.message}")
         val error = ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.message ?: "Validation failed")
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error)
     }
 
     @ExceptionHandler(Exception::class)
     fun handleGeneral(ex: Exception): ResponseEntity<ErrorResponse> {
+        logger.error("Unhandled exception: ${ex.message}")
         val error = ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.message ?: "Something went wrong")
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error)
     }

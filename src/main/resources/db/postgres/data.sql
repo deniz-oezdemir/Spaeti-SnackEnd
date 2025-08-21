@@ -1,16 +1,16 @@
 -- ========== PRODUCTS ==========
 INSERT  INTO products (name, price, image_url) VALUES
-  ('Coca-Cola',       1.49, 'spaeti-demo-products/product-images/cocacola-original.png'),
-  ('Fanta',           1.49, 'spaeti-demo-products/product-images/fanta-orange.png'),
-  ('Apfelschorle',    1.59, 'spaeti-demo-products/product-images/apfelschorle-bio.png'),
-  ('Fritz-Kola',      1.99, 'spaeti-demo-products/product-images/fritz-kola-kola.png'),
-  ('Club-Mate',       1.89, 'spaeti-demo-products/product-images/club-mate-original.png'),
-  ('Water',           0.99, 'spaeti-demo-products/product-images/water-gerolsteiner-naturell.png'),
-  ('Mr. Tom',         0.99, 'spaeti-demo-products/product-images/mr-tom-erdnussriegel.png'),
-  ('Lorenz Chips',    1.79, 'spaeti-demo-products/product-images/lorenz-crunchips-salted.png'),
-  ('Haribo',          1.49, 'spaeti-demo-products/product-images/haribo-tropifrutti.png'),
-  ('Takis',           2.49, 'spaeti-demo-products/product-images/takis-fuego.png'),
-  ('Studentenfutter', 1.99, 'spaeti-demo-products/product-images/studentenfutter-seeberger.png');
+  ('Coca-Cola',       1.49, 'https://techcourse-project-2025.s3.ap-northeast-2.amazonaws.com/spaeti-demo-products/product-images/cocacola-original.png'),
+  ('Fanta',           1.49, 'https://techcourse-project-2025.s3.ap-northeast-2.amazonaws.com/spaeti-demo-products/product-images/fanta-orange.png'),
+  ('Apfelschorle',    1.59, 'https://techcourse-project-2025.s3.ap-northeast-2.amazonaws.com/spaeti-demo-products/product-images/apfelschorle-bio.png'),
+  ('Fritz-Kola',      1.99, 'https://techcourse-project-2025.s3.ap-northeast-2.amazonaws.com/spaeti-demo-products/product-images/fritz-kola-kola.png'),
+  ('Club-Mate',       1.89, 'https://techcourse-project-2025.s3.ap-northeast-2.amazonaws.com/spaeti-demo-products/product-images/+club-mate-original.png'),
+  ('Water',           0.99, 'https://techcourse-project-2025.s3.ap-northeast-2.amazonaws.com/spaeti-demo-products/product-images/+water-gerolsteiner-naturell.png'),
+  ('Mr. Tom',         0.99, 'https://techcourse-project-2025.s3.ap-northeast-2.amazonaws.com/spaeti-demo-products/product-images/mr-tom-erdnussriegel.png'),
+  ('Lorenz Chips',    1.79, 'https://techcourse-project-2025.s3.ap-northeast-2.amazonaws.com/spaeti-demo-products/product-images/lorenz-crunchips-salted.png'),
+  ('Haribo',          1.49, 'https://techcourse-project-2025.s3.ap-northeast-2.amazonaws.com/spaeti-demo-products/product-images/haribo-tropifrutti.png'),
+  ('Takis',           2.49, 'https://techcourse-project-2025.s3.ap-northeast-2.amazonaws.com/spaeti-demo-products/product-images/takis-fuego.png'),
+  ('Studentenfutter', 1.99, 'https://techcourse-project-2025.s3.ap-northeast-2.amazonaws.com/spaeti-demo-products/product-images/studentenfutter-seeberger.png');
 
 -- ========== OPTIONS / VARIANTS ==========
 -- Coca-Cola
