@@ -220,7 +220,7 @@ class OrderService(
             try {
                 slackService.sendOrderFailureSlack(member, reason)
             } catch (slackEx: Exception) {
-                logger.error("Failed to send failure notification email for member ${member.id}", slackEx)
+                logger.error("Failed to send failure notification Slack DM for member ${member.id}", slackEx)
             }
         }
     }
