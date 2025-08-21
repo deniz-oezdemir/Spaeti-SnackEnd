@@ -1,8 +1,19 @@
-# 🛒 Spaeti SnackEnd
+# Spaeti SnackEnd
 
 This is the team project for the "Hero Tech Course 2025" by [Farhana](https://github.com/farhanaahmed), [Gabriela](https://github.com/knopgm), [Sara](https://github.com/saragrosser), and [Deniz](https://github.com/deniz-oezdemir).
 
-<img src="images/snacks.jpg" width="250" alt="products">
+<img src="images/snacks.jpg" width="400" alt="products">
+
+## Table of Contents
+- [Introduction](#introduction)
+- [Project Implementation](#project-implementation)
+  - [Sprint 1: Project Setup & Development Environment](#sprint-1-project-setup--development-environment)
+  - [Sprint 2: Feature Development & Production Readiness](#sprint-2-feature-development--production-readiness)
+- [Documentation Index](#documentation-index)
+- [Product Categories](#product-categories)
+- [User Flow](#user-flow)
+- [Feature List](#feature-list)
+- [Kanban Board](#kanban-board)
 
 ## Introduction
 
@@ -10,8 +21,7 @@ We aim to implement an online Späti Shop where users can buy and gift snacks an
 
 Instead of the physical delivery of said products we will send the details and images of the products to the user via a chosen channel.
 
----
-## Project Sprints & Implementation
+## Project Implementation
 Our development followed a structured three-sprint agile methodology, each focusing on a key phase of the project lifecycle.
 
 ### Sprint 1: Project Setup & Development Environment
@@ -28,61 +38,42 @@ Goal: Establish a robust foundation for collaboration and deployment.
 ### Sprint 2: Feature Development & Production Readiness
 Goal: Develop core functionality and ensure the service is production-ready.
 
-| Requirement                             | Implementation Status & Details                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-|:----------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Core Features**                       | ✅ Implemented [Email](https://github.com/deniz-oezdemir/Spaeti-SnackEnd/pull/55/commits/e0f6fd17fbc4191f3d885320e8e304938c2a1473) and [Slack](https://github.com/deniz-oezdemir/Spaeti-SnackEnd/pull/62) notifications for purchased Products. Key endpoints include:<br> • `POST /auth/register` - New users fill up the key channels for the notifications service<br> • `POST /orders` - Implemented features will be triggered after payment service and send proper notifications<br> |
-| **Gift Feature**                        | ✅ Implemented a [Gift flow Feature](https://github.com/deniz-oezdemir/Spaeti-SnackEnd/pull/59) that allows users to buy products and send a Gift notification for another user.                                                                                                                                                                                                                                                                                                            |
-| **API Documentation (Swagger)**         | 🔄 Automated API documentation integrated and available. See our [API Documentation](README-APIs.md).                                                                                                                                                                                                                                                                                                                                                                                      |
-| **Logging Strategy**                    | 🔄 Structured logging implemented across services with INFO, WARN, and ERROR levels.                                                                                                                                                                                                                                                                                                                                                                                                       |
-| **Production Deployment (HTTPS)**       | 🔄 Service deployed to a production AWS EC2 instance, secured with HTTPS and a custom domain.                                                                                                                                                                                                                                                                                                                                                                                              |
-| **Production Database & Safety Policy** | ✅ PostgresSQL RDS instance provisioned. Policies implemented to prevent accidental data loss.                                                                                                                                                                                                                                                                                                                                                                                              |
-| **Monitoring & Observability**          | 🔄 Integrated CloudWatch for logging and basic monitoring alerts.                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| Requirement                             | Implementation Status & Details                                                                                                                                                 |
+|:----------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Core Features**                       | ✅ Implemented [Email](README-Email-Service.md) and [Slack](https://github.com/deniz-oezdemir/Spaeti-SnackEnd/pull/62) notifications for purchased Products.                     |
+| **Gift Feature**                        | ✅ Implemented a [Gift flow Feature](https://github.com/deniz-oezdemir/Spaeti-SnackEnd/pull/59) that allows users to buy products and send a Gift notification for another user. |
+| **API Documentation (Swagger)**         | ✅ Automated API documentation integrated and available. See our [API Documentation](README-APIs.md).                                                                            |
+| **Logging Strategy**                    | ✅ [Structured logging](README-Logging-Strategy.md) implemented across services with INFO, WARN, and ERROR levels.                                                               |
+| **Production Deployment (HTTPS)**       | ✅ Service deployed to a production AWS EC2 instance, secured with [HTTPS and a custom domain](README-HTTPS-Domain.md).                                                          |
+| **Production Database & Safety Policy** | ✅ [PostgresSQL RDS instance](README-Database-Setup.md) provisioned. Policies implemented to prevent accidental data loss.                                                                               |
+| **Monitoring & Observability**          | 🔄 Integrated CloudWatch for logging and basic monitoring alerts.                                                                                                               |
 
-### Sprint 3: Performance Optimization & Scalability
-**Goal:** Enhance performance, plan for scalability, and tackle advanced challenges.
+## Documentation Index
 
-| Requirement                                                 | Implementation Status & Details                                                                                                                |
-|:------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------|
-| **Infrastructure Scaling & SPOF Analysis**                  | 🔄 Conducted analysis. Proposed moving to a multi-AZ database and adding read replicas to eliminate SPOFs.                                     |
-| <!--**Performance Challenge: Query Optimization** --> ...   | 🔄 <!-- Inserted large test dataset. Analyzed slow queries and applied targeted database indexes, improving response times by over 90%.--> ... |
-| <!--**Performance Challenge: Concurrency Handling** --> ... | 🔄 <!-- Implemented optimistic locking for the `Product` entity to prevent stock overselling in high-concurrency scenarios. --> ...            |
-| <!-- **Zero-Downtime Deployment**  --> ...                  | 🔄 <!-- Researching and planning for a blue-green deployment strategy. -->    ...                                                              |
+Below you can find organized links to all our key documents, explaining everything from our coding standards to our production deployment strategy.
 
----
-## Tech Stack
-
-**Backend:**
-*   **Framework:** Spring Boot (Java/Kotlin)
-*   **Persistence:** Spring Data JPA, Hibernate
-*   **Database:** PostgreSQL (AWS RDS)
-*   **API Documentation:** Springdoc OpenAPI (Swagger)
-
-**Infrastructure & DevOps:**
-*   **Cloud Provider:** AWS (EC2, RDS, S3, Route53)
-*   **CI/CD:** GitHub Actions
-*   **Monitoring:** AWS CloudWatch
-*   **Version Control:** Git / GitHub
-
----
-##  Documentation Index
-Below you’ll find quick links to all our App README files: 
-
-- [Development Documentation README](README-Development-Documentation.md) — Code Conventions,Branching Strategy, Commit Message Format.
-- [E-commerce-Order README](README-Order.md) — Base project Features from previous mission already applied.
-- [API's README](README-APIs.md) — API Documentation. 
-- [Architecture README](README-Architecture.md) — Documentation of the tech stack and system architecture.
+| Topic                    | Document Link | Description |
+|:-------------------------| :--- | :--- |
+| Coding Conventions       | [README-Development-Documentation.md](README-Development-Documentation.md) | Our team's code conventions, branching strategy, and commit message format. |
+| System Architecture      | [README-Architecture.md](README-Architecture.md) | High-level overview of our tech stack and system design. *(Work in Progress)* |
+| API Reference (Swagger)  | [README-APIs.md](README-APIs.md) | How our automated API documentation works and where to access it. |
+| Order Service Features   | [README-Order.md](README-Order.md) | A log of features and implementation steps from the project's initial phases. |
+| Email Service            | [EMAIL-SERVICE-README.md](README-Email-Service.md) | Deep dive into the HTML email notification system and how to test it. |
+| Database Setup           | [README-Database-Setup.md](README-Database-Setup.md) | Guide to our production PostgreSQL database on AWS RDS and safety policies. |
+| Production Deployment    | [README-HTTPS-Domain.md](README-HTTPS-Domain.md) | Step-by-step guide for deploying to AWS with a custom domain and HTTPS. |
+| Order Service Features   | [README-Order.md](README-Order.md) | A log of features and implementation steps from the project's initial phases. |
 
 ## Product Categories
 
 Currently we plan on not selling any of the age restricted products. So we will only sell snacks and soft drinks.
 
-<img src="images/product-categories.jpg" width="250" alt="product-categories">
+<img src="images/product-categories.jpg" width="400" alt="product-categories">
 
 ## User Flow
 
 The user flow "Surprise" is currently out of scope:
 
-<img src="images/userflows.jpg" width="250" alt="userflows">
+<img src="images/userflows.jpg" width="400" alt="userflows">
 
 Note: no age verification is needed.
 
@@ -106,6 +97,3 @@ Implement if there is enough time:
 ## Kanban Board
 
 The board for coordination of working items can be found [here](https://github.com/users/deniz-oezdemir/projects/2/views/1).
-
-## 🙏 Acknowledgments
-*   Coaches and reviewers of the Hero Tech Course.
