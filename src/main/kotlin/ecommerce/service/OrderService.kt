@@ -114,7 +114,7 @@ class OrderService(
                     req.paymentMethod,
                 )
 
-                handleSuccessfulOrderNotification(member, order)
+            handleSuccessfulOrderNotification(member, order)
 
             return PlaceOrderResponse(order.id, stripeRes.status, "Order placed and paid successfully.")
         } catch (e: Exception) {

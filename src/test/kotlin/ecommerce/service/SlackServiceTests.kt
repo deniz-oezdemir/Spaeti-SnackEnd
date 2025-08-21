@@ -7,10 +7,10 @@ import com.slack.api.methods.response.chat.ChatPostMessageResponse
 import com.slack.api.methods.response.conversations.ConversationsOpenResponse
 import com.slack.api.model.Conversation
 import ecommerce.entity.Member
+import ecommerce.entity.Option
 import ecommerce.entity.Order
 import ecommerce.entity.OrderItem
 import ecommerce.entity.Product
-import ecommerce.entity.Option
 import ecommerce.enums.OrderStatus
 import ecommerce.repository.MemberRepositoryJpa
 import org.junit.jupiter.api.Assertions.assertDoesNotThrow
@@ -38,15 +38,16 @@ class SlackServiceTests {
     @BeforeEach
     fun setupTestData() {
         memberRepositoryJpa.deleteAll()
-        val member = memberRepositoryJpa.save(
-            Member(
-                name = "Test User",
-                email = "test@example.com",
-                password = "testpassword",
-                role = "USER",
-                slackUserId = "U123456",
-            ),
-        )
+        val member =
+            memberRepositoryJpa.save(
+                Member(
+                    name = "Test User",
+                    email = "test@example.com",
+                    password = "testpassword",
+                    role = "USER",
+                    slackUserId = "U123456",
+                ),
+            )
 
         memberRepositoryJpa.save(
             Member(
@@ -68,34 +69,39 @@ class SlackServiceTests {
             ),
         )
 
-        val product = Product(
-            name = "Test Product",
-            price = 1.25,
-            imageUrl = "https://example.png",
-            options = mutableListOf(),
-        )
-        val option = Option(
-            name = "Default",
-            quantity = 2,
-            product = product,
-        )
+        val product =
+            Product(
+                name = "Test Product",
+                price = 1.25,
+                imageUrl = "https://example.png",
+                options = mutableListOf(),
+            )
+        val option =
+            Option(
+                name = "Default",
+                quantity = 2,
+                product = product,
+            )
         product.options.add(option)
 
-        order = Order(
-            id = 1L,
-            memberId = member.id!!,
-            items = mutableListOf(),
-            status = OrderStatus.PAID,
-            orderDateTime = LocalDateTime.now()
-        )
-        val orderItem = OrderItem(
-            productOption = option, quantity = 2,
-            order = order,
-            price = 1.25,
-            productName = "Test Product",
-            optionName = "Default",
-            productImageUrl = "https://example.png",
-        )
+        order =
+            Order(
+                id = 1L,
+                memberId = member.id!!,
+                items = mutableListOf(),
+                status = OrderStatus.PAID,
+                orderDateTime = LocalDateTime.now(),
+            )
+        val orderItem =
+            OrderItem(
+                productOption = option,
+                quantity = 2,
+                order = order,
+                price = 1.25,
+                productName = "Test Product",
+                optionName = "Default",
+                productImageUrl = "https://example.png",
+            )
         order.items.add(orderItem)
     }
 
@@ -109,7 +115,7 @@ class SlackServiceTests {
         Mockito.`when`(conversationsOpenResponse.channel).thenReturn(conversation)
 
         Mockito.`when`(
-            slackMethods.conversationsOpen(Mockito.any(ConversationsOpenRequest::class.java))
+            slackMethods.conversationsOpen(Mockito.any(ConversationsOpenRequest::class.java)),
         ).thenReturn(conversationsOpenResponse)
 
         Mockito.`when`(slackMethods.chatPostMessage(Mockito.any(ChatPostMessageRequest::class.java)))
@@ -143,7 +149,7 @@ class SlackServiceTests {
         val member = memberRepositoryJpa.findAll().first { it.slackUserId == "U123456" }
 
         Mockito.`when`(
-            slackMethods.conversationsOpen(Mockito.any(ConversationsOpenRequest::class.java))
+            slackMethods.conversationsOpen(Mockito.any(ConversationsOpenRequest::class.java)),
         ).thenThrow(RuntimeException("Slack API error"))
 
         assertDoesNotThrow {
