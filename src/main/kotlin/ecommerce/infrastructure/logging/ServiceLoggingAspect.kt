@@ -1,5 +1,6 @@
 package ecommerce.infrastructure.logging
 
+import jakarta.annotation.PostConstruct
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
@@ -11,8 +12,8 @@ import java.util.concurrent.TimeUnit
 @Aspect
 @Component
 @ConditionalOnProperty(prefix = "logging.tracing.service", name = ["enabled"], havingValue = "true")
-
 class ServiceLoggingAspect {
+
     private val log = LoggerFactory.getLogger(ServiceLoggingAspect::class.java)
 
     // Logs every public method in your service package
