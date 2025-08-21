@@ -39,7 +39,6 @@ class AuthService(
         val role = if (tokenRequest.email == "admin@example.com") "ADMIN" else "USER"
 
         val slackUserId = tokenRequest.slackUserId
-        println(tokenRequest.slackUserId)
 
         val member =
             memberRepository.save(
