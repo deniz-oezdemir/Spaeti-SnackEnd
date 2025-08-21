@@ -2,6 +2,7 @@ package ecommerce.controller
 
 import ecommerce.annotations.LoginMember
 import ecommerce.dto.CartCheckoutRequest
+import ecommerce.dto.GiftCheckoutRequest
 import ecommerce.dto.LoggedInMember
 import ecommerce.dto.PlaceOrderRequest
 import ecommerce.dto.PlaceOrderResponse
@@ -46,5 +47,15 @@ class OrderController(
         return ResponseEntity
             .created(URI.create("/orders/${res.orderId}"))
             .body(res)
+    }
+
+    @PostMapping("/gift")
+    fun placeGiftOrder(
+        @LoginMember member: LoggedInMember,
+        @Valid @RequestBody req: GiftCheckoutRequest,
+    ): ResponseEntity<PlaceOrderResponse> {
+        val memberEntity = memberService.getByIdOrThrow(member.id) // <-- central lookup
+        val res = orderService.placeGift(memberEntity, req)
+        return ResponseEntity.created(URI.create("/orders/${res.orderId}")).body(res)
     }
 }

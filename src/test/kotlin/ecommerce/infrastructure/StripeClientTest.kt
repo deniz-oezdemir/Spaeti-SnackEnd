@@ -63,13 +63,13 @@ class StripeClientTest {
             .andExpect(header(HttpHeaders.AUTHORIZATION, "Bearer TEST_SECRET_TOKEN"))
             .andExpect(header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE))
             .andExpect(content().string(containsString("amount=999")))
-            .andExpect(content().string(containsString("currency=usd")))
+            .andExpect(content().string(containsString("currency=eur")))
             .andRespond(withSuccess(successJson, MediaType.APPLICATION_JSON))
 
         val req =
             PaymentRequest(
                 amount = 999,
-                currency = "usd",
+                currency = "eur",
                 paymentMethod = PaymentMethod.PM_CARD_VISA.id,
             )
 
@@ -104,7 +104,7 @@ class StripeClientTest {
         val req =
             PaymentRequest(
                 amount = 5000,
-                currency = "usd",
+                currency = "eur",
                 paymentMethod = PaymentMethod.PM_CARD_CHARGE_CUSTOMER_FAIL.id,
             )
 

@@ -1,6 +1,7 @@
 package ecommerce.service
 
 import ecommerce.dto.CartCheckoutRequest
+import ecommerce.dto.GiftCheckoutRequest
 import ecommerce.dto.PaymentRequest
 import ecommerce.dto.PlaceOrderRequest
 import ecommerce.dto.PlaceOrderResponse
@@ -9,6 +10,7 @@ import ecommerce.entity.Order
 import ecommerce.infrastructure.StripeClient
 import ecommerce.repository.CartItemRepositoryJpa
 import ecommerce.repository.CartRepositoryJpa
+import ecommerce.repository.MemberRepositoryJpa
 import ecommerce.repository.OptionRepositoryJpa
 import ecommerce.util.MoneyUtil.toMinorUnits
 import jakarta.transaction.Transactional
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class OrderService(
+    private val memberRepository: MemberRepositoryJpa,
     private val optionRepository: OptionRepositoryJpa,
     private val cartItemRepository: CartItemRepositoryJpa,
     private val cartRepository: CartRepositoryJpa,
@@ -76,6 +79,7 @@ class OrderService(
         }
     }
 
+    @Transactional
     fun place(
         member: Member,
         req: PlaceOrderRequest,
@@ -119,6 +123,64 @@ class OrderService(
             handleFailedOrderNotification(member, e)
 
             throw e // TODO: create custom exception
+        }
+    }
+
+    @Transactional
+    fun placeGift(
+        member: Member,
+        req: GiftCheckoutRequest,
+    ): PlaceOrderResponse {
+        val cart =
+            cartRepository.findByMemberId(member.id!!)
+                ?: throw IllegalStateException("User does not have a cart.")
+
+        // We need to fetch the full CartItem objects to get quantities and options
+        val cartItems = cartItemRepository.findAllByCartId(cart.id!!, Pageable.unpaged()).content
+        if (cartItems.isEmpty()) {
+            throw IllegalStateException("Cannot checkout an empty cart.")
+        }
+
+        try {
+            // 1) Compute grand total (same idea as checkoutCart)
+            val grandTotal = cartItems.sumOf { it.productOption.product.price * it.quantity }
+            val amountMinor = toMinorUnits(grandTotal, 1) // Use quantity 1 since it's the total
+
+            // 2) Stripe payment
+            val stripeRes =
+                stripeClient.createAndConfirmPayment(
+                    PaymentRequest(amountMinor, req.currency, req.paymentMethod.id),
+                )
+            if (stripeRes.status != "succeeded") {
+                throw IllegalArgumentException("Payment not approved (status=${stripeRes.status}).")
+            }
+
+            // 3) Persist the order (parallel to persistCartOrderAfterStripeSuccess)
+            val order =
+                orderPersistenceService.persistGiftOrderAfterStripeSuccess(
+                    buyer = member,
+                    cartItems = cartItems,
+                    recipientEmail = req.recipientEmail,
+                    message = req.message,
+                    amountMinor = amountMinor,
+                    currency = req.currency,
+                    stripeRes = stripeRes,
+                    paymentMethod = req.paymentMethod,
+                )
+
+            // 4) Emails
+            handleSuccessfulOrderNotification(member, order) // buyer confirmation (can include totals)
+            emailService.sendGiftNotification(
+                buyer = member,
+                recipientEmail = req.recipientEmail,
+                order = order,
+                message = req.message,
+            )
+
+            return PlaceOrderResponse(order.id, stripeRes.status, "Gift order successful.")
+        } catch (e: Exception) {
+            handleFailedOrderNotification(member, e)
+            throw e
         }
     }
 

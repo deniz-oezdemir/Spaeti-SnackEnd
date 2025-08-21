@@ -11,5 +11,5 @@ data class PlaceOrderRequest(
     val quantity: Long,
     @field:NotNull
     val paymentMethod: PaymentMethod,
-    val currency: String = "usd",
+    val currency: String = "eur",
 )

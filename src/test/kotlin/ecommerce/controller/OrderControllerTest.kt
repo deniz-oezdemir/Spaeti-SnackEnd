@@ -89,7 +89,7 @@ class OrderControllerTest
                 Member(id = principal.id, name = "Jane", email = "jane@example.com", password = "pw", role = "USER")
             given(memberService.getByIdOrThrow(principal.id)).willReturn(persistedMember)
 
-            val req = PlaceOrderRequest(optionId = 1001L, quantity = 2L, currency = "usd", paymentMethod = PaymentMethod.PM_CARD_VISA)
+            val req = PlaceOrderRequest(optionId = 1001L, quantity = 2L, currency = "eur", paymentMethod = PaymentMethod.PM_CARD_VISA)
             val expected = PlaceOrderResponse(orderId = 555L, paymentStatus = "succeeded", message = "ok")
 
             given(orderService.place(any(), eq(req))).willReturn(expected)
@@ -117,7 +117,7 @@ class OrderControllerTest
                 PlaceOrderRequest(
                     optionId = 1001L,
                     quantity = 3L,
-                    currency = "usd",
+                    currency = "eur",
                     paymentMethod = PaymentMethod.PM_CARD_CHARGE_DECLINED,
                 )
             given(orderService.place(any(), eq(req))).willThrow(IllegalArgumentException("Payment not approved"))
@@ -157,7 +157,7 @@ class OrderControllerTest
                 PlaceOrderRequest(
                     optionId = 1L,
                     quantity = 1L,
-                    currency = "usd",
+                    currency = "eur",
                     paymentMethod = PaymentMethod.PM_CARD_VISA,
                 )
 
@@ -170,5 +170,100 @@ class OrderControllerTest
                     .content(objectMapper.writeValueAsString(validBody)),
             )
                 .andExpect(status().isNotFound)
+        }
+
+        @Test
+        fun `placeGiftOrder - returns 201 with Location and response body`() {
+            val persistedMember =
+                Member(id = principal.id, name = "Jane", email = "jane@example.com", password = "pw", role = "USER")
+            given(memberService.getByIdOrThrow(principal.id)).willReturn(persistedMember)
+
+            val req =
+                ecommerce.dto.GiftCheckoutRequest(
+                    recipientEmail = "friend@example.com",
+                    message = "Happy Birthday! 🎉",
+                    currency = "eur",
+                    paymentMethod = PaymentMethod.PM_CARD_VISA,
+                )
+            val expected =
+                PlaceOrderResponse(orderId = 777L, paymentStatus = "succeeded", message = "Gift order successful.")
+
+            given(orderService.placeGift(any(), eq(req))).willReturn(expected)
+
+            mockMvc.perform(
+                post("/orders/gift")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(req)),
+            )
+                .andExpect(status().isCreated)
+                .andExpect(header().string("Location", "/orders/${expected.orderId}"))
+                .andExpect(jsonPath("$.orderId").value(expected.orderId))
+                .andExpect(jsonPath("$.paymentStatus").value("succeeded"))
+                .andExpect(jsonPath("$.message").value("Gift order successful."))
+        }
+
+        @Test
+        fun `placeGiftOrder - when request body is invalid then 400`() {
+            val badReq =
+                ecommerce.dto.GiftCheckoutRequest(
+                    recipientEmail = "not-an-email",
+                    message = null,
+                    currency = "eur",
+                    paymentMethod = ecommerce.enums.PaymentMethod.PM_CARD_VISA,
+                )
+
+            mockMvc.perform(
+                post("/orders/gift")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(badReq)),
+            )
+                .andExpect(status().isBadRequest)
+        }
+
+        @Test
+        fun `placeGiftOrder - when member not found then 404`() {
+            val req =
+                ecommerce.dto.GiftCheckoutRequest(
+                    recipientEmail = "friend@example.com",
+                    message = null,
+                    currency = "eur",
+                    paymentMethod = PaymentMethod.PM_CARD_VISA,
+                )
+
+            whenever(memberService.getByIdOrThrow(principal.id))
+                .thenThrow(NoSuchElementException("Member not found"))
+
+            mockMvc.perform(
+                post("/orders/gift")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(req)),
+            )
+                .andExpect(status().isNotFound)
+        }
+
+        @Test
+        fun `placeGiftOrder - service error returns 5xx with message`() {
+            val persistedMember =
+                Member(id = principal.id, name = "Jane", email = "jane@example.com", password = "pw", role = "USER")
+            given(memberService.getByIdOrThrow(principal.id)).willReturn(persistedMember)
+
+            val req =
+                ecommerce.dto.GiftCheckoutRequest(
+                    recipientEmail = "friend@example.com",
+                    message = null,
+                    currency = "eur",
+                    paymentMethod = PaymentMethod.PM_CARD_CHARGE_DECLINED,
+                )
+
+            given(orderService.placeGift(any(), eq(req)))
+                .willThrow(IllegalArgumentException("Payment not approved"))
+
+            mockMvc.perform(
+                post("/orders/gift")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(req)),
+            )
+                .andExpect(status().is5xxServerError)
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Payment not approved")))
         }
     }

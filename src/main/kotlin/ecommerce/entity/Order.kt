@@ -13,6 +13,8 @@ import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
+import jakarta.validation.constraints.Email
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 @Entity
@@ -40,4 +42,13 @@ class Order(
         orphanRemoval = true,
     )
     var payment: Payment? = null,
+    @Column(name = "is_gift", nullable = false)
+    var isGift: Boolean = false,
+    @Column(name = "gift_recipient_email")
+    @field:Email
+    var giftRecipientEmail: String? = null,
+    @Column(name = "gift_message", length = 1000)
+    var giftMessage: String? = null,
+    @Column(name = "total_amount", precision = 12, scale = 2)
+    var totalAmount: BigDecimal = BigDecimal.ZERO,
 )
