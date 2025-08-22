@@ -29,19 +29,18 @@ Goal: Establish a robust foundation for collaboration and deployment.
 
 | Requirement                           | Implementation Status & Details                                                                                                          |
 |:--------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------|
-| **Team & Project Name**               | ✅ **[Spaeti SnackEnd](https://github.com/deniz-oezdemir/Spaeti-SnackEnd)** established as the official name.                             |
+| **Team & Project Name**               | ✅ [Spaeti SnackEnd](https://github.com/deniz-oezdemir/Spaeti-SnackEnd) established as the official name.                                 |
 | **Development Documentation**         | ✅ [Comprehensive guidelines](README-Development-Documentation.md) defined.                                                               |
 | **Code Review Process & PR Template** | ✅ Established a mandatory review process and implemented a [PR template](.github/pull_request_template.md) for all merges.               |
 | **CI Pipeline (GitHub Actions)**      | ✅ Set up [automated build](https://github.com/deniz-oezdemir/Spaeti-SnackEnd/actions) and test workflows on every push and pull request. |
-| **Deploy API**                        | ✅ Successfully deployed a basic API to AWS EC2.                                                                                          |
 
 ### Sprint 2: Feature Development & Production Readiness
 Goal: Develop core functionality and ensure the service is production-ready.
 
 | Requirement                             | Implementation Status & Details                                                                                                                                                 |
 |:----------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Core Features**                       | ✅ Implemented [Email](README-Email-Service.md) and [Slack](https://github.com/deniz-oezdemir/Spaeti-SnackEnd/pull/62) notifications for purchased Products.                     |
-| **Gift Feature**                        | ✅ Implemented a [Gift flow Feature](https://github.com/deniz-oezdemir/Spaeti-SnackEnd/pull/59) that allows users to buy products and send a Gift notification for another user. |
+| **Technical Features**                  | ✅ Implemented [Email](README-Email-Service.md) and [Slack](https://github.com/deniz-oezdemir/Spaeti-SnackEnd/pull/62) notifications for purchased Products.                     |
+| **Core User Feature**                   | ✅ Implemented a [Gift flow Feature](https://github.com/deniz-oezdemir/Spaeti-SnackEnd/pull/59) that allows users to buy products and send a Gift notification for another user. |
 | **API Documentation (Swagger)**         | ✅ Automated API documentation integrated and available. See our [API Documentation](README-APIs.md).                                                                            |
 | **Logging Strategy**                    | ✅ [Structured logging](README-Logging-Strategy.md) implemented across services with INFO, WARN, and ERROR levels.                                                               |
 | **Production Deployment (HTTPS)**       | ✅ Service deployed to a production AWS EC2 instance, secured with [HTTPS and a custom domain](README-HTTPS-Domain.md).                                                          |
@@ -65,7 +64,7 @@ Below you can find organized links to all our key documents, explaining everythi
 
 ## Product Categories
 
-Currently we plan on not selling any of the age restricted products. So we will only sell snacks and soft drinks.
+Currently, we plan on not selling any of the age restricted products. So we will only sell snacks and soft drinks.
 
 <img src="images/product-categories.jpg" width="400" alt="product-categories">
 
@@ -86,9 +85,9 @@ Roughly in descending order of importance:
   - Email
 - Buying
 - Gift sending – allow sending orders directly to someone else 
-- Ranking – e.g., most bought products in each category 
 
 Implement if there is enough time:
+- Ranking – e.g., most bought products in each category
 - Surprise Me – select random product(s) within user’s budget
 - Age verification – verify user’s age before purchase
 - Group buying – e.g., 6 beers for the price of 5, chips + soft drink combo discount
