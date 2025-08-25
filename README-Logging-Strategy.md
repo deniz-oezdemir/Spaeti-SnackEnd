@@ -73,7 +73,7 @@ logging.tracing.service.enabled=false
 
 - Production: keep tracing off, use INFO/WARN/ERROR.
 
-## Sample Log Lines
+## Sample Log Lines in Console
 
 ### Normal request
 
@@ -109,4 +109,89 @@ logging.tracing.service.enabled=false
 - <b> Trigger validations </b> to see 400 with field errors and a WARN log.
 
 - <b> Trigger not‑found </b> to see 404 and a WARN with stack (from NoSuchElementException).
+
+## Rationale
+
+- <b> Signal over noise: </b> Keep production logs clean, escalate when needed.
+
+- <b> Traceability: </b> RequestId allows end-to-end tracing.
+
+- <b> Optional deep dive: </b> Turn on service tracing for debugging.
+
+- <b> Consistency: </b> Global handler ensures uniform error responses.
+
+## File Logging (Local Development)
+
+In addition to console logs, we also write logs to rolling files for easier debugging and persistence. We use Logback (Spring Boot default).
+
+### Setup 
+
+1. We added a `logback-spring.xml` under `src/main/resources/`.
+
+It defines:
+
+  - Console appender (kept for dev)
+
+  - Rolling appender for all logs (daily + size-based rotation)
+
+  - Rolling appender for error-only logs
+
+  - A root logger that writes to console + files
+
+The file uses `${APP_LOG_FILE}` and `${ERROR_LOG_FILE}` placeholders to decide the log file paths.
+
+2. Add file path overrides in `application.properties` :
+
+```
+
+# file paths used by logback-spring.xml
+APP_LOG_FILE=build/logs/app.log
+ERROR_LOG_FILE=build/logs/error.log
+
+```
+
+### Run and Verify
+
+1. Run the following command in the project terminal: 
+
+`./gradlew bootRun`
+
+2. Check generated files: 
+
+```
+build/logs/app.log
+build/logs/error.log
+```
+
+### Benefits 
+
+- <b> Rolling policy: </b> Logs rotate daily and on size limit (50MB for app logs, 20MB for error logs).
+
+- <b> Retention: </b> 14 days of history, compressed to save space.
+
+- <b> Separation: </b> Error logs are stored separately for quick diagnosis.
+
+- <b> Consistency: </b> Same MDC pattern with requestId as console logs.
+
+## Viewing and Filtering Logs
+
+When running locally or on a server, you can inspect the log files directly from the terminal:
+
+- Follow logs in real time (like console.log):
+ `tail -f build/logs/app.log` <br>
+This will continuously stream new log lines as they are written.
+
+- Filter for errors only:
+  `tail -f build/logs/app.log | grep "ERROR"`
+
+- Filter for warnings only:
+ `tail -f build/logs/app.log | grep "WARN"`
+
+- Filter for info messages only:
+  `tail -f build/logs/app.log | grep "INFO"`
+
+- Search inside any log file (replace with an actual path):
+  `tail -f /path/to/your/logfile.txt | grep "ERROR"`
+
+
 

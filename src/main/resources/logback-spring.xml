@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+    <!-- Pull values from Spring Environment (includes systemd EnvironmentFile, application.properties, etc.) -->
+    <springProperty scope="context" name="APP_LOG_FILE" source="APP_LOG_FILE"/>
+    <springProperty scope="context" name="ERROR_LOG_FILE" source="ERROR_LOG_FILE"/>
+
+    <!-- Reuse your pattern with requestId from MDC -->
+    <property name="LOG_PATTERN" value="%d{ISO8601} %-5level [%X{requestId:-}] %logger{36} - %msg%n"/>
+
+    <!-- Console (kept for dev) -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Rolling file for all logs -->
+    <appender name="APP_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- Default file; override per-env via properties -->
+        <file>${APP_LOG_FILE:-build/logs/app.log}</file>
+
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- Daily rollover + 50MB cap per day segment -->
+            <fileNamePattern>${APP_LOG_FILE:-build/logs/app}.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>50MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <!-- Keep 14 days -->
+            <maxHistory>14</maxHistory>
+            <!-- Limit total size on disk -->
+            <totalSizeCap>2GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Optional: separate ERROR-only file -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${ERROR_LOG_FILE:-build/logs/error.log}</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${ERROR_LOG_FILE:-build/logs/error}.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>20MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>14</maxHistory>
+            <totalSizeCap>512MB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Root logger: keep console + write to files -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="APP_FILE"/>
+        <appender-ref ref="ERROR_FILE"/>
+    </root>
+
+    <!-- Keep your package log level flexible -->
+    <logger name="ecommerce" level="${ECOMMERCE_LOG_LEVEL:-INFO}"/>
+</configuration>
