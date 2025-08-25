@@ -171,19 +171,6 @@ class OrderService(
                     paymentMethod = req.paymentMethod,
                 )
 
-//            // 4) Emails
-//            handleSuccessfulOrderNotificationEmail(member, order) // buyer confirmation (can include totals)
-//            emailService.sendGiftNotification(
-//                buyer = member,
-//                recipientEmail = req.recipientEmail,
-//                order = order,
-//                message = req.message,
-//            )
-//
-//            // 5) Slack Messages
-//            handleSuccessfulOrderNotificationSlack(member, order) // buyer confirmation (can include totals)
-//            if (req.recipientSlackUserId != null) {
-//                slackService.sendGiftAndOrderConfirmationSlack(
 //                    member = member,
 //                    order = order,
 //                    recipientSlackUserId = req.recipientSlackUserId,
