@@ -47,7 +47,7 @@ The ALB is the public entry point to your application.
 2.  **Configuration:**
     - **Scheme:** `Internet-facing`.
     - **Subnets:** Select at least two subnets in different Availability Zones for high availability.
-    - **Security Group:** Assign a security group to the ALB (e.g., `webapp-alb-sg`) that allows inbound traffic from **Anywhere (0.0.0.0/0)** on ports **80 (HTTP)** and **443 (HTTPS)**.
+    - **Security Group:** Assign a security group to the ALB (e.g., `public-lb`) that allows inbound traffic from **Anywhere (0.0.0.0/0)** on ports **80 (HTTP)** and **443 (HTTPS)**.
     - **Listeners:**
         - **HTTPS / Port 443:** Configure this listener to **forward** traffic to the target group created in Step 2. Attach your issued ACM certificate here.
         - **HTTP / Port 80:** (Optional but recommended) Configure this listener to issue a **permanent redirect (301)** to the corresponding HTTPS URL.
@@ -69,7 +69,7 @@ This is the final and most important security step. Your EC2 instance should onl
 
 1.  Go to the **Security Group** associated with your **EC2 instance**.
 2.  Edit its **inbound rules**.
-3.  Ensure the rule for your application port (`8080`) has its **Source** set to the **security group of your ALB** (e.g., `webapp-alb-sg`).
+3.  Ensure the rule for your application port (`8080`) has its **Source** set to the **security group of your ALB** (e.g., `public-lb`).
 4.  Remove any other public-facing rules (like port 80, 443, or 8080 from `0.0.0.0/0`) from the EC2 instance's security group.
 
 ## Final Architecture
