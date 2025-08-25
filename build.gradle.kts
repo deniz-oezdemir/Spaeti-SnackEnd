@@ -50,9 +50,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-aop")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.10")
-    // JSON logs
-    implementation("net.logstash.logback:logstash-logback-encoder:7.4")
-    implementation("net.logstash.logback:logstash-logback-encoder-logback12:7.4")
 }
 
 kotlin {
