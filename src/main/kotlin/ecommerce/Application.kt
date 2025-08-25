@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication
+import org.springframework.scheduling.annotation.EnableAsync
 
 @OpenAPIDefinition(
     info =
@@ -23,6 +24,7 @@ import org.springframework.boot.runApplication
     bearerFormat = "JWT",
     scheme = "bearer",
 )
+@EnableAsync
 @EnableConfigurationProperties(StripeProperties::class)
 @SpringBootApplication
 class Application

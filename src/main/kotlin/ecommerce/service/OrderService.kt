@@ -7,6 +7,7 @@ import ecommerce.dto.PlaceOrderRequest
 import ecommerce.dto.PlaceOrderResponse
 import ecommerce.entity.Member
 import ecommerce.entity.Order
+import ecommerce.event.GiftOrderPlacedEvent
 import ecommerce.infrastructure.StripeClient
 import ecommerce.repository.CartItemRepositoryJpa
 import ecommerce.repository.CartRepositoryJpa
@@ -15,6 +16,7 @@ import ecommerce.repository.OptionRepositoryJpa
 import ecommerce.util.MoneyUtil.toMinorUnits
 import jakarta.transaction.Transactional
 import org.slf4j.LoggerFactory
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
@@ -28,6 +30,7 @@ class OrderService(
     private val emailService: EmailService,
     private val orderPersistenceService: OrderPersistenceService,
     private val slackService: SlackService,
+    private val eventPublisher: ApplicationEventPublisher,
 ) {
     private val logger = LoggerFactory.getLogger(OrderService::class.java)
 
@@ -168,25 +171,16 @@ class OrderService(
                     paymentMethod = req.paymentMethod,
                 )
 
-            // 4) Emails
-            handleSuccessfulOrderNotificationEmail(member, order) // buyer confirmation (can include totals)
-            emailService.sendGiftNotification(
-                buyer = member,
-                recipientEmail = req.recipientEmail,
-                order = order,
-                message = req.message,
-            )
+//                    member = member,
+//                    order = order,
+//                    recipientSlackUserId = req.recipientSlackUserId,
+//                    message = req.message,
+//                )
+//            }
 
-            // 5) Slack Messages
-            handleSuccessfulOrderNotificationSlack(member, order) // buyer confirmation (can include totals)
-            if (req.recipientSlackUserId != null) {
-                slackService.sendGiftAndOrderConfirmationSlack(
-                    member = member,
-                    order = order,
-                    recipientSlackUserId = req.recipientSlackUserId,
-                    message = req.message,
-                )
-            }
+            logger.info("--> Publishing GiftOrderPlacedEvent for order ID: ${order.id!!}")
+            eventPublisher.publishEvent(GiftOrderPlacedEvent(order.id!!))
+            logger.info("--> Event has been published for order ID: ${order.id!!}")
 
             return PlaceOrderResponse(order.id, stripeRes.status, "Gift order successful.")
         } catch (e: Exception) {
