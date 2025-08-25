@@ -83,15 +83,31 @@ class GiftNotificationListeners(
             logger.info("Sending Slack notification for order ${event.orderId} to buyer")
             slackService.sendOrderConfirmationSlack(buyer, order)
         }
+    }
 
-        // Send Slack notification to gift recipient if applicable
-        if (order.isGift && !order.giftRecipientSlackUserId.isNullOrBlank()) {
-            logger.info("Sending Slack notification for order ${event.orderId} to gift recipient")
-            slackService.sendGiftNotificationSlack(
-                recipientSlackUserId = order.giftRecipientSlackUserId!!,
-                order = order,
-                message = order.giftMessage
-            )
+    @Async
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    @TransactionalEventListener
+    fun handleRecipientSlackNotification(event: GiftOrderPlacedEvent) {
+        val order = orderRepository.findByIdWithDetails(event.orderId)
+        if (order == null || !order.isGift || order.giftRecipientEmail.isNullOrBlank()) {
+            return
         }
+
+        val recipient = memberRepository.findByEmail(order.giftRecipientEmail!!)
+        if (recipient?.slackUserId.isNullOrBlank()) {
+            logger.info("Gift recipient ${order.giftRecipientEmail} is not a registered user with a Slack ID. Skipping Slack notification.")
+            return
+        }
+
+        val buyer = memberRepository.findByIdOrNull(order.memberId)
+        if (buyer == null) {
+            logger.warn("Could not find buyer with ID ${order.memberId} for gift order ${event.orderId}.")
+            return
+        }
+
+        logger.info("Sending Slack gift notification to recipient ${recipient!!.email} for order ${event.orderId}")
+
+        slackService.sendGiftNotificationToRecipient(recipient, buyer, order)
     }
 }

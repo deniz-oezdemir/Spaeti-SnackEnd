@@ -31,6 +31,15 @@ class SlackService(
         sendDirectMessage(slackUserId, blocks, "Your order #${order.id} is confirmed!")
     }
 
+    fun sendGiftNotificationToRecipient(recipient: Member, buyer: Member, order: Order) {
+        val recipientSlackUserId = recipient.slackUserId
+        if (recipientSlackUserId.isNullOrBlank()) {
+            return
+        }
+        val blocks = buildGiftConfirmationBlocks(buyer, order, order.giftMessage)
+        sendDirectMessage(recipientSlackUserId, blocks, "🎁 You’ve received a gift from ${buyer.name}!")
+    }
+
     fun sendOrderFailureSlack(member: Member) {
         val slackUserId = member.slackUserId
         if (slackUserId.isNullOrBlank()) {
@@ -112,23 +121,6 @@ class SlackService(
             },
         )
 
-    fun sendGiftAndOrderConfirmationSlack(
-        member: Member,
-        order: Order,
-        recipientSlackUserId: String,
-        message: String? = null,
-    ) {
-        val slackUserId = member.slackUserId
-        if (slackUserId.isNullOrBlank() || recipientSlackUserId.isBlank()) {
-            logger.warn("Member ${member.id} has no Slack user ID, skipping DM notification")
-            return
-        }
-
-        val blocks = buildGiftConfirmationBlocks(member, order, message)
-//        sendDirectMessage(slackUserId, blocks, "Your Gift Order #${order.id} is confirmed!")
-        sendDirectGiftMessage(recipientSlackUserId, blocks, "🎁 You’ve received a gift from ${member.name}!")
-    }
-
     private fun buildGiftConfirmationBlocks(
         member: Member,
         order: Order,
@@ -175,29 +167,6 @@ class SlackService(
     }
 
     private fun sendDirectMessage(
-        slackUserId: String,
-        blocks: List<LayoutBlock>,
-        fallbackText: String,
-    ) {
-        try {
-            val channelId = openDirectMessageChannel(slackUserId)
-            if (channelId == null) {
-                logger.warn("Failed to open DM for Slack user $slackUserId")
-                return
-            }
-            val request =
-                ChatPostMessageRequest.builder()
-                    .channel(channelId)
-                    .blocks(blocks)
-                    .text(fallbackText)
-                    .build()
-            slackMethods.chatPostMessage(request)
-        } catch (e: Exception) {
-            logger.error("Error while sending Slack DM to user $slackUserId", e)
-        }
-    }
-
-    private fun sendDirectGiftMessage(
         slackUserId: String,
         blocks: List<LayoutBlock>,
         fallbackText: String,
