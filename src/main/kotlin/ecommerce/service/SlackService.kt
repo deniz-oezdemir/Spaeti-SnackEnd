@@ -31,7 +31,11 @@ class SlackService(
         sendDirectMessage(slackUserId, blocks, "Your order #${order.id} is confirmed!")
     }
 
-    fun sendGiftNotificationToRecipient(recipient: Member, buyer: Member, order: Order) {
+    fun sendGiftNotificationToRecipient(
+        recipient: Member,
+        buyer: Member,
+        order: Order,
+    ) {
         val recipientSlackUserId = recipient.slackUserId
         if (recipientSlackUserId.isNullOrBlank()) {
             return
