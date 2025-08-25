@@ -173,3 +173,25 @@ build/logs/error.log
 
 - <b> Consistency: </b> Same MDC pattern with requestId as console logs.
 
+## Viewing and Filtering Logs
+
+When running locally or on a server, you can inspect the log files directly from the terminal:
+
+- Follow logs in real time (like console.log):
+ `tail -f build/logs/app.log` <br>
+This will continuously stream new log lines as they are written.
+
+- Filter for errors only:
+  `tail -f build/logs/app.log | grep "ERROR"`
+
+- Filter for warnings only:
+ `tail -f build/logs/app.log | grep "WARN"`
+
+- Filter for info messages only:
+  `tail -f build/logs/app.log | grep "INFO"`
+
+- Search inside any log file (replace with an actual path):
+  `tail -f /path/to/your/logfile.txt | grep "ERROR"`
+
+
+
