@@ -79,12 +79,19 @@ class GiftNotificationListeners(
         }
 
         val buyer = memberRepository.findByIdOrNull(order.memberId)
-        if (buyer == null || buyer.slackUserId.isNullOrBlank()) {
-            // No warning needed here, as not all users will have a Slack ID.
-            return
+        if (buyer != null && !buyer.slackUserId.isNullOrBlank()) {
+            logger.info("Sending Slack notification for order ${event.orderId} to buyer")
+            slackService.sendOrderConfirmationSlack(buyer, order)
         }
 
-        logger.info("Sending Slack notification for order ${event.orderId}")
-        slackService.sendOrderConfirmationSlack(buyer, order)
+        // Send Slack notification to gift recipient if applicable
+        if (order.isGift && !order.giftRecipientSlackUserId.isNullOrBlank()) {
+            logger.info("Sending Slack notification for order ${event.orderId} to gift recipient")
+            slackService.sendGiftNotificationSlack(
+                recipientSlackUserId = order.giftRecipientSlackUserId!!,
+                order = order,
+                message = order.giftMessage
+            )
+        }
     }
 }
