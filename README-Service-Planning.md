@@ -2,7 +2,7 @@
 
 ## 1. Product/Service Overview
 
-**Service Name:** Spaeti-SnackEnd  Gift-Sender
+**Service Name:** Spaeti-SnackEnd Gift-Sender
 **Tagline:** Send snacks and drinks as gifts, with instant order notification delivered via Email and Slack.
 
 **Core Product:** A digital gifting platform that enables users to purchase curated snack and beverage packages for
