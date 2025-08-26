@@ -10,7 +10,6 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
-import jakarta.persistence.Version
 import java.time.LocalDateTime
 
 @Entity
@@ -31,9 +30,6 @@ class CartItem(
     var quantity: Long,
     @Column(name = "created_at", nullable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
-    // NEW: enables optimistic locking via Hibernate/JPA
-    @Version
-    var version: Long? = null
 ) {
     init {
         require(quantity > 0) { "Quantity must be positive" }
