@@ -36,7 +36,7 @@ SnackEnd workspace, announcing the gift and delivering a personalized message.
         - Values ease of bulk purchasing and expensing.
         - Needs admin controls and reporting.
 
-<img src="images/userflows.jpg" width="400" alt="products">
+<img src="images/userflows.jpg" width="400" alt="User flow diagram">
 
 ---
 # 3. Data Privacy & Communication Compliance
