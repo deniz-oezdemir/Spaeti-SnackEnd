@@ -40,8 +40,8 @@ class OrderPersistenceService(
         paymentMethod: PaymentMethod,
     ): Order {
         val option =
-            optionRepository.findById(optionId)
-                .orElseThrow { IllegalArgumentException("Option not found during persist: $optionId") }
+            optionRepository.findWithLockById(optionId)
+                ?: throw NoSuchElementException("Option not found id=$optionId")
         require(option.quantity >= requestedQty) { "Insufficient stock during persist." }
 
         val order =
