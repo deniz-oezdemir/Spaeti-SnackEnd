@@ -36,7 +36,7 @@ class Option(
     var quantity: Long,
     @Version
     @Column(nullable = false)
-    var version: Long = 0L
+    var version: Long = 0L,
 ) {
     init {
         require(name.length <= 50) { "Name must not exceed 50 characters" }

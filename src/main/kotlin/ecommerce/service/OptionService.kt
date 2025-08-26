@@ -5,7 +5,6 @@ import ecommerce.entity.Option
 import ecommerce.entity.Product
 import ecommerce.repository.OptionRepositoryJpa
 import ecommerce.repository.ProductRepositoryJpa
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
