@@ -35,8 +35,9 @@ class OptionService(
         amount: Long,
     ) {
         val option =
-            optionRepositoryJpa.findByIdOrNull(optionId)
+            optionRepositoryJpa.findWithLockById(optionId)
                 ?: throw NoSuchElementException("Option not found id=$optionId")
         option.decreaseQuantity(amount)
+        optionRepositoryJpa.saveAndFlush(option)
     }
 }
