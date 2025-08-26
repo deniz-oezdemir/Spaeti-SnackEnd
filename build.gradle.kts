@@ -39,6 +39,7 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt:0.9.1")
     implementation("javax.xml.bind:jaxb-api:2.3.1")
     implementation("com.slack.api:slack-api-client:1.36.1")
+    implementation("org.liquibase:liquibase-core")
     runtimeOnly("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
