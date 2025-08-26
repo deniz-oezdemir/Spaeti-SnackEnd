@@ -13,6 +13,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
+import jakarta.persistence.Version
 import jakarta.validation.constraints.Email
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -51,4 +52,8 @@ class Order(
     var giftMessage: String? = null,
     @Column(name = "total_amount", precision = 12, scale = 2)
     var totalAmount: BigDecimal = BigDecimal.ZERO,
+
+    // NEW: enables optimistic locking via Hibernate/JPA
+    @Version
+    var version: Long? = null
 )

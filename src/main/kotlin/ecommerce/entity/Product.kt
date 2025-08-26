@@ -10,6 +10,7 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.PrePersist
 import jakarta.persistence.PreUpdate
 import jakarta.persistence.Table
+import jakarta.persistence.Version
 
 @Entity
 @Table(name = "products")
@@ -28,6 +29,10 @@ class Product(
         orphanRemoval = true,
     )
     val options: MutableList<Option> = mutableListOf(),
+
+    // NEW: enables optimistic locking via Hibernate/JPA
+    @Version
+    var version: Long? = null
 ) {
     init {
         require(name.isNotBlank()) { "Product name must not be blank" }
