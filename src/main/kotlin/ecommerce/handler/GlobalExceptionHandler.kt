@@ -1,10 +1,14 @@
 package ecommerce.handler
 
 import org.slf4j.LoggerFactory
+import org.springframework.dao.CannotAcquireLockException
+import org.springframework.dao.OptimisticLockingFailureException
+import org.springframework.dao.PessimisticLockingFailureException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice
@@ -43,6 +47,27 @@ class GlobalExceptionHandler {
         logger.warn("Bad request: ${ex.message}")
         val error = ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.message ?: "Validation failed")
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error)
+    }
+
+    @ExceptionHandler(OptimisticLockingFailureException::class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    fun handleOptimisticConflict(e: OptimisticLockingFailureException): ErrorResponse {
+        logger.warn("Optimistic lock conflict: ${e.message}")
+        return ErrorResponse(409, "The item was updated by someone else. Please retry.")
+    }
+
+    @ExceptionHandler(PessimisticLockingFailureException::class)
+    fun handlePessimistic(e: PessimisticLockingFailureException): ResponseEntity<ErrorResponse> {
+        logger.warn("Pessimistic lock failure: ${e.message}", e)
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+            .body(ErrorResponse(409, "Resource is locked by another operation. Please retry."))
+    }
+
+    @ExceptionHandler(CannotAcquireLockException::class)
+    fun handleCannotAcquire(e: CannotAcquireLockException): ResponseEntity<ErrorResponse> {
+        logger.warn("Cannot acquire lock: ${e.message}", e)
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+            .body(ErrorResponse(409, "Resource busy. Please retry later."))
     }
 
     @ExceptionHandler(Exception::class)
