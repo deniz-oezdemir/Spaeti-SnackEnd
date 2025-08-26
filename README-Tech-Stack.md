@@ -7,13 +7,11 @@ with automatic Email and Slack notifications.
 ## Key Features
 - **Gift Purchasing**: Easy ordering flow for members
 - **Instant Notifications**: Automatic Email and Slack messages when gifts are sent
-- **Order Tracking**: Real-time order notification send by Email and Slack
 
 ## System Architecture (Simple View)
 
 - **Layered-Architecture** 
 System organized into horizontal layers, each with a specific responsibility:
-  - Presentation Layer: User interface (web, mobile)
   - Business Layer: Core logic and rules
   - Data Access Layer: Database interactions
 
@@ -25,14 +23,65 @@ When or Why you might want it:
 - When adding new features - add a new service that listens to "gift sent" events
 - When you need reliability - events can be retried if Slack is down
 
-```
-Members → Website → Our System → Email/Slack → Recipients
-          ↑             ↑              ↑
-        Payments    Database     Notifications
+```mermaid
+sequenceDiagram
+    autonumber
+
+    participant Client
+    participant OrderService
+    participant CartRepo as CartRepositoryJpa
+    participant CartItemRepo as CartItemRepositoryJpa
+    participant StripeClient
+    participant OrderPersistence as OrderPersistenceService
+    participant EmailService
+    participant SlackService
+
+    Client->>OrderService: checkoutCart(member, req)
+
+    note over OrderService: Fetch cart and items
+    OrderService->>CartRepo: findByMemberId(memberId)
+    CartRepo-->>OrderService: Return Cart
+
+    OrderService->>CartItemRepo: findAllByCartId(cartId, ...)
+    CartItemRepo-->>OrderService: Return List<CartItem>
+
+    note over OrderService: Process payment via Stripe
+    OrderService->>StripeClient: createAndConfirmPayment(paymentRequest)
+    StripeClient-->>OrderService: StripeIntentResponse
+
+alt Payment Successful
+note over OrderService: Persist the order
+OrderService->>OrderPersistence: persistCartOrderAfterStripeSuccess(...)
+note right of OrderPersistence: Creates new Order and Payment entities
+OrderPersistence-->>OrderService: Return Order
+
+note over OrderService: Send success notifications
+
+OrderService-->>Client: PlaceOrderResponse (Success)
+
+OrderService->>EmailService: sendOrderConfirmation(member, order)
+EmailService-->>OrderService:
+
+OrderService->>SlackService: sendOrderConfirmationSlack(member, order)
+SlackService-->>OrderService:
+
+else Payment Failed / Exception
+note over OrderService: Send failure notifications
+OrderService->>EmailService: sendOrderFailureNotification(member, reason)
+EmailService-->>OrderService:
+
+OrderService->>SlackService: sendOrderFailureSlack(member)
+SlackService->>SlackService: buildOrderFailureBlocks()
+SlackService->>SlackService: sendDirectMessage(...)
+SlackService-->>OrderService:
+
+OrderService-->>Client: Throws Exception or returns Failure Response
+end
+
 ```
 
 ## Sequence Diagram (Order Flow)
-<img src="images/order_service_diagram.png" width="800" alt="products">
+<img src="images/order_service_diagram.mmd" width="800" alt="products">
 
 ## How It Works - Gift Flow
 1. **Member** buys gift on website
@@ -55,7 +104,6 @@ Members → Website → Our System → Email/Slack → Recipients
   - AWS Infrastructure:
   - EC2 → Runs our Spring Boot application
   - RDS → Hosts our PostgreSQL database
-  - ElastiCache → Redis for performance caching
   - S3 → Stores product images for Slack messages
   - CloudWatch → Monitors gift delivery performance
 
