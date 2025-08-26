@@ -23,6 +23,7 @@ When or Why you might want it:
 - When adding new features - add a new service that listens to "gift sent" events
 - When you need reliability - events can be retried if Slack is down
 
+## Sequence Diagram (Order-Flow)
 ```mermaid
 sequenceDiagram
     autonumber
@@ -79,9 +80,6 @@ OrderService-->>Client: Throws Exception or returns Failure Response
 end
 
 ```
-
-## Sequence Diagram (Order Flow)
-<img src="images/order_service_diagram.mmd" width="800" alt="products">
 
 ## How It Works - Gift Flow
 1. **Member** buys gift on website
