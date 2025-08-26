@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
+import jakarta.persistence.Version
 
 @Entity
 @Table(
@@ -33,6 +34,9 @@ class Option(
     var name: String,
     @Column(nullable = false)
     var quantity: Long,
+    @Version
+    @Column(nullable = false)
+    var version: Long = 0L
 ) {
     init {
         require(name.length <= 50) { "Name must not exceed 50 characters" }
