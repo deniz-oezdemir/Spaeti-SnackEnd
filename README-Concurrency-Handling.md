@@ -12,7 +12,7 @@ In an e-commerce system, multiple users can attempt to purchase or update the sa
 
     - Overselling (stock going below zero).
 
-## Our Approach
+## 🍀 Our Approach
 
 We combined pessimistic locks (for checkout flows) with optimistic locks (as a global safety net).
 
@@ -112,3 +112,11 @@ This ensures all concurrency errors are consistently logged and documented in a 
 - <b>  Global handler: </b> clean 409 Conflict responses for concurrency failures.
 
 - <b>  Tests: </b> proof that stock never goes negative and stale writes fail.
+
+## 📚 References 
+
+- Hibernate Optimistic Locking — https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#locking-optimistic
+
+- Hibernate Pessimistic Locking — https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#locking-pessimistic
+
+- Spring Data JPA Locking and Transactions — https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.locking
