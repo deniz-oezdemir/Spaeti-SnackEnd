@@ -3,7 +3,7 @@ set -euo pipefail
 
 EC2_USER=ubuntu
 EC2_HOST=3.35.20.93
-KEY="$HOME/Downloads/key-farhana.pem"
+KEY="$HOME/Documents/keys/key-Spaeti-SnackEnd.pem"
 
 APP_NAME=spring-ecommerce-order
 
