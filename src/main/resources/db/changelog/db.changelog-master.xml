@@ -9,8 +9,8 @@
         <sqlFile path="db/changelog/sql/schema.sql" relativeToChangelogFile="false"/>
     </changeSet>
 
-    <changeSet id="2-insert-data" author="sara">
-        <sqlFile path="db/changelog/sql/data.sql" relativeToChangelogFile="false"/>
+    <changeSet id="2-insert-data" author="sara" runOnChange="true">
+        <sqlFile path="sql/data.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
 </databaseChangeLog>
