@@ -56,7 +56,17 @@ class CartControllerTest {
         MemberResponse(id = 1L, email = "user@example.com", name = "John Doe", role = UserRole.USER.name)
     private val loggedInMember =
         LoggedInMember(id = 1L, email = "user@example.com", name = "John Doe", role = UserRole.USER.name)
-    private val cartRequest = CartRequest(productOptionId = 100L)
+
+    // ID-based path, with custom quantity
+    private val cartRequestById = CartRequest(productOptionId = 100L, quantity = 2)
+
+    // Name-based path, with custom quantity
+    private val cartRequestByNames =
+        CartRequest(
+            productName = "Coca-Cola",
+            optionName = "original",
+            quantity = 3,
+        )
 
     @BeforeEach
     fun setup() {
@@ -75,7 +85,6 @@ class CartControllerTest {
 
         val cartController = CartController(cartService)
 
-        // Register it in MockMvc
         mockMvc =
             MockMvcBuilders
                 .standaloneSetup(cartController)
@@ -84,16 +93,38 @@ class CartControllerTest {
     }
 
     @Test
-    fun `should add product to cart`() {
+    fun `should add product to cart using option id with quantity`() {
         mockMvc.perform(
             post("/api/protected/cart/created")
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(cartRequest)),
+                .content(objectMapper.writeValueAsString(cartRequestById)),
         )
             .andExpect(status().isCreated)
 
-        verify(cartService).addToCart(loggedInMember.id, cartRequest.productOptionId, quantity = 1)
+        verify(cartService).addToCart(
+            loggedInMember.id,
+            cartRequestById.productOptionId!!,
+            cartRequestById.quantity,
+        )
+    }
+
+    @Test
+    fun `should add product to cart using product and option names with quantity`() {
+        mockMvc.perform(
+            post("/api/protected/cart/created")
+                .header("Authorization", "Bearer $token")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(cartRequestByNames)),
+        )
+            .andExpect(status().isCreated)
+
+        verify(cartService, times(1)).addToCartByNames(
+            loggedInMember.id,
+            cartRequestByNames.productName!!,
+            cartRequestByNames.optionName!!,
+            cartRequestByNames.quantity,
+        )
     }
 
     @Test
@@ -102,7 +133,7 @@ class CartControllerTest {
             delete("/api/protected/cart/1")
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(cartRequest)),
+                .content(objectMapper.writeValueAsString(cartRequestById)),
         )
             .andExpect(status().isNoContent)
 
@@ -128,5 +159,25 @@ class CartControllerTest {
             .andExpect(jsonPath("$.memberId").value(cart.memberId))
 
         verify(cartService, times(1)).getCart(loggedInMember.id)
+    }
+
+    @Test
+    fun `should add product to cart using option id with default quantity`() {
+        // Only productOptionId provided; quantity omitted -> should default to 1
+        val requestOnlyId = CartRequest(productOptionId = 200L)
+
+        mockMvc.perform(
+            post("/api/protected/cart/created")
+                .header("Authorization", "Bearer $token")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestOnlyId)),
+        )
+            .andExpect(status().isCreated)
+
+        verify(cartService, times(1)).addToCart(
+            loggedInMember.id,
+            200L,
+            1L,
+        )
     }
 }
