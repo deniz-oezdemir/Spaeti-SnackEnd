@@ -13,7 +13,7 @@ The original gift ordering process was **synchronous**. When a user placed a gif
 3.  Send a confirmation email to the buyer.
 4.  Send a gift notification to the recipient.
 5.  Optionally send a Slack notification to the buyer.
-6Optionally send a Slack notification to the recipient.
+6.  Optionally send a Slack notification to the recipient.
 
 This approach had two major drawbacks:
 * **Poor Performance:** The user had to wait for slow operations like sending emails to complete, resulting in a slow API response time.
