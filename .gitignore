@@ -42,3 +42,6 @@ out/
 
 ### Secrets
 application-secrets.properties
+
+# Exclude test coverage reports
+htmlReport/
