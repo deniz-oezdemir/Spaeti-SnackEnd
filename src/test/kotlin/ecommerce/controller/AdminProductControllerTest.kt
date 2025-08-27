@@ -1,28 +1,61 @@
 package ecommerce.controller
 
+import ecommerce.dto.MemberResponse
 import ecommerce.dto.OptionCreateDto
 import ecommerce.dto.ProductRequest
+import ecommerce.enums.UserRole
+import ecommerce.infrastructure.JWTProvider
+import ecommerce.service.AuthService
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+import org.mockito.Mockito.doNothing
+import org.mockito.Mockito.`when`
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.http.HttpStatus
 import org.springframework.test.annotation.DirtiesContext
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class ProductControllerTest {
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class AdminProductControllerTest {
     @LocalServerPort
-    private var port: Int = 0
+    lateinit var port: Integer
+
+    @MockitoBean
+    private lateinit var jwtProvider: JWTProvider
+
+    @MockitoBean
+    private lateinit var authService: AuthService
+
+    private val token = "mocked-jwt-token"
 
     @BeforeEach
-    fun setUp() {
-        RestAssured.baseURI = "http://localhost"
-        RestAssured.port = port
+    fun setup() {
+        RestAssured.port = port.toInt()
+        // let any token be “valid”
+        doNothing().`when`(jwtProvider).validateToken(token)
+        // return an ADMIN for this token
+        `when`(authService.findMemberByToken(token)).thenReturn(
+            MemberResponse(
+                id = 1L,
+                email = "admin@example.com",
+                name = "Admin",
+                role = UserRole.ADMIN.name,
+                slackUserId = null,
+            ),
+        )
+        // Make all RestAssured calls automatically include the Authorization header
+        RestAssured.requestSpecification =
+            RestAssured
+                .given()
+                .header("Authorization", "Bearer $token")
     }
 
     @Test
@@ -43,7 +76,7 @@ class ProductControllerTest {
             RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(productRequest)
-                .post("/products")
+                .post("/api/protected/admin/products/create")
                 .then()
                 .extract()
 
@@ -67,7 +100,7 @@ class ProductControllerTest {
             .log().all()
             .contentType(ContentType.JSON)
             .body(productRequest)
-            .post("/products")
+            .post("/api/protected/admin/products/create")
             .then()
             .log().all()
             .statusCode(HttpStatus.CREATED.value())
@@ -88,15 +121,22 @@ class ProductControllerTest {
             )
 
         // Create product first
-        RestAssured.given()
-            .contentType(ContentType.JSON)
-            .body(createRequest)
-            .post("/products")
-            .then()
-            .statusCode(HttpStatus.CREATED.value())
+        val createResponse =
+            RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(createRequest)
+                .post("/api/protected/admin/products/create")
+                .then()
+                .extract()
+
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value())
 
         // Then update it
-        val productId = 1L
+        val productId =
+            createResponse.header("Location")
+                ?.substringAfterLast('/')
+                ?.toLong()
+                ?: error("Create response missing Location header")
         val updatedProduct =
             ProductRequest(
                 name = "Updated Product",
@@ -113,7 +153,7 @@ class ProductControllerTest {
             RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(updatedProduct)
-                .put("/products/$productId")
+                .put("/api/protected/admin/products/update/$productId")
                 .then()
                 .extract()
 
@@ -138,14 +178,14 @@ class ProductControllerTest {
         RestAssured.given()
             .contentType(ContentType.JSON)
             .body(productRequest)
-            .post("/products")
+            .post("/api/protected/admin/products/create")
             .then()
             .statusCode(HttpStatus.CREATED.value())
 
         // Delete it
         val response =
             RestAssured.given()
-                .delete("/products/1")
+                .delete("/api/protected/admin/products/delete/1")
                 .then()
                 .extract()
 
@@ -171,7 +211,7 @@ class ProductControllerTest {
             RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(invalidProduct)
-                .post("/products")
+                .post("/api/protected/admin/products/create")
                 .then()
                 .extract()
 
@@ -198,7 +238,7 @@ class ProductControllerTest {
             RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(invalidProduct)
-                .post("/products")
+                .post("/api/protected/admin/products/create")
                 .then()
                 .extract()
 
@@ -224,7 +264,7 @@ class ProductControllerTest {
             RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(invalidProduct)
-                .post("/products")
+                .post("/api/protected/admin/products/create")
                 .then()
                 .extract()
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
@@ -249,7 +289,7 @@ class ProductControllerTest {
             RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(invalidProduct)
-                .post("/products")
+                .post("/api/protected/admin/products/create")
                 .then()
                 .extract()
 
@@ -275,7 +315,7 @@ class ProductControllerTest {
             RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(invalidProduct)
-                .post("/products")
+                .post("/api/protected/admin/products/create")
                 .then()
                 .extract()
 
@@ -301,7 +341,7 @@ class ProductControllerTest {
             RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(invalidProduct)
-                .post("/products")
+                .post("/api/protected/admin/products/create")
                 .then()
                 .extract()
 
@@ -330,7 +370,7 @@ class ProductControllerTest {
             RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(invalidProduct)
-                .put("/products/$productId")
+                .put("/api/protected/admin/products/update/$productId")
                 .then()
                 .extract()
 
@@ -357,7 +397,7 @@ class ProductControllerTest {
             RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(invalidProduct)
-                .put("/products/$productId")
+                .put("/api/protected/admin/products/update/$productId")
                 .then()
                 .extract()
 
@@ -384,11 +424,72 @@ class ProductControllerTest {
             RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(invalidProduct)
-                .put("/products/$productId")
+                .put("/api/protected/admin/products/update/$productId")
                 .then()
                 .extract()
 
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
         Assertions.assertThat(response.asString()).contains("Image URL must start with http:// or https://", "imageUrl")
+    }
+
+    @Test
+    fun `create product without token returns 401`() {
+        val prev = RestAssured.requestSpecification
+        try {
+            RestAssured.requestSpecification = null
+
+            val productRequest =
+                ProductRequest(
+                    name = "NoAuth",
+                    price = 10.0,
+                    imageUrl = "http://localhost:$port/image/noauth.jpg",
+                    options = mutableListOf(OptionCreateDto("Silver", 1)),
+                )
+
+            RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(productRequest)
+                .post("/api/protected/admin/products/create")
+                .then()
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+        } finally {
+            RestAssured.requestSpecification = prev
+        }
+    }
+
+    @Test
+    fun `create product with non-admin role returns 403`() {
+        val nonAdmin =
+            MemberResponse(
+                id = 2L,
+                email = "user@example.com",
+                name = "User",
+                role = UserRole.USER.name,
+                slackUserId = null,
+            )
+
+        // Make JWT validation succeed whether the interceptor sends raw or "Bearer ..." token
+        doNothing().`when`(jwtProvider).validateToken(token)
+        doNothing().`when`(jwtProvider).validateToken("Bearer $token")
+
+        // Make AuthService return NON-ADMIN for either form
+        `when`(authService.findMemberByToken(token)).thenReturn(nonAdmin)
+        `when`(authService.findMemberByToken("Bearer $token")).thenReturn(nonAdmin)
+
+        val productRequest =
+            ProductRequest(
+                name = "NotAllowed",
+                price = 10.0,
+                imageUrl = "http://localhost:$port/image/user.jpg",
+                options = mutableListOf(OptionCreateDto("Black", 1)),
+            )
+
+        RestAssured.given()
+            .contentType(ContentType.JSON)
+            .header("Authorization", "Bearer $token")
+            .body(productRequest)
+            .post("/api/protected/admin/products/create")
+            .then()
+            .statusCode(HttpStatus.FORBIDDEN.value())
     }
 }
