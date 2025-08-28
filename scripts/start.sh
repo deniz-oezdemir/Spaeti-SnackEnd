@@ -1,4 +1,5 @@
 #!/bin/bash
+exit 1
 JAR_FILE=$(ls /home/ubuntu/app/build/libs/*.jar | head -n 1)
 
 if [ -z "$JAR_FILE" ]; then
