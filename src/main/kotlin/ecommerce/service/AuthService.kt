@@ -36,8 +36,6 @@ class AuthService(
             throw ValidationException("Email is already registered")
         }
 
-        val role = if (tokenRequest.email == "admin@example.com") "ADMIN" else "USER"
-
         val slackUserId = tokenRequest.slackUserId
 
         val member =
@@ -46,7 +44,7 @@ class AuthService(
                     name = tokenRequest.name,
                     email = tokenRequest.email,
                     password = tokenRequest.password,
-                    role = role,
+                    role = tokenRequest.role,
                     slackUserId = slackUserId,
                 ),
             )
