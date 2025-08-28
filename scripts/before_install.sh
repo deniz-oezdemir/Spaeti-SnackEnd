@@ -1,4 +1,7 @@
 #!/bin/bash
+echo ">>> [BeforeInstall] Creating log directory..."
+mkdir -p /home/ubuntu/logs
+
 echo ">>> [BeforeInstall] Stopping current application if running..."
 pkill -f 'java -jar' || true
 
