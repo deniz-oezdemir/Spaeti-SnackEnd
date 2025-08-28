@@ -2,22 +2,22 @@
 
 This is the team project for the "Hero Tech Course 2025" by [Farhana](https://github.com/farhanaahmed), [Gabriela](https://github.com/knopgm), [Sara](https://github.com/saragrosser), and [Deniz](https://github.com/deniz-oezdemir).
 
-<img src="images/snacks.jpg" width="400" alt="products">
+<img src="images/snacks.jpg" width="800" alt="products">
 
 ## Table of Contents
 - [Introduction](#introduction)
 - [Project Implementation](#project-implementation)
   - [Sprint 1: Project Setup & Development Environment](#sprint-1-project-setup--development-environment)
   - [Sprint 2: Feature Development & Production Readiness](#sprint-2-feature-development--production-readiness)
+  - [Sprint 3: Performance Optimization & Scalability Planning](#sprint-3-performance-optimization--scalability-planning)
 - [Documentation Index](#documentation-index)
-- [Product Categories](#product-categories)
-- [User Flow](#user-flow)
-- [Feature List](#feature-list)
+- [How to Run Locally](#how-to-run-locally)
+- [User Flows](#user-flows)
 - [Kanban Board](#kanban-board)
 
 ## Introduction
 
-We aim to implement an online Späti Shop where users can buy and gift snacks and soft drinks.
+We implemented an online Späti Shop where users can buy and gift snacks and soft drinks.
 
 Instead of the physical delivery of said products we will send the details and images of the products to the user via a chosen channel.
 
@@ -47,51 +47,64 @@ Goal: Develop core functionality and ensure the service is production-ready.
 | **Production Database & Safety Policy** | ✅ [PostgresSQL RDS instance](README-Database-Setup.md) provisioned. Policies implemented to prevent accidental data loss.                                                                               |
 | **Monitoring & Observability**          | 🔄 Integrated CloudWatch for logging and basic monitoring alerts.                                                                                                               |
 
+### Sprint 3: Performance Optimization & Scalability Planning
+Goal: Enhance system resilience and performance under load.
+
+| Requirement                           | Implementation Status & Details                                                                                                                                                 |
+|:----------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Concurrency Handling** | ✅ Implemented [pessimistic and optimistic locking](README-Concurrency-Handling.md) to prevent overselling and data conflicts during checkout.                     |
+| **Event-Driven Architecture** | ✅ [Refactored the gift feature](README-Event-Driven-Gift-Flow.md) into a fully asynchronous, event-driven flow to improve API response time and system resilience. |
+
 ## Documentation Index
 
 Below you can find organized links to all our key documents, explaining everything from our coding standards to our production deployment strategy.
 
 | Topic                    | Document Link | Description |
 |:-------------------------| :--- | :--- |
-| Coding Conventions       | [README-Development-Documentation.md](README-Development-Documentation.md) | Our team's code conventions, branching strategy, and commit message format. |
-| System Architecture      | [README-Architecture.md](README-Architecture.md) | High-level overview of our tech stack and system design. *(Work in Progress)* |
-| API Reference (Swagger)  | [README-APIs.md](README-APIs.md) | How our automated API documentation works and where to access it. |
+| **Planning & Design** | | |
+| Service Planning         | [README-Service-Planning.md](README-Service-Planning.md) | High-level overview of the product, user personas, and goals. |
+| Tech Stack & Architecture | [README-Tech-Stack.md](README-Tech-Stack.md) | Detailed breakdown of technologies, architecture patterns, and sequence diagrams. |
+| System Architecture      | [README-Architecture.md](README-Architecture.md) | High-level diagram of our AWS infrastructure and request flow. |
+| Feature Specifications   | [README-Feature-Specifications.md](README-Feature-Specifications.md) | Detailed specs and test scenarios for all core features. |
+| **Features & Services** | | |
+| Gifting Flow             | [README-Gift-Flow-Email.md](README-Gift-Flow-Email.md) | Deep dive into the gift purchase feature and dual-notification logic. |
+| Email Service            | [README-Email-Service.md](README-Email-Service.md) | Deep dive into the HTML email notification system and how to test it. |
+| Slack Service            | [README-Slack.md](README-Slack.md) | Deep dive into the Slack notification system using Block Kit. |
 | Order Service Features   | [README-Order.md](README-Order.md) | A log of features and implementation steps from the project's initial phases. |
-| Email Service            | [EMAIL-SERVICE-README.md](README-Email-Service.md) | Deep dive into the HTML email notification system and how to test it. |
+| **Technical Implementation** | | |
+| Concurrency Handling     | [README-Concurrency-Handling.md](README-Concurrency-Handling.md) | How we prevent data conflicts using pessimistic and optimistic locking. |
+| Event-Driven Architecture | [README-Event-Driven-Gift-Flow.md](README-Event-Driven-Gift-Flow.md) | Details on the asynchronous, event-driven refactoring of the gift flow. |
+| Logging Strategy         | [README-Logging-Strategy.md](README-Logging-Strategy.md) | Our approach to structured logging, request tracing, and error handling. |
+| Performance Research     | [README-Research-Performance-Optimization-&-Scalability-Planning.md](README-Research-Performance-Optimization-&-Scalability-Planning.md) | Research document on scalability and performance topics. |
+| **Operations & Guides** | | |
+| Coding Conventions       | [README-Development-Documentation.md](README-Development-Documentation.md) | Our team's code conventions, branching strategy, and commit message format. |
+| API Reference (Swagger)  | [README-APIs.md](README-APIs.md) | How our automated API documentation works and where to access it. |
+| Testing Guide            | [README-Tests-Gifting-Flow.md](README-Tests-Gifting-Flow.md) | How to read and understand the API tests for the gifting feature. |
 | Database Setup           | [README-Database-Setup.md](README-Database-Setup.md) | Guide to our production PostgreSQL database on AWS RDS and safety policies. |
 | Production Deployment    | [README-HTTPS-Domain.md](README-HTTPS-Domain.md) | Step-by-step guide for deploying to AWS with a custom domain and HTTPS. |
-| Order Service Features   | [README-Order.md](README-Order.md) | A log of features and implementation steps from the project's initial phases. |
 
-## Product Categories
+## How to Run Locally
 
-Currently, we plan on not selling any of the age restricted products. So we will only sell snacks and soft drinks.
+### 1. Add Secrets
+*(Details to be added by Sara)*
 
-<img src="images/product-categories.jpg" width="400" alt="product-categories">
+---
+### 2. Configure PostgreSQL
+*(Details to be added by Sara)*
 
-## User Flow
+---
+### 3. Run in Dev Mode
+*(Details to be added by Sara)*
 
-The user flow "Surprise" is currently out of scope:
+---
 
-<img src="images/userflows.jpg" width="400" alt="userflows">
+## User Flows
 
-Note: no age verification is needed.
+The following diagrams illustrate the primary user journeys for purchasing items for oneself and sending them as a gift to someone else.
 
-## Feature List
+<img src="images/Gift-Diagram.png" width="800" alt="userflows">
 
-Roughly in descending order of importance:
-- User can choose between channels to receive product pictures
-  - WhatsApp
-  - Slack
-  - Email
-- Buying
-- Gift sending – allow sending orders directly to someone else 
-
-Implement if there is enough time:
-- Ranking – e.g., most bought products in each category
-- Surprise Me – select random product(s) within user’s budget
-- Age verification – verify user’s age before purchase
-- Group buying – e.g., 6 beers for the price of 5, chips + soft drink combo discount
-- Feedback – collect ratings or feedback for products/stores
+<img src="images/Checkout-Diagram.png" width="800" alt="userflows">
 
 ## Kanban Board
 
