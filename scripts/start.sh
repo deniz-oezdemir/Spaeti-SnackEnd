@@ -8,4 +8,4 @@ fi
 
 echo ">>> ####### Test #######"
 echo ">>> [ApplicationStart] Starting application: $JAR_FILE"
-nohup sudo -E java -jar -Dspring.profiles.active=prod $JAR_FILE > /home/ubuntu/app/app.log 2>&1 &
+nohup sudo -E java -jar -Dspring.profiles.active=prod -Dspring.jpa.defer-datasource-initialization=true $JAR_FILE > /home/ubuntu/app/app.log 2>&1 &
