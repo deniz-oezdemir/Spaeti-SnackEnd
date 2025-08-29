@@ -83,21 +83,6 @@ Below you can find organized links to all our key documents, explaining everythi
 | Database Setup           | [README-Database-Setup.md](README-Database-Setup.md) | Guide to our production PostgreSQL database on AWS RDS and safety policies. |
 | Production Deployment    | [README-HTTPS-Domain.md](README-HTTPS-Domain.md) | Step-by-step guide for deploying to AWS with a custom domain and HTTPS. |
 
-## How to Run Locally
-
-### 1. Add Secrets
-*(Details to be added by Sara)*
-
----
-### 2. Configure PostgreSQL
-*(Details to be added by Sara)*
-
----
-### 3. Run in Dev Mode
-*(Details to be added by Sara)*
-
----
-
 ## User Flows
 
 The following diagrams illustrate the primary user journeys for purchasing items for oneself and sending them as a gift to someone else.
