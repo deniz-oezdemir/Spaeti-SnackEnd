@@ -162,8 +162,66 @@ ERROR_LOG_FILE=build/logs/error.log
 build/logs/app.log
 build/logs/error.log
 ```
+## Logging in AWS EC2 Instance
 
-### Benefits 
+In addition to local logging under **build/logs**, our application is configured to persist logs directly on the AWS EC2 instance where it is deployed.
+This ensures that logs remain available across application restarts and can be collected by external monitoring tools such as CloudWatch.
+
+### File Locations on EC2
+
+Logs are written to the following absolute paths on the instance:
+
+* **Application logs** (general info, service tracing, request correlation, etc.)
+    * `/home/ubuntu/logs/app.log`
+* **Error logs** (exceptions, unexpected failures, critical errors)
+    * `/home/ubuntu/logs/error.log`
+
+### How It Works
+
+The **`logback-spring.xml`** configuration reads environment variables defined in the EC2 instance:
+
+```
+APP_LOG_FILE=/home/ubuntu/logs/app.log
+ERROR_LOG_FILE=/home/ubuntu/logs/error.log
+
+```
+
+On startup, Spring Boot automatically resolves these variables and routes logs accordingly.
+
+This separation of application logs and error logs ensures clean observability and makes it easier to forward specific streams (e.g., only error logs) to monitoring systems like CloudWatch.
+
+The directory `/home/ubuntu/logs/` is created on the instance during deployment, and the application process has write permissions to it.
+
+### Integration with CloudWatch
+
+For production observability, the **Amazon CloudWatch Agent** can be configured to tail these log files and ship them to AWS CloudWatch Logs. This allows for central log aggregation, search, and alerting.
+Here is an example configuration:
+
+```json
+{
+  "logs": {
+    "logs_collected": {
+      "files": {
+        "collect_list": [
+          {
+            "file_path": "/home/ubuntu/logs/app.log",
+            "log_group_name": "spaeti-app-log",
+            "log_stream_name": "{instance_id}-app"
+          },
+          {
+            "file_path": "/home/ubuntu/logs/error.log",
+            "log_group_name": "spaeti-error-log",
+            "log_stream_name": "{instance_id}-error"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+With this setup, logs are stored locally for quick debugging on the instance and streamed to CloudWatch for centralized monitoring.
+
+## Benefits 
 
 - <b> Rolling policy: </b> Logs rotate daily and on size limit (50MB for app logs, 20MB for error logs).
 
