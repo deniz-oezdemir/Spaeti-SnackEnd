@@ -11,4 +11,9 @@ interface OptionRepositoryJpa : JpaRepository<Option, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @QueryHints(QueryHint(name = "jakarta.persistence.lock.timeout", value = "2000"))
     fun findWithLockById(id: Long): Option?
+
+    fun findByProductIdAndName(
+        productId: Long,
+        name: String,
+    ): Option?
 }

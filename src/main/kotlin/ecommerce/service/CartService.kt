@@ -7,6 +7,7 @@ import ecommerce.entity.CartItem
 import ecommerce.repository.CartItemRepositoryJpa
 import ecommerce.repository.CartRepositoryJpa
 import ecommerce.repository.OptionRepositoryJpa
+import ecommerce.repository.ProductRepositoryJpa
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -17,6 +18,7 @@ class CartService(
     private val cartItemRepositoryJpa: CartItemRepositoryJpa,
     private val cartRepositoryJpa: CartRepositoryJpa,
     private val optionRepositoryJpa: OptionRepositoryJpa,
+    private val productRepositoryJpa: ProductRepositoryJpa,
 ) {
     fun addToCart(
         memberId: Long,
@@ -45,6 +47,22 @@ class CartService(
                 )
             cartItemRepositoryJpa.save(item)
         }
+    }
+
+    fun addToCartByNames(
+        memberId: Long,
+        productName: String,
+        optionName: String,
+        quantity: Long,
+    ) {
+        val product =
+            productRepositoryJpa.findByName(productName)
+                ?: throw NoSuchElementException("Product not found: $productName")
+        val option =
+            optionRepositoryJpa.findByProductIdAndName(product.id!!, optionName)
+                ?: throw NoSuchElementException("Option not found: product=$productName, option=$optionName")
+
+        addToCart(memberId, option.id!!, quantity)
     }
 
     fun removeFromCart(cartItemId: Long) {

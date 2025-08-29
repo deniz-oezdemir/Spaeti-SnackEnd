@@ -43,7 +43,17 @@ class CartController(
         @RequestBody request: CartRequest,
         @LoginMember member: LoggedInMember,
     ): ResponseEntity<Void> {
-        cartService.addToCart(member.id, request.productOptionId, 1)
+        when {
+            request.hasId() ->
+                cartService.addToCart(member.id, request.productOptionId!!, request.quantity)
+
+            request.hasNames() ->
+                cartService.addToCartByNames(member.id, request.productName!!, request.optionName!!, request.quantity)
+
+            else -> throw IllegalArgumentException(
+                "Provide either productOptionId or (productName + optionName)",
+            )
+        }
         return ResponseEntity.created(
             URI.create("/created"),
         ).build()
